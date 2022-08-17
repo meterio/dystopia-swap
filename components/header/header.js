@@ -314,7 +314,7 @@ function Header(props) {
         <Navigation />
 
         <div className={classes.userBlock}>
-          {process.env.NEXT_PUBLIC_CHAINID == "80001" && (
+          {process.env.NEXT_PUBLIC_CHAINID == "83" && (
             <div className={classes.testnetDisclaimer}>
               <Typography
                 className={[
@@ -322,11 +322,11 @@ function Header(props) {
                   classes[`testnetDisclaimerText--${appTheme}`],
                 ].join(" ")}
               >
-                Mumbai Testnet
+                Meter Testnet
               </Typography>
             </div>
           )}
-          {process.env.NEXT_PUBLIC_CHAINID == "137" && (
+          {process.env.NEXT_PUBLIC_CHAINID == "82" && (
             <div className={classes.testnetDisclaimer}>
               <Typography
                 className={[
@@ -334,7 +334,7 @@ function Header(props) {
                   classes[`testnetDisclaimerText--${appTheme}`],
                 ].join(" ")}
               >
-                Matic Mainnet
+                Meter Mainnet
               </Typography>
             </div>
           )}
@@ -396,7 +396,7 @@ function Header(props) {
                             "g-flex--align-center",
                           ].join(" ")}
                         >
-                          {maticBalance ? maticBalance : 0} MATIC
+                          {maticBalance ? maticBalance : 0} MTR
                         </Typography>
                       </Button>
 
@@ -541,9 +541,9 @@ function Header(props) {
           subTitle={"The chain you are connected is not supported!"}
           icon={"icon-network"}
           description={
-            "Please check that your wallet is connected to Polygon Mainnet, only after you can proceed."
+            "Please check that your wallet is connected to Meter Mainnet, only after you can proceed."
           }
-          btnLabel1={"Switch to Polygon Mainnet"}
+          btnLabel1={"Switch to Polygon Meter"}
           btnLabel2={"Switch Wallet Provider"}
           action2={onAddressClicked}
         />

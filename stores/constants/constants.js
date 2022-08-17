@@ -3,14 +3,14 @@ import * as contractsTestnet from './contractsTestnet'
 import * as contracts from './contracts'
 import * as actions from './actions'
 
-let isTestnet = process.env.NEXT_PUBLIC_CHAINID == 80001
+let isTestnet = process.env.NEXT_PUBLIC_CHAINID == 83
 
 // URLS
-let scan = 'https://polygonscan.com/'
+let scan = 'https://scan.meter.io/'
 let cont = contracts
 
 if(isTestnet) {
-  scan = 'https://mumbai.polygonscan.com/'
+  scan = 'https://scan-warringstakes.meter.io/'
   cont = contractsTestnet
 }
 
@@ -201,57 +201,141 @@ export const ROUTE_ASSETS = [
     logoURI: CONTRACTS.WFTM_LOGO,
     name: CONTRACTS.WFTM_NAME,
     symbol: CONTRACTS.WFTM_SYMBOL,
-  }, {
-    address: "0x2791bca1f2de4661ed88a30c99a7a9449aa84174",
-    decimals: 6,
-    logoURI:
-      "https://raw.githubusercontent.com/sushiswap/icons/master/token/usdc.jpg",
-    name: "USDC",
-    symbol: "USDC",
   },
   {
-    address: "0xc2132d05d31c914a87c6611c10748aeb04b58e8f",
-    decimals: 6,
-    logoURI:
-      "https://raw.githubusercontent.com/sushiswap/icons/master/token/usdt.jpg",
-    name: "(PoS) Tether USD",
-    symbol: "USDT",
-  }, {
-    address: "0x236eec6359fb44cce8f97e99387aa7f8cd5cde1f",
-    decimals: 6,
-    logoURI:
-      "https://2173993027-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2F9HhCCgYexXiRot0OWAJY%2Fuploads%2FQ41zhb0z0oV5WI1zpKEg%2FUSD%2B%20logo.png?alt=media&token=533d9ed9-6904-4f45-82a3-2c9e1060a3b5",
-    name: "USD+",
-    symbol: "USD+",
-  }, {
-    address: "0x45c32fa6df82ead1e2ef74d17b76547eddfaff89",
-    decimals: 18,
-    logoURI:
-      "https://raw.githubusercontent.com/sushiswap/assets/master/blockchains/polygon/assets/0x45c32fA6DF82ead1e2EF74d17b76547EDdFaFF89/logo.png",
-    name: "FRAX",
-    symbol: "FRAX",
-  }, {
-    address: "0x8f3cf7ad23cd3cadbd9735aff958023239c6a063",
-    decimals: 18,
-    logoURI:
-      "https://raw.githubusercontent.com/sushiswap/icons/master/token/dai.jpg",
-    name: "(PoS) Dai Stablecoin",
-    symbol: "DAI",
+    "address": "0xe8876830e7cc85dae8ce31b0802313caf856886f",
+    "name": "Wrapper Ethereum",
+    "symbol": "WETH",
+    "decimals": 18,
+    "chainId": 83,
+    "logoURI": "https://raw.githubusercontent.com/meterio/token-list/master/data/ETH/logo.png"
   },
   {
-    address: "0x7ceb23fd6bc0add59e62ac25578270cff1b9f619",
-    decimals: 18,
-    logoURI:
-      "https://raw.githubusercontent.com/sushiswap/icons/master/token/eth.jpg",
-    name: "Wrapped Ether",
-    symbol: "WETH",
+    "address": "0xda5f90e416a22f6f65ed586a859c8666ce6ce1d1",
+    "name": "USDT",
+    "symbol": "USDT",
+    "decimals": 18,
+    "chainId": 83,
+    "logoURI": "https://raw.githubusercontent.com/meterio/token-list/master/data/USDT/logo.png"
   },
   {
-    address: "0xa3fa99a148fa48d14ed51d610c367c61876997f1",
-    decimals: 18,
-    logoURI:
-      "https://raw.githubusercontent.com/sushiswap/assets/master/blockchains/polygon/assets/0xa3Fa99A148fA48D14Ed51d610c367C61876997F1/logo.png",
-    name: "MAI",
-    symbol: "MAI",
+    "address": "0x8ae4c669f147737085a23d578c1da94d3e39879f",
+    "name": "USDC",
+    "symbol": "USDC",
+    "decimals": 18,
+    "chainId": 83,
+    "logoURI": "https://raw.githubusercontent.com/meterio/token-list/master/data/USDC/logo.png"
+  },
+  {
+    "name": "AmpleForth",
+    "address": "0x1cf09D1B5Da9d9d24365D87B932A7c4bD018A419",
+    "symbol": "AMPL",
+    "decimals": 9,
+    "chainId": 82,
+    "logoURI": "https://raw.githubusercontent.com/meterio/token-list/master/data/AMPL/logo.png"
+  },
+  {
+    "name": "AmpleForth",
+    "address": "0xd259ED8E7ACa1f5eA16fD58a860c09Af335b8198",
+    "symbol": "AMPL",
+    "decimals": 9,
+    "chainId": 83,
+    "logoURI": "https://raw.githubusercontent.com/meterio/token-list/master/data/AMPL/logo.png"
+  },
+  {
+    "name": "BUSD from BSC on Meter",
+    "address": "0x24aA189DfAa76c671c279262F94434770F557c35",
+    "symbol": "BUSD.bsc",
+    "decimals": 18,
+    "chainId": 82,
+    "logoURI": "https://raw.githubusercontent.com/meterio/token-list/master/data/BUSD/logo.png"
+  },
+  {
+    "name": "Factory Builders Token",
+    "address": "0x6CFe9AdaD5215195c1Aa9755DAed29360e6Ab986",
+    "symbol": "FTB",
+    "decimals": 18,
+    "chainId": 82,
+    "logoURI": "https://raw.githubusercontent.com/meterio/token-list/master/data/FTB/logo.png"
+  },
+  {
+    "name": "MOVR from MoonRiver on Meter",
+    "address": "0xb158870beB809Ad955Bf56065C5C10D7Fd957cC0",
+    "symbol": "MOVR",
+    "decimals": 18,
+    "chainId": 82,
+    "logoURI": "https://raw.githubusercontent.com/meterio/token-list/master/data/MOVR/logo.png"
+  },
+  {
+    "name": "Meter Governance",
+    "address": "0x228ebBeE999c6a7ad74A6130E81b12f9Fe237Ba3",
+    "symbol": "MTRG",
+    "decimals": 18,
+    "chainId": 82,
+    "logoURI": "https://raw.githubusercontent.com/meterio/token-list/master/data/MTRG/logo.png"
+  },
+  {
+    "name": "Meter Governance",
+    "address": "0x8A419EF4941355476CF04933E90BF3BBF2F73814",
+    "symbol": "MTRG",
+    "decimals": 18,
+    "chainId": 83,
+    "logoURI": "https://raw.githubusercontent.com/meterio/token-list/master/data/MTRG/logo.png"
+  },
+  {
+    "name": "Sumer Bitcoin",
+    "address": "0x0477763b021e0f30680b7266a264d1044fe77a4d",
+    "symbol": "suBTC",
+    "decimals": 18,
+    "chainId": 83,
+    "logoURI": "https://raw.githubusercontent.com/meterio/token-list/master/data/suBTC/logo.png"
+  },
+  {
+    "name": "Sumer Ethereum",
+    "address": "0x4b0d849e5bf7f62bcbb0b7c364ddda552c2c3a8a",
+    "symbol": "suETH",
+    "decimals": 18,
+    "chainId": 83,
+    "logoURI": "https://raw.githubusercontent.com/meterio/token-list/master/data/suETH/logo.png"
+  },
+  {
+    "name": "Sumer USDC",
+    "address": "0x37d982d96ac985a4fa9522383de5010109f0627c",
+    "symbol": "suUSD",
+    "decimals": 18,
+    "chainId": 83,
+    "logoURI": "https://raw.githubusercontent.com/meterio/token-list/master/data/suUSD/logo.png"
+  },
+  {
+    "name": "Volt",
+    "address": "0x8Df95e66Cb0eF38F91D2776DA3c921768982fBa0",
+    "symbol": "VOLT",
+    "decimals": 18,
+    "chainId": 82,
+    "logoURI": "https://raw.githubusercontent.com/meterio/token-list/master/data/VOLT/logo.png"
+  },
+  {
+    "name": "Volt",
+    "address": "0x2A4923e0F87aE81174f83CbC23f1d4Ef4eF59b01",
+    "symbol": "VOLT",
+    "decimals": 18,
+    "chainId": 83,
+    "logoURI": "https://raw.githubusercontent.com/meterio/token-list/master/data/VOLT/logo.png"
+  },
+  {
+    "name": "WBTC from Ethereum on Meter",
+    "address": "0xc1f6C86ABEe8e2e0B6fd5BD80F0b51fef783635C",
+    "symbol": "WBTC.eth",
+    "decimals": 8,
+    "chainId": 82,
+    "logoURI": "https://raw.githubusercontent.com/meterio/token-list/master/data/WBTC/logo.png"
+  },
+  {
+    "name": "BTC on Meter",
+    "address": "0xcfd9102a2675e0d898982f1fd1dd0264aaa901da",
+    "symbol": "WBTC",
+    "decimals": 8,
+    "chainId": 83,
+    "logoURI": "https://raw.githubusercontent.com/meterio/token-list/master/data/WBTC/logo.png"
   }
 ];

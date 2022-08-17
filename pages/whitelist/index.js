@@ -94,7 +94,7 @@ function Vesting({ changeTheme }) {
 
             <div className={[classes.mainDescBg, classes[`mainDescBg--${appTheme}`]].join(' ')}>
               <Typography className={[classes.mainDescNC, classes[`mainDescNC--${appTheme}`]].join(' ')} variant="body2">
-                Whitelist tokens to be used in Dystopia Gauges.
+                Whitelist tokens to be used in Voltswap Gauges.
               </Typography>
             </div>
             <WalletConnect>

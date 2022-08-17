@@ -636,7 +636,7 @@ class Store {
         );
 
         const tokensLength = await bribeContract.methods
-          .rewardsListLength()
+          .rewardTokensLength()
           .call();
         const arry = Array.from(
           { length: parseInt(tokensLength) },
@@ -646,7 +646,7 @@ class Store {
         const bribes = await Promise.all(
           arry.map(async (idx) => {
             const tokenAddress = await bribeContract.methods
-              .rewards(idx)
+              .rewardTokens(idx)
               .call();
             const token = await this.getBaseAsset(tokenAddress);
 
@@ -699,10 +699,10 @@ class Store {
   };
 
   getPair = async (addressA, addressB, stab) => {
-    if (addressA === "MATIC") {
+    if (addressA === "MTR") {
       addressA = CONTRACTS.WFTM_ADDRESS;
     }
-    if (addressB === "MATIC") {
+    if (addressB === "MTR") {
       addressB = CONTRACTS.WFTM_ADDRESS;
     }
 
@@ -885,7 +885,7 @@ class Store {
         );
 
         const tokensLength = await bribeContract.methods
-          .rewardsListLength()
+          .rewardTokensLength()
           .call();
         const arry = Array.from(
           { length: parseInt(tokensLength) },
@@ -895,7 +895,7 @@ class Store {
         const bribes = await Promise.all(
           arry.map(async (idx) => {
             const tokenAddress = await bribeContract.methods
-              .rewards(idx)
+              .rewardTokens(idx)
               .call();
             const token = await this.getBaseAsset(tokenAddress);
 
@@ -1002,8 +1002,10 @@ class Store {
   getBaseAsset = async (address, save, getBalance) => {
     try {
       const baseAssets = this.getStore("baseAssets");
-
       const theBaseAsset = baseAssets.filter((as) => {
+        if (as.address === 'MTR') {
+          return CONTRACTS.WFTM_ADDRESS.toLowerCase() === address.toLowerCase();
+        }
         return as.address.toLowerCase() === address.toLowerCase();
       });
       if (theBaseAsset.length > 0) {
@@ -1080,7 +1082,7 @@ class Store {
       this.setStore({ veToken: await this._getVeTokenBase() });
       this.setStore({ baseAssets: await this._getBaseAssets() });
       this.setStore({ pairs: await this._getPairs() });
-      this.setStore({ routeAssets: ROUTE_ASSETS });
+      this.setStore({ routeAssets: this._getRouteAssets() });
 
       this.emitter.emit(ACTIONS.UPDATED);
       this.emitter.emit(ACTIONS.CONFIGURED_SS);
@@ -1099,15 +1101,18 @@ class Store {
       const baseAssetsCall = await client.query(tokensQuery).toPromise();
       // console.log("QUERY TWO RESPONSE",baseAssetsCall)
       let baseAssets = baseAssetsCall.data.tokens;
-      const defaultTokenList =
-        process.env.NEXT_PUBLIC_CHAINID == 80001
-          ? await axios.get(
-              `https://raw.githubusercontent.com/sanchitdawarsd/default-token-list/master/tokens/matic-testnet.json`
+      const res =
+          await axios.get(
+              `https://raw.githubusercontent.com/meterio/token-list/master/generated/solidly-tokens.json`
             )
-          : await axios.get(
-              `https://raw.githubusercontent.com/dystopia-exchange/default-token-list/master/tokens/matic.json`
-            );
-      // console.log("defaultTokenList RESPONSE",defaultTokenList)
+      
+      const defaultTokenList = []
+      for (let token of res.data.tokens) {
+        if (token.chainId == process.env.NEXT_PUBLIC_CHAINID) {
+          defaultTokenList.push(token)
+        }
+      }
+
       const nativeFTM = {
         id: CONTRACTS.FTM_ADDRESS,
         address: CONTRACTS.FTM_ADDRESS,
@@ -1117,20 +1122,20 @@ class Store {
         symbol: CONTRACTS.FTM_SYMBOL,
       };
 
-      for (let i = 0; i < defaultTokenList.data.length; i++) {
+      for (let i = 0; i < defaultTokenList.length; i++) {
         for (let j = 0; j < baseAssets.length; j++) {
           baseAssets[j].address = baseAssets[j].id
           baseAssets[j].balance = 0
           baseAssets[j].chainId = 0
 
-          if (defaultTokenList.data[i].address.toLowerCase() === baseAssets[j].address.toLowerCase()) {
-            baseAssets[j].logoURI = defaultTokenList.data[i].logoURI;
+          if (defaultTokenList[i].address.toLowerCase() === baseAssets[j].address.toLowerCase()) {
+            baseAssets[j].logoURI = defaultTokenList[i].logoURI;
           }
 
-          if (baseAssets[j].name === "miMATIC") {
-            baseAssets[j].symbol = "MAI";
-            baseAssets[j].name = "MAI";
-          }
+          // if (baseAssets[j].name === "miMATIC") {
+          //   baseAssets[j].symbol = "MAI";
+          //   baseAssets[j].name = "MAI";
+          // }
         }
       }
 
@@ -1224,23 +1229,40 @@ class Store {
       }
 
 
-      const find = "miMATIC";
+      // const find = "miMATIC";
+      // const regex = new RegExp(find, "g");
+      // const regex1 = new RegExp("miMATIC", "g");
+      // let pairsCall2;
+      // try {
+      //   pairsCall2 = pairsCall.data.pairs.map((object) => {
+      //     const obj = object;
+      //     obj.name = obj?.name.replace(regex1, "MAI");
+      //     obj.symbol = obj?.symbol.replace(regex1, "MAI");
+      //     obj.token0.name = obj?.token0?.name?.replace(regex, "MAI");
+      //     obj.token0.symbol = obj?.token0?.symbol?.replace(regex, "MAI");
+      //     obj.token1.name = obj?.token1?.name?.replace(regex, "MAI");
+      //     obj.token1.symbol = obj?.token1?.symbol?.replace(regex, "MAI");
+      //     obj.token0.name = obj?.token0?.name?.replace(regex1, "MAI");
+      //     obj.token0.symbol = obj?.token0?.symbol?.replace(regex1, "MAI");
+      //     obj.token1.name = obj?.token1?.name?.replace(regex1, "MAI");
+      //     obj.token1.symbol = obj?.token1?.symbol?.replace(regex1, "MAI");
+      //     return obj;
+      //   });
+      // } catch (e) {
+      //   console.log(e, "error");
+      // }
+      const find = "WMTR";
       const regex = new RegExp(find, "g");
-      const regex1 = new RegExp("miMATIC", "g");
       let pairsCall2;
       try {
         pairsCall2 = pairsCall.data.pairs.map((object) => {
           const obj = object;
-          obj.name = obj?.name.replace(regex1, "MAI");
-          obj.symbol = obj?.symbol.replace(regex1, "MAI");
-          obj.token0.name = obj?.token0?.name?.replace(regex, "MAI");
-          obj.token0.symbol = obj?.token0?.symbol?.replace(regex, "MAI");
-          obj.token1.name = obj?.token1?.name?.replace(regex, "MAI");
-          obj.token1.symbol = obj?.token1?.symbol?.replace(regex, "MAI");
-          obj.token0.name = obj?.token0?.name?.replace(regex1, "MAI");
-          obj.token0.symbol = obj?.token0?.symbol?.replace(regex1, "MAI");
-          obj.token1.name = obj?.token1?.name?.replace(regex1, "MAI");
-          obj.token1.symbol = obj?.token1?.symbol?.replace(regex1, "MAI");
+          obj.name = obj?.name.replace(regex, "MTR");
+          obj.symbol = obj?.symbol.replace(regex, "MTR");
+          obj.token0.name = obj?.token0?.name?.replace(regex, "MTR");
+          obj.token0.symbol = obj?.token0?.symbol?.replace(regex, "MTR");
+          obj.token1.name = obj?.token1?.name?.replace(regex, "MTR");
+          obj.token1.symbol = obj?.token1?.symbol?.replace(regex, "MTR");
           return obj;
         });
       } catch (e) {
@@ -1256,6 +1278,19 @@ class Store {
       return [];
     }
   };
+  _getRouteAssets = () => {
+    const assets = []
+    for (const a of ROUTE_ASSETS) {
+      if (a.symbol == 'WMTR') {
+        assets.push(a)
+        continue
+      }
+      if (a.chainId == process.env.NEXT_PUBLIC_CHAINID) {
+        assets.push(a)
+      }
+    }
+    return assets
+  }
   _getGovTokenBase = () => {
     return {
       address: CONTRACTS.GOV_TOKEN_ADDRESS,
@@ -1597,7 +1632,7 @@ class Store {
       const baseAssetsBalances = await Promise.all(
         baseAssets.map(async (asset) => {
           try {
-            if (asset.address === "MATIC") {
+            if (asset.address === "MTR") {
               let bal = await web3.eth.getBalance(account.address);
               return {
                 balanceOf: bal,
@@ -1720,10 +1755,10 @@ class Store {
 
       let toki0 = token0.address;
       let toki1 = token1.address;
-      if (token0.address === "MATIC") {
+      if (token0.address === "MTR") {
         toki0 = CONTRACTS.WFTM_ADDRESS;
       }
-      if (token1.address === "MATIC") {
+      if (token1.address === "MTR") {
         toki1 = CONTRACTS.WFTM_ADDRESS;
       }
 
@@ -1795,7 +1830,7 @@ class Store {
       let allowance1 = 0;
 
       // CHECK ALLOWANCES AND SET TX DISPLAY
-      if (token0.address !== "MATIC") {
+      if (token0.address !== "MTR") {
         allowance0 = await this._getDepositAllowance(web3, token0, account);
         if (BigNumber(allowance0).lt(amount0)) {
           this.emitter.emit(ACTIONS.TX_STATUS, {
@@ -1818,7 +1853,7 @@ class Store {
         });
       }
 
-      if (token1.address !== "MATIC") {
+      if (token1.address !== "MTR") {
         allowance1 = await this._getDepositAllowance(web3, token1, account);
         if (BigNumber(allowance1).lt(amount1)) {
           this.emitter.emit(ACTIONS.TX_STATUS, {
@@ -1942,8 +1977,8 @@ class Store {
       ];
       let sendValue = null;
 
-      if (token0.address === "MATIC") {
-        func = "addLiquidityMATIC";
+      if (token0.address === "MTR") {
+        func = "addLiquidityMTR";
         params = [
           token1.address,
           isStable,
@@ -1955,8 +1990,8 @@ class Store {
         ];
         sendValue = sendAmount0;
       }
-      if (token1.address === "MATIC") {
-        func = "addLiquidityMATIC";
+      if (token1.address === "MTR") {
+        func = "addLiquidityMTR";
         params = [
           token0.address,
           isStable,
@@ -1991,10 +2026,10 @@ class Store {
           // GET PAIR FOR NEWLY CREATED LIQUIDITY POOL
           let tok0 = token0.address;
           let tok1 = token1.address;
-          if (token0.address === "MATIC") {
+          if (token0.address === "MTR") {
             tok0 = CONTRACTS.WFTM_ADDRESS;
           }
-          if (token1.address === "MATIC") {
+          if (token1.address === "MTR") {
             tok1 = CONTRACTS.WFTM_ADDRESS;
           }
           const pairFor = await factoryContract.methods
@@ -2209,10 +2244,10 @@ class Store {
       const gasPrice = await stores.accountStore.getGasPrice();
       const allowanceCallsPromises = [];
 
-      if (token0.address === "MATIC") {
+      if (token0.address === "MTR") {
         token0.address = CONTRACTS.WFTM_ADDRESS;
       }
-      if (token1.address === "MATIC") {
+      if (token1.address === "MTR") {
         token1.address = CONTRACTS.WFTM_ADDRESS;
       }
 
@@ -2328,10 +2363,10 @@ class Store {
 
       let toki0 = token0.address;
       let toki1 = token1.address;
-      if (token0.address === "MATIC") {
+      if (token0.address === "MTR") {
         toki0 = CONTRACTS.WFTM_ADDRESS;
       }
-      if (token1.address === "MATIC") {
+      if (token1.address === "MTR") {
         toki1 = CONTRACTS.WFTM_ADDRESS;
       }
 
@@ -2389,7 +2424,7 @@ class Store {
       let allowance1 = 0;
 
       // CHECK ALLOWANCES AND SET TX DISPLAY
-      if (token0.address !== "MATIC") {
+      if (token0.address !== "MTR") {
         allowance0 = await this._getDepositAllowance(web3, token0, account);
         if (BigNumber(allowance0).lt(amount0)) {
           this.emitter.emit(ACTIONS.TX_STATUS, {
@@ -2412,7 +2447,7 @@ class Store {
         });
       }
 
-      if (token1.address !== "MATIC") {
+      if (token1.address !== "MTR") {
         allowance1 = await this._getDepositAllowance(web3, token1, account);
         if (BigNumber(allowance1).lt(amount1)) {
           this.emitter.emit(ACTIONS.TX_STATUS, {
@@ -2536,8 +2571,8 @@ class Store {
       ];
       let sendValue = null;
 
-      if (token0.address === "MATIC") {
-        func = "addLiquidityMATIC";
+      if (token0.address === "MTR") {
+        func = "addLiquidityMTR";
         params = [
           token1.address,
           isStable,
@@ -2549,8 +2584,8 @@ class Store {
         ];
         sendValue = sendAmount0;
       }
-      if (token1.address === "MATIC") {
-        func = "addLiquidityMATIC";
+      if (token1.address === "MTR") {
+        func = "addLiquidityMTR";
         params = [
           token0.address,
           isStable,
@@ -2584,10 +2619,10 @@ class Store {
           // GET PAIR FOR NEWLY CREATED LIQUIDITY POOL
           let tok0 = token0.address;
           let tok1 = token1.address;
-          if (token0.address === "MATIC") {
+          if (token0.address === "MTR") {
             tok0 = CONTRACTS.WFTM_ADDRESS;
           }
-          if (token1.address === "MATIC") {
+          if (token1.address === "MTR") {
             tok1 = CONTRACTS.WFTM_ADDRESS;
           }
           const pairFor = await factoryContract.methods
@@ -2700,7 +2735,7 @@ class Store {
       let allowance1 = 0;
 
       // CHECK ALLOWANCES AND SET TX DISPLAY
-      if (token0.address !== "MATIC") {
+      if (token0.address !== "MTR") {
         allowance0 = await this._getDepositAllowance(web3, token0, account);
         if (BigNumber(allowance0).lt(amount0)) {
           this.emitter.emit(ACTIONS.TX_STATUS, {
@@ -2723,7 +2758,7 @@ class Store {
         });
       }
 
-      if (token1.address !== "MATIC") {
+      if (token1.address !== "MTR") {
         allowance1 = await this._getDepositAllowance(web3, token1, account);
         if (BigNumber(allowance1).lt(amount1)) {
           this.emitter.emit(ACTIONS.TX_STATUS, {
@@ -2854,8 +2889,8 @@ class Store {
       ];
       let sendValue = null;
 
-      if (token0.address === "MATIC") {
-        func = "addLiquidityMATIC";
+      if (token0.address === "MTR") {
+        func = "addLiquidityMTR";
         params = [
           token1.address,
           pair.isStable,
@@ -2867,8 +2902,8 @@ class Store {
         ];
         sendValue = sendAmount0;
       }
-      if (token1.address === "MATIC") {
-        func = "addLiquidityMATIC";
+      if (token1.address === "MTR") {
+        func = "addLiquidityMTR";
         params = [
           token0.address,
           pair.isStable,
@@ -3148,7 +3183,7 @@ class Store {
       let allowance1 = 0;
 
       // CHECK ALLOWANCES AND SET TX DISPLAY
-      if (token0.address !== "MATIC") {
+      if (token0.address !== "MTR") {
         allowance0 = await this._getDepositAllowance(web3, token0, account);
         if (BigNumber(allowance0).lt(amount0)) {
           this.emitter.emit(ACTIONS.TX_STATUS, {
@@ -3171,7 +3206,7 @@ class Store {
         });
       }
 
-      if (token1.address !== "MATIC") {
+      if (token1.address !== "MTR") {
         allowance1 = await this._getDepositAllowance(web3, token1, account);
         if (BigNumber(allowance1).lt(amount1)) {
           this.emitter.emit(ACTIONS.TX_STATUS, {
@@ -3354,8 +3389,8 @@ class Store {
       ];
       let sendValue = null;
 
-      if (token0.address === "MATIC") {
-        func = "addLiquidityMATIC";
+      if (token0.address === "MTR") {
+        func = "addLiquidityMTR";
         params = [
           token1.address,
           pair.isStable,
@@ -3367,8 +3402,8 @@ class Store {
         ];
         sendValue = sendAmount0;
       }
-      if (token1.address === "MATIC") {
-        func = "addLiquidityMATIC";
+      if (token1.address === "MTR") {
+        func = "addLiquidityMTR";
         params = [
           token0.address,
           pair.isStable,
@@ -3525,10 +3560,10 @@ class Store {
       let addy0 = token0.address;
       let addy1 = token1.address;
 
-      if (token0.address === "MATIC") {
+      if (token0.address === "MTR") {
         addy0 = CONTRACTS.WFTM_ADDRESS;
       }
-      if (token1.address === "MATIC") {
+      if (token1.address === "MTR") {
         addy1 = CONTRACTS.WFTM_ADDRESS;
       }
 
@@ -4114,11 +4149,20 @@ class Store {
       const sendWithdrawAmount = BigNumber(withdrawAmount)
         .times(10 ** pair.decimals)
         .toFixed(0);
+      
+        let tok0 = token0.address;
+        let tok1 = token1.address;
+        if (token0.address === "MTR") {
+          tok0 = CONTRACTS.WFTM_ADDRESS;
+        }
+        if (token1.address === "MTR") {
+          tok1 = CONTRACTS.WFTM_ADDRESS;
+        }
 
       const res = await routerContract.methods
         .quoteRemoveLiquidity(
-          token0.address,
-          token1.address,
+          tok0,
+          tok1,
           pair.isStable,
           sendWithdrawAmount
         )
@@ -4224,6 +4268,7 @@ class Store {
       const _routeAssets = this.getStore("routeAssets");
 
       const { fromAsset, toAsset, fromAmount } = payload.content;
+      console.log({fromAsset, toAsset})
 
       const routerContract = new web3.eth.Contract(
         CONTRACTS.ROUTER_ABI,
@@ -4257,10 +4302,10 @@ class Store {
       let addy0 = fromAsset.address;
       let addy1 = toAsset.address;
 
-      if (fromAsset.address === "MATIC") {
+      if (fromAsset.address === "MTR") {
         addy0 = CONTRACTS.WFTM_ADDRESS;
       }
-      if (toAsset.address === "MATIC") {
+      if (toAsset.address === "MTR") {
         addy1 = CONTRACTS.WFTM_ADDRESS;
       }
 
@@ -4517,7 +4562,7 @@ class Store {
       let allowance = 0;
 
       // CHECK ALLOWANCES AND SET TX DISPLAY
-      if (fromAsset.address !== "MATIC") {
+      if (fromAsset.address !== "MTR") {
         allowance = await this._getSwapAllowance(web3, fromAsset, account);
 
         if (BigNumber(allowance).lt(fromAmount)) {
@@ -4622,8 +4667,8 @@ class Store {
         func = "swapExactTokensForTokensSupportingFeeOnTransferTokens";
       }
 
-      if (fromAsset.address === "MATIC") {
-        func = "swapExactMATICForTokens";
+      if (fromAsset.address === "MTR") {
+        func = "swapExactMTRForTokens";
         params = [
           sendMinAmountOut,
           quote.output.routes,
@@ -4632,13 +4677,13 @@ class Store {
         ];
         sendValue = sendFromAmount;
       }
-      if (toAsset.address === "MATIC") {
-        func = "swapExactTokensForMATIC";
+      if (toAsset.address === "MTR") {
+        func = "swapExactTokensForMTR";
         if (
           fromAsset.address.toLowerCase() ===
           CONTRACTS.SPHERE_ADDRESS.toLowerCase()
         ) {
-          func = "swapExactTokensForMATICSupportingFeeOnTransferTokens";
+          func = "swapExactTokensForMTRSupportingFeeOnTransferTokens";
         }
       }
 
@@ -4830,7 +4875,7 @@ class Store {
       const ba = await Promise.all(
         baseAssets.map(async (asset) => {
           if (asset.address.toLowerCase() === assetAddress.toLowerCase()) {
-            if (asset.address === "MATIC") {
+            if (asset.address === "MTR") {
               let bal = await web3.eth.getBalance(account.address);
               asset.balance = BigNumber(bal)
                 .div(10 ** parseInt(asset.decimals))
@@ -7019,9 +7064,33 @@ class Store {
     //estimate gas
     this.emitter.emit(ACTIONS.TX_PENDING, { uuid });
 
+    const estimateGasParams = {
+      from: account.address
+    }
+    console.log('method', method)
+    console.log('params', params)
+    console.log('sendValue', sendValue)
+
+    // if (['swapExactMTRForTokens', 'swapExactTokensForMTR'].includes(method)) {
+    //   let sendGasPrice = BigNumber(gasPrice).times(1.5).toFixed(0);
+    //   contract.methods[method](...params)
+    //     .send({
+    //       from: account.address,
+    //       gasPrice: web3.utils.toWei(sendGasPrice, "gwei"),
+    //       gas: 5000000,
+    //       value: sendValue,
+    //     })
+    //   return
+    // }
+
+    if (sendValue) {
+      estimateGasParams.value = sendValue
+    }
+
     const gasCost = contract.methods[method](...params)
-      .estimateGas({ from: account.address, value: sendValue })
+      .estimateGas(estimateGasParams)
       .then((gasAmount) => {
+        console.log('gas amount', gasAmount)
         const context = this;
 
         let sendGasAmount = BigNumber(gasAmount).times(1.5).toFixed(0);

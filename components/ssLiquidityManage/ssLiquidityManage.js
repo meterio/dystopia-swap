@@ -342,10 +342,10 @@ export default function ssLiquidityManage() {
       let addy0 = assetA.address;
       let addy1 = assetB.address;
 
-      if (assetA.address === "MATIC") {
+      if (assetA.address === "MTR") {
         addy0 = CONTRACTS.WFTM_ADDRESS;
       }
-      if (assetB.address === "MATIC") {
+      if (assetB.address === "MTR") {
         addy1 = CONTRACTS.WFTM_ADDRESS;
       }
 
@@ -2278,10 +2278,9 @@ export default function ssLiquidityManage() {
     setAmount1("");
     setAmount1Error(false);
     setCreateLP(nextValue);
-
-    if (nextValue) {
+    // if (nextValue) {
       ssUpdated();
-    }
+    // }
   };
 
   return (

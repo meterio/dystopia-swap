@@ -93,7 +93,7 @@ export default function MyApp({ Component, pageProps }) {
     <ThemeProvider theme={theme}>
       <React.Fragment>
         <Head>
-          <title>Dystopia</title>
+          <title>Voltswap</title>
           <meta name="viewport" content="width=device-width, initial-scale=1" />
         </Head>
         <AppThemeProvider value={{ appTheme, setAppTheme }}>

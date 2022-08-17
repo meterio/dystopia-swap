@@ -116,16 +116,24 @@ function Setup() {
 
           if (baseAsset.length > 0 && toAssetValue == null) {
             const dystIndex = baseAsset.findIndex((token) => {
-              return token.id == "0x39ab6574c289c3ae4d88500eec792ab5b947a5eb";
+              return token.id == "0x8A419EF4941355476CF04933E90BF3BBF2F73814";
             });
-            setToAssetValue(baseAsset[dystIndex]);
+            if (dystIndex !== -1) {
+              setToAssetValue(baseAsset[dystIndex]);
+            } else {
+              setToAssetValue(baseAsset[0]);
+            }
           }
 
           if (baseAsset.length > 0 && fromAssetValue == null) {
             const wmaticIndex = baseAsset.findIndex((token) => {
               return token.id == "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270";
             });
-            setFromAssetValue(baseAsset[wmaticIndex]);
+            if (wmaticIndex !== -1) {
+              setFromAssetValue(baseAsset[wmaticIndex]);
+            } else {
+              setFromAssetValue(baseAsset[1]);
+            }
           }
           forceUpdate();
         };
@@ -142,10 +150,10 @@ function Setup() {
           setToAmountValue("");
           if (
               !(
-                  (fromAssetValue?.symbol == "MATIC" ||
-                      fromAssetValue?.symbol == "WMATIC") &&
-                  (toAssetValue?.symbol == "WMATIC" ||
-                      toAssetValue?.symbol == "MATIC")
+                  (fromAssetValue?.symbol == "MTR" ||
+                      fromAssetValue?.symbol == "WMTR") &&
+                  (toAssetValue?.symbol == "WMTR" ||
+                      toAssetValue?.symbol == "MTR")
               )
           )
             calculateReceiveAmount(0, fromAssetValue, toAssetValue);
@@ -194,10 +202,10 @@ function Setup() {
         setFromAssetValue(toAssetValue);
         if (
             !(
-                (fromAssetValue?.symbol == "MATIC" ||
-                    fromAssetValue?.symbol == "WMATIC") &&
-                (toAssetValue?.symbol == "WMATIC" ||
-                    toAssetValue?.symbol == "MATIC")
+                (fromAssetValue?.symbol == "MTR" ||
+                    fromAssetValue?.symbol == "WMTR") &&
+                (toAssetValue?.symbol == "WMTR" ||
+                    toAssetValue?.symbol == "MTR")
             )
         )
           calculateReceiveAmount(fromAmountValue, toAssetValue, fromAssetValue);
@@ -209,9 +217,9 @@ function Setup() {
         setFromAssetValue(value);
         if (
             !(
-                (value?.symbol == "MATIC" || value?.symbol == "WMATIC") &&
-                (toAssetValue?.symbol == "WMATIC" ||
-                    toAssetValue?.symbol == "MATIC")
+                (value?.symbol == "MTR" || value?.symbol == "WMTR") &&
+                (toAssetValue?.symbol == "WMTR" ||
+                    toAssetValue?.symbol == "MTR")
             )
         )
           calculateReceiveAmount(fromAmountValue, value, toAssetValue);
@@ -226,10 +234,10 @@ function Setup() {
         setToAssetValue(fromAssetValue);
         if (
             !(
-                (fromAssetValue?.symbol == "MATIC" ||
-                    fromAssetValue?.symbol == "WMATIC") &&
-                (toAssetValue?.symbol == "WMATIC" ||
-                    toAssetValue?.symbol == "MATIC")
+                (fromAssetValue?.symbol == "MTR" ||
+                    fromAssetValue?.symbol == "WMTR") &&
+                (toAssetValue?.symbol == "WMTR" ||
+                    toAssetValue?.symbol == "MTR")
             )
         )
           calculateReceiveAmount(fromAmountValue, toAssetValue, fromAssetValue);
@@ -241,9 +249,9 @@ function Setup() {
         setToAssetValue(value);
         if (
             !(
-                (fromAssetValue?.symbol == "MATIC" ||
-                    fromAssetValue?.symbol == "WMATIC") &&
-                (value?.symbol == "WMATIC" || value?.symbol == "MATIC")
+                (fromAssetValue?.symbol == "MTR" ||
+                    fromAssetValue?.symbol == "WMTR") &&
+                (value?.symbol == "WMTR" || value?.symbol == "MTR")
             )
         )
           calculateReceiveAmount(fromAmountValue, fromAssetValue, value);
@@ -268,9 +276,9 @@ function Setup() {
     } else {
       if (
           !(
-              (fromAssetValue?.symbol == "MATIC" ||
-                  fromAssetValue?.symbol == "WMATIC") &&
-              (toAssetValue?.symbol == "WMATIC" || toAssetValue?.symbol == "MATIC")
+              (fromAssetValue?.symbol == "MTR" ||
+                  fromAssetValue?.symbol == "WMTR") &&
+              (toAssetValue?.symbol == "WMTR" || toAssetValue?.symbol == "MTR")
           )
       )
         calculateReceiveAmount(value, fromAssetValue, toAssetValue);
@@ -503,9 +511,9 @@ function Setup() {
     setFromAmountValue(fromAssetValue.balance);
     if (
         !(
-            (fromAssetValue?.symbol == "MATIC" ||
-                fromAssetValue?.symbol == "WMATIC") &&
-            (toAssetValue?.symbol == "WMATIC" || toAssetValue?.symbol == "MATIC")
+            (fromAssetValue?.symbol == "MTR" ||
+                fromAssetValue?.symbol == "WMTR") &&
+            (toAssetValue?.symbol == "WMTR" || toAssetValue?.symbol == "MTR")
         )
     )
       calculateReceiveAmount(
@@ -526,9 +534,9 @@ function Setup() {
     setToAssetValue(fa);
     if (
         !(
-            (fromAssetValue?.symbol == "MATIC" ||
-                fromAssetValue?.symbol == "WMATIC") &&
-            (toAssetValue?.symbol == "WMATIC" || toAssetValue?.symbol == "MATIC")
+            (fromAssetValue?.symbol == "MTR" ||
+                fromAssetValue?.symbol == "WMTR") &&
+            (toAssetValue?.symbol == "WMTR" || toAssetValue?.symbol == "MTR")
         )
     )
       calculateReceiveAmount(fromAmountValue, ta, fa);
@@ -1243,9 +1251,9 @@ function Setup() {
 
         <BtnSwap
             onClick={
-              (fromAssetValue?.symbol == "MATIC" && toAssetValue?.symbol == "WMATIC")
+              (fromAssetValue?.symbol == "MTR" && toAssetValue?.symbol == "WMTR")
                   ? onWrap
-                  : (fromAssetValue?.symbol == "WMATIC" && toAssetValue?.symbol == "MATIC")
+                  : (fromAssetValue?.symbol == "WMTR" && toAssetValue?.symbol == "MTR")
                       ? onUnwrap
                       : onSwap
             }
@@ -1263,23 +1271,23 @@ function Setup() {
               Number(fromAmountValue) <= 0
             }
             label={
-              loading && fromAssetValue?.symbol == "MATIC" && toAssetValue?.symbol == "WMATIC"
+              loading && fromAssetValue?.symbol == "MTR" && toAssetValue?.symbol == "WMTR"
                   ? "Wrapping"
-                  : loading && fromAssetValue?.symbol == "WMATIC" && toAssetValue?.symbol == "MATIC"
+                  : loading && fromAssetValue?.symbol == "WMTR" && toAssetValue?.symbol == "MTR"
                       ? "Unwrapping"
                       : loading &&
                       !(
-                          (fromAssetValue?.symbol == "MATIC" ||
-                              fromAssetValue?.symbol == "WMATIC") &&
-                          (toAssetValue?.symbol == "WMATIC" ||
-                              toAssetValue?.symbol == "MATIC")
+                          (fromAssetValue?.symbol == "MTR" ||
+                              fromAssetValue?.symbol == "WMTR") &&
+                          (toAssetValue?.symbol == "WMTR" ||
+                              toAssetValue?.symbol == "MTR")
                       )
                           ? "Swapping"
                           : !fromAmountValue || Number(fromAmountValue) <= 0
                               ? "Enter Amount"
-                              : (fromAssetValue?.symbol == "MATIC" && toAssetValue?.symbol == "WMATIC")
+                              : (fromAssetValue?.symbol == "MTR" && toAssetValue?.symbol == "WMTR")
                                   ? "Wrap"
-                                  : (fromAssetValue?.symbol == "WMATIC" && toAssetValue?.symbol == "MATIC")
+                                  : (fromAssetValue?.symbol == "WMTR" && toAssetValue?.symbol == "MTR")
                                       ? "Unwrap"
                                       : "Swap"
             }
