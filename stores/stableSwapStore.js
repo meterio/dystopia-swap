@@ -1142,9 +1142,12 @@ class Store {
       baseAssets.unshift(nativeFTM);
 
       let localBaseAssets = this.getLocalAssets();
-
+      
       baseAssets = baseAssets.filter((token) => {
         return BLACK_LIST_TOKENS.indexOf(token.address.toLowerCase()) === -1;
+      });
+      baseAssets = baseAssets.filter((token) => {
+        return CONTRACTS.WFTM_ADDRESS.toLowerCase() !== token.address.toLowerCase();
       });
       /*let dupAssets = [];
       baseAssets.forEach((token, id) => {
@@ -1185,7 +1188,7 @@ class Store {
   _getPairs = async () => {
     try {
       const pairsCall = await client.query(pairsQuery).toPromise();
-      // console.log('QUERY PAIRS ERROR', pairsCall);
+      console.log('QUERY PAIRS ERROR', pairsCall);
       if(!!pairsCall.error) {
         console.log('QUERY PAIRS ERROR', pairsCall.error);
       }
@@ -3787,10 +3790,19 @@ class Store {
         CONTRACTS.ROUTER_ADDRESS
       );
 
+      let tok0 = token0.address
+      let tok1 = token1.address
+      if (tok0 === 'MTR') {
+        tok0 = CONTRACTS.WFTM_ADDRESS
+      }
+      if (tok1 === 'MTR') {
+        tok1 = CONTRACTS.WFTM_ADDRESS
+      }
+
       const quoteRemove = await routerContract.methods
         .quoteRemoveLiquidity(
-          token0.address,
-          token1.address,
+          tok0,
+          tok1,
           pair.isStable,
           sendAmount
         )
@@ -3809,8 +3821,8 @@ class Store {
         routerContract,
         "removeLiquidity",
         [
-          token0.address,
-          token1.address,
+          tok0,
+          tok1,
           pair.isStable,
           sendAmount,
           sendAmount0Min,

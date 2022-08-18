@@ -543,7 +543,7 @@ function Header(props) {
           description={
             "Please check that your wallet is connected to Meter Mainnet, only after you can proceed."
           }
-          btnLabel1={"Switch to Polygon Meter"}
+          btnLabel1={"Switch to Meter"}
           btnLabel2={"Switch Wallet Provider"}
           action2={onAddressClicked}
         />

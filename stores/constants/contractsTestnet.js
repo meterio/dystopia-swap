@@ -27,19 +27,19 @@ export const FTM_SYMBOL = 'MTR'
 export const FTM_DECIMALS = 18
 export const FTM_LOGO = 'https://raw.githubusercontent.com/meterio/token-list/master/data/MTR/logo.png'
 
-export const FACTORY_ADDRESS = '0xc55542225EC26d02CF5637777e02c5F0D075935e'
+export const FACTORY_ADDRESS = '0x041F86c7cb6F66F7c7263Df96Fee3eEf5c488b00'
 export const FACTORY_ABI = abis.factoryABI
 
-export const ROUTER_ADDRESS = '0x22721D71319183c0Daf3A4c9078CB9c8Fb352d16'
+export const ROUTER_ADDRESS = '0xCe336f1ca68391e98644C1Cd9d80F01Daf38963F'
 export const ROUTER_ABI = abis.routerABI
 
-export const VE_DIST_ADDRESS = '0xf6857756A58E29DB73dD080Cf01E6eD4690Ffe55'
+export const VE_DIST_ADDRESS = '0x6ddF8b895D64051f4c842EeEcD2B0e76267E3A40'
 export const VE_DIST_ABI = abis.veDistABI
 
 export const LIBRARY_ADDRESS = '0x9b5c941b68621b5497c1b22ac684b28d867c5303'
 export const LIBRARY_ABI = abis.dystopiaLibraryABI
 
-export const VOTER_ADDRESS = '0xD87BCD2FF3d2E8D4c7e8B3C14d39591773dB4274'
+export const VOTER_ADDRESS = '0xdBC190b3453A27E2593e6Ee3101bf1bD238784De'
 export const VOTER_ABI = abis.voterABI
 export const REWARD_ADDRESS = '0x332C7aC34580dfEF553B7726549cEc7015C4B39b'
 export const ERC20_ABI = abis.erc20ABI
