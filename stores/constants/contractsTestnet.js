@@ -1,13 +1,13 @@
 import abis from "../abis";
 
-export const GOV_TOKEN_ADDRESS = '0x8E896f648E6C72D44Dc65C460EAd5769C2ecbC3E'
+export const GOV_TOKEN_ADDRESS = '0x6Af7f7cddfd0d69Ba9b03863347Bd762bd70F8dC'
 export const GOV_TOKEN_NAME = 'VoltSwap Governance Token'
 export const GOV_TOKEN_SYMBOL = 'VOLT'
 export const GOV_TOKEN_DECIMALS = 18
 export const GOV_TOKEN_LOGO = 'https://raw.githubusercontent.com/meterio/token-list/master/data/VOLT/logo.png'
 export const GOV_TOKEN_ABI = abis.tokenABI
 
-export const VE_TOKEN_ADDRESS = '0xc397b6E1Ec697c6396D84c6a0c81313f65d9AA29'
+export const VE_TOKEN_ADDRESS = '0xDe74728549985A17C88975Dbda726eA03206353d'
 export const VE_TOKEN_NAME = 'veDYST'
 export const VE_TOKEN_SYMBOL = 'veDYST'
 export const VE_TOKEN_DECIMALS = 18
@@ -27,19 +27,19 @@ export const FTM_SYMBOL = 'MTR'
 export const FTM_DECIMALS = 18
 export const FTM_LOGO = 'https://raw.githubusercontent.com/meterio/token-list/master/data/MTR/logo.png'
 
-export const FACTORY_ADDRESS = '0x041F86c7cb6F66F7c7263Df96Fee3eEf5c488b00'
+export const FACTORY_ADDRESS = '0x7B5F989c5b707318D83E027485AcBE9A0d512665'
 export const FACTORY_ABI = abis.factoryABI
 
-export const ROUTER_ADDRESS = '0xCe336f1ca68391e98644C1Cd9d80F01Daf38963F'
+export const ROUTER_ADDRESS = '0x82444D42AEFd48e5235330aD8854AB0c34c9dA8B'
 export const ROUTER_ABI = abis.routerABI
 
-export const VE_DIST_ADDRESS = '0x6ddF8b895D64051f4c842EeEcD2B0e76267E3A40'
+export const VE_DIST_ADDRESS = '0x8d4DD14022Bcb0452ed058f97C6B122434CE5Cec'
 export const VE_DIST_ABI = abis.veDistABI
 
-export const LIBRARY_ADDRESS = '0x9b5c941b68621b5497c1b22ac684b28d867c5303'
+export const LIBRARY_ADDRESS = '0x4EcfA52f6e030514a88389871dE0D3BF1D595523'
 export const LIBRARY_ABI = abis.dystopiaLibraryABI
 
-export const VOTER_ADDRESS = '0xdBC190b3453A27E2593e6Ee3101bf1bD238784De'
+export const VOTER_ADDRESS = '0x2026cB09739BeB650172035Bb9b2D7d6A83d6E40'
 export const VOTER_ABI = abis.voterABI
 export const REWARD_ADDRESS = '0x332C7aC34580dfEF553B7726549cEc7015C4B39b'
 export const ERC20_ABI = abis.erc20ABI

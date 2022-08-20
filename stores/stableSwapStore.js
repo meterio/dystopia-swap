@@ -7076,12 +7076,9 @@ class Store {
     //estimate gas
     this.emitter.emit(ACTIONS.TX_PENDING, { uuid });
 
-    const estimateGasParams = {
-      from: account.address
-    }
-    console.log('method', method)
-    console.log('params', params)
-    console.log('sendValue', sendValue)
+    // const estimateGasParams = {
+    //   from: account.address
+    // }
 
     // if (['swapExactMTRForTokens', 'swapExactTokensForMTR'].includes(method)) {
     //   let sendGasPrice = BigNumber(gasPrice).times(1.5).toFixed(0);
@@ -7095,12 +7092,12 @@ class Store {
     //   return
     // }
 
-    if (sendValue) {
-      estimateGasParams.value = sendValue
-    }
+    // if (sendValue) {
+    //   estimateGasParams.value = sendValue
+    // }
 
     const gasCost = contract.methods[method](...params)
-      .estimateGas(estimateGasParams)
+      .estimateGas({from: account.address,value: sendValue})
       .then((gasAmount) => {
         console.log('gas amount', gasAmount)
         const context = this;

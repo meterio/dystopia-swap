@@ -4,7 +4,7 @@ import { useAppThemeContext } from '../../ui/AppThemeProvider';
 
 export default function ffWarning({close, title, subTitle, icon, description, btnLabel1, btnLabel2, action2}) {
   const navigateToMedium = () => {
-    window.open("https://medium.com/@DystopiaSwap", "_blank");
+    window.open("https://docs.voltswap.finance/", "_blank");
   };
 
   const {appTheme} = useAppThemeContext();
@@ -84,7 +84,7 @@ export default function ffWarning({close, title, subTitle, icon, description, bt
               className={classes.warningIcon}/>
 
             <Typography className={[classes.title1, classes[`title1--${appTheme}`]].join(' ')}>
-              {title ? title : 'Dystopia Disclaimer:'}
+              {title ? title : 'Voltswap Disclaimer:'}
             </Typography>
           </div>
 
@@ -103,20 +103,20 @@ export default function ffWarning({close, title, subTitle, icon, description, bt
                   style={{
                     color: appTheme === "dark" ? '#ffffff' : '#0A2C40',
                   }}>
-                  Use of the Dystopia.exchange website, services, dapp, or application is subject to the following Terms & Conditions and hereby confirm that by proceeding and interacting with the protocoL I am aware of these and accept them in full:
+                  Use of the Voltswap.finance website, services, dapp, or application is subject to the following Terms & Conditions and hereby confirm that by proceeding and interacting with the protocoL I am aware of these and accept them in full:
                 </span>
                 <br/><br/>
-                Dystopia.exchange is a smart contract protocol in alpha stage of launch, and even though multiple
+                Voltswap.finance is a smart contract protocol in alpha stage of launch, and even though multiple
                 security
                 audits have been completed on the smart contracts, I understand the risks associated with using the
-                Dystopia protocol and associated functions.
+                voltswap protocol and associated functions.
                 <br/><br/>
-                Any interactions that I have with the associated Dystopia protocol apps, smart contracts or any related
-                functions MAY place my funds at risk, and hereby release the Dystopia protocol and its contributors,
+                Any interactions that I have with the associated voltswap protocol apps, smart contracts or any related
+                functions MAY place my funds at risk, and hereby release the voltswap protocol and its contributors,
                 team
                 members, and service providers from any and all liability with my use of the above-mentioned functions.
                 <br/><br/>
-                I am lawfully permitted to access this site and use the dystopia.exchange application functions, and I
+                I am lawfully permitted to access this site and use the voltswap.finance application functions, and I
                 am
                 not in contravention of any laws governing my jurisdiction of residence or citizenship.
               </>
