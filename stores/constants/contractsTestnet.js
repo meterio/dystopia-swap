@@ -7,7 +7,7 @@ export const GOV_TOKEN_DECIMALS = 18
 export const GOV_TOKEN_LOGO = 'https://raw.githubusercontent.com/meterio/token-list/master/data/VOLT/logo.png'
 export const GOV_TOKEN_ABI = abis.tokenABI
 
-export const VE_TOKEN_ADDRESS = '0xDe74728549985A17C88975Dbda726eA03206353d'
+export const VE_TOKEN_ADDRESS = '0xe730Ef4a4617D2710527e4DcE3A46bF59d78644f'
 export const VE_TOKEN_NAME = 'veDYST'
 export const VE_TOKEN_SYMBOL = 'veDYST'
 export const VE_TOKEN_DECIMALS = 18
@@ -33,7 +33,7 @@ export const FACTORY_ABI = abis.factoryABI
 export const ROUTER_ADDRESS = '0x82444D42AEFd48e5235330aD8854AB0c34c9dA8B'
 export const ROUTER_ABI = abis.routerABI
 
-export const VE_DIST_ADDRESS = '0x8d4DD14022Bcb0452ed058f97C6B122434CE5Cec'
+export const VE_DIST_ADDRESS = '0x597c45b7fD8274f694B64DFC68814C624084118E'
 export const VE_DIST_ABI = abis.veDistABI
 
 export const LIBRARY_ADDRESS = '0x4EcfA52f6e030514a88389871dE0D3BF1D595523'
