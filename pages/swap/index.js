@@ -91,7 +91,7 @@ function Swap({ changeTheme }) {
               <Typography
                 className={[classes.mainDescNC, classes[`mainDescNC--${appTheme}`]].join(' ')}
                 variant="body2">
-                Swap between Dystopia supported stable and volatile assets.
+                Swap between Voltswap supported stable and volatile assets.
               </Typography>
             </div>
             <WalletConnect>

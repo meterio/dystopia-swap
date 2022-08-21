@@ -24,7 +24,7 @@ export const WalletConnect = (props) => {
         walletlink: {
           package: CoinbaseWalletSDK,
           options: {
-            appName: 'Dystopia app',
+            appName: 'Voltswap app',
             infuraId: `${process.env.NEXT_PUBLIC_INFURA_KEY}`,
             rpc: {
               137: `https://polygon-rpc.com/`,
