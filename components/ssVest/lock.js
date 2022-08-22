@@ -370,7 +370,7 @@ export default function ssLock({govToken, veToken}) {
           disabled={lockLoading || amount === '' || Number(amount) === 0}
           onClick={onLock}>
           <Typography className={classes.actionButtonText}>
-            {lockLoading ? `Locking` : `Lock Tokens & Get veDYST`}
+            {lockLoading ? `Locking` : `Lock Tokens & Get veVOLT`}
           </Typography>
 
           {lockLoading && <CircularProgress size={10} className={classes.loadingCircle}/>}

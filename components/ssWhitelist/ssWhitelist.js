@@ -90,6 +90,8 @@ export default function ssWhitelist() {
       }
     };
 
+    ssUpdated()
+
     const accountChanged = async () => {
       const w3 = await stores.accountStore.getWeb3Provider();
       setWeb3(w3);
@@ -190,7 +192,7 @@ export default function ssWhitelist() {
               >
                 <Hint
                   hintText={
-                    "Listing fee either needs to be locked in your veDYST NFT or be paid and burnt on the list."
+                    "Listing fee either needs to be locked in your veVOLT NFT or be paid and burnt on the list."
                   }
                   open={openFeeHint}
                   anchor={feeHintAnchor}
@@ -367,7 +369,7 @@ export default function ssWhitelist() {
                     {!token.isWhitelisted && (
                       <Hint
                         hintText={
-                          "Vest Value < Fee means you cannot proceed with the whitelisting as there is not enough funds locked in the chosen veDYST."
+                          "Vest Value < Fee means you cannot proceed with the whitelisting as there is not enough funds locked in the chosen veVOLT."
                         }
                         open={openActionHint}
                         anchor={actionHintAnchor}
@@ -536,7 +538,7 @@ export default function ssWhitelist() {
                       {!token.isWhitelisted && (
                         <Hint
                           hintText={
-                            "Vest Value < Fee means you cannot proceed with the whitelisting as there is not enough funds locked in the chosen veDYST."
+                            "Vest Value < Fee means you cannot proceed with the whitelisting as there is not enough funds locked in the chosen veVOLT."
                           }
                           open={openActionHint}
                           anchor={actionHintAnchor}
@@ -574,7 +576,7 @@ export default function ssWhitelist() {
                 >
                   <Hint
                     hintText={
-                      "Listing fee either needs to be locked in your veDYST NFT or be paid and burnt on the list."
+                      "Listing fee either needs to be locked in your veVOLT NFT or be paid and burnt on the list."
                     }
                     open={openFeeHint}
                     anchor={feeHintAnchor}
@@ -685,7 +687,7 @@ export default function ssWhitelist() {
             options: nfts,
             symbol: veToken?.symbol,
             handleChange,
-            placeholder: "Click to select veDYST",
+            placeholder: "Click to select veVOLT",
           })}
         </div>
       </div>

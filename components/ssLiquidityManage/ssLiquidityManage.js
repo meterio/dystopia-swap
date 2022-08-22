@@ -2192,7 +2192,7 @@ export default function ssLiquidityManage() {
                           color: appTheme === "dark" ? "#7C838A" : "#5688A5",
                         }}
                       >
-                        Select veDYST
+                        Select veVOLT
                       </div>
                     );
                   }

@@ -5560,7 +5560,7 @@ class Store {
       let arrTx = [];
       let c = {
         uuid: allowanceTXID,
-        description: `Checking Allowance for veDYST to Merge`,
+        description: `Checking Allowance for veVOLT to Merge`,
         status: "WAITING",
       };
       arrTx.push(c);
@@ -5588,7 +5588,7 @@ class Store {
 
       let d = {
         uuid: mergeTXID,
-        description: `Merge veDYST`,
+        description: `Merge veVOLT`,
         status: "WAITING",
       };
       arrTx.push(d);
@@ -5607,19 +5607,19 @@ class Store {
       if (!isApproved) {
         this.emitter.emit(ACTIONS.TX_STATUS, {
           uuid: allowanceTXID,
-          description: `Allow the veDYST For Merge`,
+          description: `Allow the veVOLT For Merge`,
         });
       } else {
         this.emitter.emit(ACTIONS.TX_STATUS, {
           uuid: allowanceTXID,
-          description: `Allowance on veDYST sufficient`,
+          description: `Allowance on veVOLT sufficient`,
           status: "DONE",
         });
       }
       if (bribesLength !== 0) {
         this.emitter.emit(ACTIONS.TX_STATUS, {
           uuid: voteResetTXID,
-          description: `Reset the veDYST Votes`,
+          description: `Reset the veVOLT Votes`,
         });
       } else {
         this.emitter.emit(ACTIONS.TX_STATUS, {
@@ -7068,7 +7068,7 @@ class Store {
     sendValue = null
   ) => {
     // console.log(method)
-    // console.log(params)
+    console.log(params)
     // if(sendValue) {
     //   console.log(sendValue)
     // }
@@ -7080,7 +7080,7 @@ class Store {
     //   from: account.address
     // }
 
-    if (['createGauge'].includes(method)) {
+    if (['swapExactMTRForTokens', 'swapExactTokensForMTR', 'whitelist'].includes(method)) {
       let sendGasPrice = BigNumber(gasPrice).times(1.5).toFixed(0);
       contract.methods[method](...params)
         .send({

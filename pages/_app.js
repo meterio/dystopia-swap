@@ -110,12 +110,12 @@ export default function MyApp({ Component, pageProps }) {
               <img
                 src={
                   appTheme === "dark"
-                    ? "/images/big-logo--dark.svg"
-                    : "/images/big-logo.svg"
+                    ? "/favicon.png"
+                    : "/favicon.png"
                 }
                 style={{
                   position: "absolute",
-                  width: "242px",
+                  width: "30px",
                   height: "30px",
                   top: "50%",
                   left: "50%",
