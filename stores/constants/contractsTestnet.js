@@ -7,7 +7,7 @@ export const GOV_TOKEN_DECIMALS = 18
 export const GOV_TOKEN_LOGO = 'https://raw.githubusercontent.com/meterio/token-list/master/data/VOLT/logo.png'
 export const GOV_TOKEN_ABI = abis.tokenABI
 
-export const VE_TOKEN_ADDRESS = '0xe730Ef4a4617D2710527e4DcE3A46bF59d78644f'
+export const VE_TOKEN_ADDRESS = '0x0DC950D17b8C36c9e053F726F251d2C1C1E4742B'
 export const VE_TOKEN_NAME = 'veVOLT'
 export const VE_TOKEN_SYMBOL = 'veVOLT'
 export const VE_TOKEN_DECIMALS = 18
@@ -33,13 +33,13 @@ export const FACTORY_ABI = abis.factoryABI
 export const ROUTER_ADDRESS = '0x82444D42AEFd48e5235330aD8854AB0c34c9dA8B'
 export const ROUTER_ABI = abis.routerABI
 
-export const VE_DIST_ADDRESS = '0x597c45b7fD8274f694B64DFC68814C624084118E'
+export const VE_DIST_ADDRESS = '0x22dC0740b70fe54d1aed5E8D73C98779e70927E4'
 export const VE_DIST_ABI = abis.veDistABI
 
 export const LIBRARY_ADDRESS = '0x4EcfA52f6e030514a88389871dE0D3BF1D595523'
 export const LIBRARY_ABI = abis.dystopiaLibraryABI
 
-export const VOTER_ADDRESS = '0x9b49f805f105b5565594b71f68cd71c333190288'
+export const VOTER_ADDRESS = '0x788596A5c3b66b484954f0e9A620A6e2BEA933c1'
 export const VOTER_ABI = abis.voterABI
 export const REWARD_ADDRESS = '0x332C7aC34580dfEF553B7726549cEc7015C4B39b'
 export const ERC20_ABI = abis.erc20ABI

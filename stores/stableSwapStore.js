@@ -7080,17 +7080,17 @@ class Store {
     //   from: account.address
     // }
 
-    if (['swapExactMTRForTokens', 'swapExactTokensForMTR', 'whitelist'].includes(method)) {
-      let sendGasPrice = BigNumber(gasPrice).times(1.5).toFixed(0);
-      contract.methods[method](...params)
-        .send({
-          from: account.address,
-          gasPrice: web3.utils.toWei(sendGasPrice, "gwei"),
-          gas: 5000000,
-          value: sendValue,
-        })
-      return
-    }
+    // if (['swapExactMTRForTokens', 'swapExactTokensForMTR', 'whitelist'].includes(method)) {
+    //   let sendGasPrice = BigNumber(gasPrice).times(1.5).toFixed(0);
+    //   contract.methods[method](...params)
+    //     .send({
+    //       from: account.address,
+    //       gasPrice: web3.utils.toWei(sendGasPrice, "gwei"),
+    //       gas: 5000000,
+    //       value: sendValue,
+    //     })
+    //   return
+    // }
 
     // if (sendValue) {
     //   estimateGasParams.value = sendValue
