@@ -109,7 +109,9 @@ function Setup() {
         };
 
         const ssUpdated = () => {
-          const baseAsset = stores.stableSwapStore.getStore("baseAssets");
+          const _baseAsset = stores.stableSwapStore.getStore("baseAssets");
+          // console.log('baseAssets', baseAsset)
+          const baseAsset = _baseAsset.filter(item => item.symbol !== 'WMTR')
 
           setToAssetOptions(baseAsset);
           setFromAssetOptions(baseAsset);

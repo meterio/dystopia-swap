@@ -1146,9 +1146,9 @@ class Store {
       baseAssets = baseAssets.filter((token) => {
         return BLACK_LIST_TOKENS.indexOf(token.address.toLowerCase()) === -1;
       });
-      baseAssets = baseAssets.filter((token) => {
-        return CONTRACTS.WFTM_ADDRESS.toLowerCase() !== token.address.toLowerCase();
-      });
+      // baseAssets = baseAssets.filter((token) => {
+      //   return CONTRACTS.WFTM_ADDRESS.toLowerCase() !== token.address.toLowerCase();
+      // });
       /*let dupAssets = [];
       baseAssets.forEach((token, id) => {
         BASE_ASSETS_WHITELIST.forEach((wl) => {

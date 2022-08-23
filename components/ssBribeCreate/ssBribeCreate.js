@@ -41,17 +41,12 @@ export default function ssBribeCreate() {
   const [gaugeOptions, setGaugeOptions] = useState([]);
 
   const ssUpdated = async () => {
-    const storeAssetOptions = stores.stableSwapStore.getStore('baseAssets');
-    let filteredStoreAssetOptions = storeAssetOptions.filter((option) => {
-      return option.address !== 'MATIC';
-    });
+    
     const storePairs = stores.stableSwapStore.getStore('pairs');
-    setAssetOptions(filteredStoreAssetOptions);
+    
     setGaugeOptions(storePairs);
 
-    if (filteredStoreAssetOptions.length > 0 && asset == null) {
-      setAsset(filteredStoreAssetOptions[0]);
-    }
+    
 
     if (storePairs.length > 0 && gauge == null) {
       for (var i = 0; i < storePairs.length; i++)
@@ -61,6 +56,21 @@ export default function ssBribeCreate() {
         }
     }
   };
+
+  useEffect(() => {
+    // console.log('gauge', gauge)
+    if (gauge) {
+      const storeAssetOptions = stores.stableSwapStore.getStore('baseAssets');
+      let _filteredStoreAssetOptions = storeAssetOptions.filter((option) => {
+        return option.symbol.includes(gauge.token0.symbol) || option.symbol.includes(gauge.token1.symbol);
+      });
+      const filteredStoreAssetOptions = _filteredStoreAssetOptions.filter(item => item.symbol !== 'MTR')
+      setAssetOptions(filteredStoreAssetOptions);
+      if (filteredStoreAssetOptions.length > 0 && asset == null) {
+        setAsset(filteredStoreAssetOptions[0]);
+      }
+    }
+  }, [gauge])
 
   useEffect(() => {
     const createReturned = (res) => {
