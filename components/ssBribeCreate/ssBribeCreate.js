@@ -61,8 +61,15 @@ export default function ssBribeCreate() {
     // console.log('gauge', gauge)
     if (gauge) {
       const storeAssetOptions = stores.stableSwapStore.getStore('baseAssets');
+      // console.log('storeAssetOptions', storeAssetOptions)
       let _filteredStoreAssetOptions = storeAssetOptions.filter((option) => {
-        return option.symbol.includes(gauge.token0.symbol) || option.symbol.includes(gauge.token1.symbol);
+        if (gauge.token0.address === 'MTR' || gauge.token1.address === 'MTR') {
+          if (option.symbol === 'WMTR') {
+            return true
+          }
+        }
+        
+        return option.address.includes(gauge.token0.address) || option.address.includes(gauge.token1.address) || option.symbol === 'VOLT';
       });
       const filteredStoreAssetOptions = _filteredStoreAssetOptions.filter(item => item.symbol !== 'MTR')
       setAssetOptions(filteredStoreAssetOptions);
