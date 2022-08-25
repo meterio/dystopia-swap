@@ -1270,4 +1270,8 @@ input[type=number].massiveInputAmount {
     font-size: 14px !important;
   }
 }
+.increaseDurationTip {
+  font-size: .8rem;
+  color: #e08585;
+}
 

@@ -336,7 +336,7 @@ export default function existingLock({nft, govToken, veToken}) {
 
         {lockLoading && <CircularProgress size={10} className={classes.loadingCircle}/>}
       </Button>
-
+      
       <Button
         className={[classes.buttonOverride, classes[`buttonOverride--${appTheme}`]].join(' ')}
         fullWidth
@@ -349,6 +349,7 @@ export default function existingLock({nft, govToken, veToken}) {
           className={classes.actionButtonText}>{lockLoading ? `Increasing Duration` : `Increase Duration`}</Typography>
         {lockLoading && <CircularProgress size={10} className={classes.loadingCircle}/>}
       </Button>
+      <div className={classes.increaseDurationTip}>You could only extend lock period once per week</div>
     </Paper>
   );
 }

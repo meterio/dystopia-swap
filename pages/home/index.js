@@ -75,7 +75,7 @@ const HomePage = () => {
                         Enter the era of crypto
                     </div>
                     <div className={classes.layoutPromoSubTitle}>
-                        DYSTOPIA
+                        VOLTSWAP
                     </div>
                     <div className={classes.layoutPromoDescription}>
                         <div className={classes.layoutPromoDescriptionItem}>

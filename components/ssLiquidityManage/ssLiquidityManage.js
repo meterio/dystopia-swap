@@ -146,7 +146,8 @@ export default function ssLiquidityManage() {
   const openSlippage = Boolean(anchorEl);
 
   const ssUpdated = async () => {
-    const storeAssetOptions = stores.stableSwapStore.getStore("baseAssets");
+    const _storeAssetOptions = stores.stableSwapStore.getStore("baseAssets");
+    const storeAssetOptions = _storeAssetOptions.filter(item => item.symbol !== 'WMTR')
     const nfts = stores.stableSwapStore.getStore("vestNFTs");
     const veTok = stores.stableSwapStore.getStore("veToken");
     const pairs = stores.stableSwapStore.getStore("pairs");

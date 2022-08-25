@@ -1918,7 +1918,7 @@ export default function EnhancedTable({ pairs, isLoading }) {
                                 title={
                                   <React.Fragment>
                                     {
-                                      "APR based on current prices of tokens, token boosted APR and your locked DYST amount."
+                                      "APR based on current prices of tokens, token boosted APR and your locked VOLT amount."
                                     }
                                     <br />
                                     <br />
@@ -2301,6 +2301,13 @@ export default function EnhancedTable({ pairs, isLoading }) {
                                             .times(row.gauge.reserve1)
                                         )
                                       : "0.00"}
+                                    {/* {
+                                      <>
+                                      <div>1 {row.gauge.balance}</div>
+                                      <div>2 {row.gauge.totalSupply}</div>
+                                      <div>3 {row.gauge.reserve1}</div>
+                                      </>
+                                    } */}
                                   </Typography>
                                 </div>
 
