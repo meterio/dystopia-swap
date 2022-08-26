@@ -21,7 +21,7 @@ export function formatCurrency(amount, decimals = 2) {
 
     return formatter.format(amount);
   } else {
-    return 0;
+    return '0.00';
   }
 }
 

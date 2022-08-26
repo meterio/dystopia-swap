@@ -23,6 +23,7 @@ import BtnSwap from "../../ui/BtnSwap";
 import Hint from "../hint/hint";
 import Loader from "../../ui/Loader";
 import AssetSelect from "../../ui/AssetSelect";
+import { useRouter } from "next/router";
 
 function Setup() {
   const [, updateState] = React.useState();
@@ -69,6 +70,8 @@ function Setup() {
     setWindowWidth(window.innerWidth);
   });
 
+  const router = useRouter()
+
   useEffect(
       function () {
         const errorReturned = () => {
@@ -109,6 +112,8 @@ function Setup() {
         };
 
         const ssUpdated = () => {
+          console.log('router.path', router.query)
+          const { inputCurrency, outputCurrency } = router.query
           const _baseAsset = stores.stableSwapStore.getStore("baseAssets");
           // console.log('baseAssets', baseAsset)
           const baseAsset = _baseAsset.filter(item => item.symbol !== 'WMTR')
@@ -118,7 +123,7 @@ function Setup() {
 
           if (baseAsset.length > 0 && toAssetValue == null) {
             const dystIndex = baseAsset.findIndex((token) => {
-              return token.id == "0x8A419EF4941355476CF04933E90BF3BBF2F73814";
+              return token.id == outputCurrency;
             });
             if (dystIndex !== -1) {
               setToAssetValue(baseAsset[dystIndex]);
@@ -129,7 +134,7 @@ function Setup() {
 
           if (baseAsset.length > 0 && fromAssetValue == null) {
             const wmaticIndex = baseAsset.findIndex((token) => {
-              return token.id == "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270";
+              return token.id == inputCurrency;
             });
             if (wmaticIndex !== -1) {
               setFromAssetValue(baseAsset[wmaticIndex]);

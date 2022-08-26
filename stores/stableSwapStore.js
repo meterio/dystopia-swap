@@ -1136,6 +1136,10 @@ class Store {
             baseAssets[j].logoURI = CONTRACTS.GOV_TOKEN_LOGO
           }
 
+          if (baseAssets[j].address.toLowerCase() === CONTRACTS.WFTM_ADDRESS.toLowerCase()) {
+            baseAssets[j].logoURI = CONTRACTS.WFTM_LOGO
+          }
+
           // if (baseAssets[j].name === "miMATIC") {
           //   baseAssets[j].symbol = "MAI";
           //   baseAssets[j].name = "MAI";

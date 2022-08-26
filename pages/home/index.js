@@ -9,13 +9,14 @@ import BtnEnterApp from '../../ui/BtnEnterApp'
 // import rightImageDark from '../../images/main-page/right-illustration-dark.png'
 
 import classes from './home.module.css'
+import { useRouter } from "next/router";
 
 const socialLinks = {
-    twitter: 'https://twitter.com/dystopiaswap',
-    discord: 'https://t.co/dFsniy2Ktq',
-    telegram: 'https://t.co/gkg3Ba1nmm',
-    gitbook: 'https://dystopia-1.gitbook.io/dystopia-1/',
-    medium: 'https://medium.com/@DystopiaSwap',
+    twitter: 'https://twitter.com/Meter_IO',
+    discord: 'https://discord.gg/XZgZsCn',
+    telegram: 'https://t.me/Meter_IO',
+    gitbook: 'https://docs.voltswap.finance/',
+    medium: 'https://medium.com/meter-io',
 }
 
 const HomePage = () => {
@@ -26,6 +27,8 @@ const HomePage = () => {
     const [btnColor, setBtnColor] = useState(appTheme === 'dark' ? '#33284C' : '#D2D0F2');
     const layoutRef = useRef(null)
     const pageRef = useRef(null)
+
+    const router = useRouter()
 
     const btnDefaultColor = () => {
         setIsHoverState(false);
@@ -85,7 +88,7 @@ const HomePage = () => {
                             TOKENIZED LOCKS AS NFT’s
                         </div>
                         <div className={classes.layoutPromoDescriptionItem}>
-                            POLYGON (MATIC)
+                            METER (MTR)
                         </div>
                     </div>
                     <div className={classes.layoutPromoButton}>
@@ -174,7 +177,8 @@ const HomePage = () => {
                 </div>
                 <div className={classes.layoutDescription} ref={layoutRef}>
                     <div className={classes.layoutDescriptionLogo}>
-                        {appTheme === 'light' ? (
+                        <img src='/Voltswap_Logo.png' width='250' />
+                        {/* {appTheme === 'light' ? (
                             <svg width="442" height="60" viewBox="0 0 442 60" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M138.047 20.4503C137.196 18.0734 135.859 15.9144 134.118 14.1212C132.404 12.4827 130.381 11.2169 128.18 10.4011C125.945 9.508 123.607 8.88916 121.227 8.56567C118.725 8.26328 116.208 8.12264 113.685 8.1367H97.0986V51.8636H113.664C116.188 51.8777 118.704 51.73 121.207 51.4276C123.593 51.1041 125.924 50.4783 128.159 49.5641C130.36 48.7272 132.376 47.4544 134.097 45.8158C135.839 44.0226 137.176 41.8637 138.026 39.4868C140.097 33.3335 140.097 26.6528 138.026 20.4995L138.047 20.4503ZM131.361 37.6513C131.252 37.9467 131.142 38.2209 131.025 38.4811C130.415 39.7821 129.565 40.9495 128.516 41.9129C127.275 43.1436 125.766 44.0718 124.121 44.6133C122.516 45.2111 120.85 45.6049 119.157 45.7877C117.641 45.9354 115.817 46.0127 113.671 46.0057H104.072V13.6571H113.671C115.831 13.6571 117.669 13.7344 119.157 13.8751C120.85 14.0649 122.516 14.4658 124.121 15.0565C125.76 15.598 127.261 16.5052 128.516 17.7217C129.538 18.7414 130.36 19.944 130.943 21.2801C131.087 21.6036 131.231 21.9411 131.361 22.3138C132.897 27.2998 132.897 32.6514 131.361 37.6373" fill="#0A2C40"/>
                                 <path d="M163.79 28.8575V32.76H161.817V28.8575L148.175 8.13574H140.59L159.268 35.9875V51.8646H166.02V35.9875L185.094 8.13574H177.509L163.79 28.8575Z" fill="#0A2C40"/>
@@ -198,11 +202,11 @@ const HomePage = () => {
                                 <path d="M213.609 27.4183H204.096V27.3698C198.619 27.3698 194.162 24.2161 194.162 20.3415C194.162 16.467 198.619 13.3203 204.096 13.3203V13.2717H227.735V8.13574H204.116C195.283 8.13574 188.128 13.5975 188.128 20.3415C188.128 27.0856 195.29 32.5543 204.116 32.5543H213.629V32.6305C219.106 32.6305 223.563 35.7773 223.563 39.6518C223.563 43.5264 219.106 46.68 213.629 46.68V46.7286H189.772V51.8646H213.609C222.442 51.8646 229.597 46.3959 229.597 39.6518C229.597 32.9078 222.442 27.4391 213.609 27.4391" fill="white"/>
                                 <path d="M36.908 0H0L19.6067 23.5696C20.7849 24.994 22.5318 25.8138 24.3701 25.8138H32.2006L17.6009 8.25961H36.5221C48.146 8.25961 57.962 17.4056 58.3987 29.1238C58.6679 36.1691 55.5245 42.9018 49.969 47.1802L40.9604 36.3484C39.7822 34.924 38.0354 34.1042 36.1971 34.1042H28.3666L42.3721 50.9974C40.5897 51.4688 38.7514 51.7096 36.908 51.7096H9.79576C7.95746 51.7096 6.21566 52.5295 5.03245 53.9488L0 60H36.4611C52.7975 60 66.4222 46.8933 66.6304 30.415C66.8386 13.8395 53.6913 0.230572 37.2584 0.0204953C37.1416 0.0204953 37.0248 0.0204953 36.908 0.0153715" fill="#4CADE6"/>
                             </svg>
-                        )}
+                        )} */}
                     </div>
                     <div className={classes.layoutDescriptionText}>
-                        <p>Dystopia officially launched in April 2022 with a collective goal of <b>fair and balanced access to DeFi</b>.</p>
-                        <p>Dystopia is a decentralized exchange that has launched on the Polygon network with low fees, near 0 slippage on correlated assets and a strong focus on secondary markets for tokenized locks as NFT’s (veToken = lpNFTs).</p>
+                        <p>Voltswap officially launched in April 2022 with a collective goal of <b>fair and balanced access to DeFi</b>.</p>
+                        <p>Voltswap is a decentralized exchange that has launched on the Polygon network with low fees, near 0 slippage on correlated assets and a strong focus on secondary markets for tokenized locks as NFT’s (veToken = lpNFTs).</p>
                     </div>
                     <div className={classes.layoutDescriptionSmallText}>
                         <p>One segment of the cryptocurrency landscape that has shown incredible potential is the swapping of stablecoins and volatile assets. Dystopia Swap offers users quick, seamless and cheap transactions while utilizing strategies to maximize their yield.</p>
