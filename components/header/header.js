@@ -28,7 +28,7 @@ import Navigation from "../navigation";
 import Unlock from "../unlock";
 import TransactionQueue from "../transactionQueue";
 
-import { ACTIONS } from "../../stores/constants";
+import { ACTIONS, INFO_URL } from "../../stores/constants";
 
 import stores from "../../stores";
 import { formatAddress } from "../../utils";
@@ -484,7 +484,7 @@ function Header(props) {
 
           <div
               className={[classes.statButton, classes[`statButton--${appTheme}`], 'g-flex', 'g-flex--align-center'].join(' ')}
-              onClick={() => window.open("https://vs3-info.surge.sh", "_blank")}>
+              onClick={() => window.open(INFO_URL, "_blank")}>
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path
                   style={{marginRight: 5}}

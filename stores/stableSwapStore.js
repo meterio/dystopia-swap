@@ -70,7 +70,8 @@ const pairsQuery = `
       }
       rewardTokens {
         apr
-      }
+      },
+      rewardTokensAddresses
     }
     gaugebribes {
       id

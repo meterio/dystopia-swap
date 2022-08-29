@@ -146,6 +146,10 @@ export default function ssLiquidityManage() {
   const openSlippage = Boolean(anchorEl);
 
   const ssUpdated = async () => {
+    if (!!Number(router.query.remove)) {
+      setActiveTab("withdraw");
+    }
+    
     const _storeAssetOptions = stores.stableSwapStore.getStore("baseAssets");
     const storeAssetOptions = _storeAssetOptions.filter(item => item.symbol !== 'WMTR')
     const nfts = stores.stableSwapStore.getStore("vestNFTs");
@@ -170,7 +174,7 @@ export default function ssLiquidityManage() {
         setToken(nfts[0]);
       }
     }
-
+    
     if (router.query.address && router.query.address !== "create") {
       setPairReadOnly(true);
 
@@ -193,12 +197,31 @@ export default function ssLiquidityManage() {
       let aa0 = asset0;
       let aa1 = asset1;
       if (storeAssetOptions.length > 0 && asset0 == null) {
-        setAsset0(storeAssetOptions[0]);
-        aa0 = storeAssetOptions[0];
+        const address0 = router.query.address0
+        if (address0) {
+          const asset = storeAssetOptions.find(item => item.address === address0)
+          if (asset) {
+            setAsset0(asset)
+            aa0 = asset
+          } else {
+            setAsset0(storeAssetOptions[0]);
+            aa0 = storeAssetOptions[0];
+          }
+        } else {
+          setAsset0(storeAssetOptions[0]);
+          aa0 = storeAssetOptions[0];
+        }
       }
       if (storeAssetOptions.length > 0 && asset1 == null) {
-        setAsset1(storeAssetOptions[1]);
-        aa1 = storeAssetOptions[1];
+        const address0 = router.query.address0
+        if (address0) {
+          const assets = storeAssetOptions.filter(item => item.address !== address0)
+          setAsset1(storeAssetOptions[0]);
+          aa1 = storeAssetOptions[0];
+        } else {
+          setAsset1(storeAssetOptions[1]);
+          aa1 = storeAssetOptions[1];
+        }
       }
       if (withdrawAassetOptions.length > 0 && withdrawAsset == null) {
         setWithdrawAsset(withdrawAassetOptions[0]);

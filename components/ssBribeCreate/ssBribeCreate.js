@@ -63,13 +63,18 @@ export default function ssBribeCreate() {
       const storeAssetOptions = stores.stableSwapStore.getStore('baseAssets');
       // console.log('storeAssetOptions', storeAssetOptions)
       let _filteredStoreAssetOptions = storeAssetOptions.filter((option) => {
-        if (gauge.token0.address === 'MTR' || gauge.token1.address === 'MTR') {
-          if (option.symbol === 'WMTR') {
-            return true
-          }
-        }
+        // if (gauge.token0.address === 'MTR' || gauge.token1.address === 'MTR') {
+        //   if (option.symbol === 'WMTR') {
+        //     return true
+        //   }
+        // }
         
-        return option.address.includes(gauge.token0.address) || option.address.includes(gauge.token1.address) || option.symbol === 'VOLT';
+        // return option.address.includes(gauge.token0.address) || option.address.includes(gauge.token1.address) || option.symbol === 'VOLT';
+        if (gauge.gauge) {
+          return gauge.gauge.rewardTokensAddresses.includes(option.address)
+        } else {
+          return false
+        }
       });
       const filteredStoreAssetOptions = _filteredStoreAssetOptions.filter(item => item.symbol !== 'MTR')
       setAssetOptions(filteredStoreAssetOptions);

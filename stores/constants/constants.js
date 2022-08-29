@@ -8,11 +8,15 @@ let isTestnet = process.env.NEXT_PUBLIC_CHAINID == 83
 // URLS
 let scan = 'https://scan.meter.io/'
 let cont = contracts
+let infoURL = ''
 
 if(isTestnet) {
   scan = 'https://scan-warringstakes.meter.io/'
   cont = contractsTestnet
+  infoURL = 'https://vs3-info.surge.sh'
 }
+
+export const INFO_URL = infoURL
 
 export const ETHERSCAN_URL = scan
 
