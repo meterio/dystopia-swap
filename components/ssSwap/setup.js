@@ -112,7 +112,6 @@ function Setup() {
         };
 
         const ssUpdated = () => {
-          console.log('router.path', router.query)
           const { inputCurrency, outputCurrency } = router.query
           const _baseAsset = stores.stableSwapStore.getStore("baseAssets");
           // console.log('baseAssets', baseAsset)
