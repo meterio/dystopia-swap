@@ -16,7 +16,7 @@ import {
 } from "../../utils";
 import classes from "./ssSwap.module.css";
 import stores from "../../stores";
-import { ACTIONS } from "../../stores/constants";
+import { ACTIONS, MTRG_ADDR } from "../../stores/constants";
 import BigNumber from "bignumber.js";
 import { useAppThemeContext } from "../../ui/AppThemeProvider";
 import BtnSwap from "../../ui/BtnSwap";
@@ -112,9 +112,15 @@ function Setup() {
         };
 
         const ssUpdated = () => {
-          const { inputCurrency, outputCurrency } = router.query
+          let { inputCurrency, outputCurrency } = router.query
+          if (!inputCurrency) {
+            inputCurrency = MTRG_ADDR
+          }
+          if (!outputCurrency) {
+            outputCurrency = 'MTR'
+          }
           const _baseAsset = stores.stableSwapStore.getStore("baseAssets");
-          // console.log('baseAssets', baseAsset)
+          // console.log('baseAssets', _baseAsset)
           const baseAsset = _baseAsset.filter(item => item.symbol !== 'WMTR')
 
           setToAssetOptions(baseAsset);

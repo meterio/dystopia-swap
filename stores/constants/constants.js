@@ -9,12 +9,16 @@ let isTestnet = process.env.NEXT_PUBLIC_CHAINID == 83
 let scan = 'https://scan.meter.io/'
 let cont = contracts
 let infoURL = ''
+let mtrg = ''
 
 if(isTestnet) {
   scan = 'https://scan-warringstakes.meter.io/'
   cont = contractsTestnet
   infoURL = 'https://vs3-info.surge.sh'
+  mtrg = '0x8a419ef4941355476cf04933e90bf3bbf2f73814'
 }
+
+export const MTRG_ADDR = mtrg
 
 export const INFO_URL = infoURL
 
