@@ -538,7 +538,8 @@ const useStyles = makeStyles({
     width: 39,
     height: 39,
     borderRadius: "100px",
-    background: "rgb(25, 33, 56)",
+    // background: "rgb(25, 33, 56)",
+    backgroundColor: "#FFF",
     border: "2px solid #DBE6EC",
   },
   "imgLogoContainer--dark": {
@@ -1899,18 +1900,20 @@ export default function EnhancedTable({ pairs, isLoading }) {
                           >
                             {tableCellContent(
                               `${formatCurrency(
-                                BigNumber.sum(
-                                  BigNumber(row?.gauge?.apr).div(100).times(40),
-                                  BigNumber(row?.gauge?.boostedApr0),
-                                  BigNumber(row?.gauge?.boostedApr1)
-                                ),
+                                BigNumber(row?.gauge?.apr).div(100).times(40),
+                                // BigNumber.sum(
+                                //   BigNumber(row?.gauge?.apr).div(100).times(40),
+                                //   BigNumber(row?.gauge?.boostedApr0),
+                                //   BigNumber(row?.gauge?.boostedApr1)
+                                // ),
                                 0
                               )}→${formatCurrency(
-                                BigNumber.sum(
-                                  BigNumber(row?.gauge?.apr),
-                                  BigNumber(row?.gauge?.boostedApr0),
-                                  BigNumber(row?.gauge?.boostedApr1)
-                                ),
+                                BigNumber(row?.gauge?.apr),
+                                // BigNumber.sum(
+                                //   BigNumber(row?.gauge?.apr),
+                                //   BigNumber(row?.gauge?.boostedApr0),
+                                //   BigNumber(row?.gauge?.boostedApr1)
+                                // ),
                                 0
                               )}%`,
                               null,
@@ -1926,29 +1929,33 @@ export default function EnhancedTable({ pairs, isLoading }) {
                                     <br />
                                     <b>
                                       {formatCurrency(
-                                        BigNumber.sum(
-                                          BigNumber(row?.gauge?.apr)
-                                            .div(100)
-                                            .times(40),
-                                          BigNumber(row?.gauge?.boostedApr0),
-                                          BigNumber(row?.gauge?.boostedApr1)
-                                        ),
+                                        BigNumber(row?.gauge?.apr)
+                                          .div(100)
+                                          .times(40),
+                                        // BigNumber.sum(
+                                        //   BigNumber(row?.gauge?.apr)
+                                        //     .div(100)
+                                        //     .times(40),
+                                        //   BigNumber(row?.gauge?.boostedApr0),
+                                        //   BigNumber(row?.gauge?.boostedApr1)
+                                        // ),
                                         2
                                       )}
                                       %{" - "}
                                       {formatCurrency(
-                                        BigNumber.sum(
-                                          BigNumber(row?.gauge?.apr),
-                                          BigNumber(row?.gauge?.boostedApr0),
-                                          BigNumber(row?.gauge?.boostedApr1)
-                                        ),
+                                        BigNumber(row?.gauge?.apr),
+                                        // BigNumber.sum(
+                                        //   BigNumber(row?.gauge?.apr),
+                                        //   BigNumber(row?.gauge?.boostedApr0),
+                                        //   BigNumber(row?.gauge?.boostedApr1)
+                                        // ),
                                         2
                                       )}
                                       %
                                     </b>
                                     <br />
                                     <dl>
-                                      <dt>
+                                      {/* <dt>
                                         <b>
                                           {formatCurrency(
                                             BigNumber.sum(
@@ -1982,7 +1989,7 @@ export default function EnhancedTable({ pairs, isLoading }) {
                                           %
                                         </b>{" "}
                                         {row.token1.symbol} APR
-                                      </dd>
+                                      </dd> */}
                                       <dt>
                                         <b>
                                           {formatCurrency(
@@ -3245,20 +3252,24 @@ export default function EnhancedTable({ pairs, isLoading }) {
                                   {headCell.id === "apr" &&
                                     tableCellContent(
                                       `${formatCurrency(
-                                        BigNumber.sum(
-                                          BigNumber(row?.gauge?.apr)
-                                            .div(100)
-                                            .times(40),
-                                          BigNumber(row?.gauge?.boostedApr0),
-                                          BigNumber(row?.gauge?.boostedApr1)
-                                        ),
+                                        BigNumber(row?.gauge?.apr)
+                                          .div(100)
+                                          .times(40),
+                                        // BigNumber.sum(
+                                        //   BigNumber(row?.gauge?.apr)
+                                        //     .div(100)
+                                        //     .times(40),
+                                        //   BigNumber(row?.gauge?.boostedApr0),
+                                        //   BigNumber(row?.gauge?.boostedApr1)
+                                        // ),
                                         0
                                       )}→${formatCurrency(
-                                        BigNumber.sum(
-                                          BigNumber(row?.gauge?.apr),
-                                          BigNumber(row?.gauge?.boostedApr0),
-                                          BigNumber(row?.gauge?.boostedApr1)
-                                        ),
+                                        BigNumber(row?.gauge?.apr),
+                                        // BigNumber.sum(
+                                        //   BigNumber(row?.gauge?.apr),
+                                        //   BigNumber(row?.gauge?.boostedApr0),
+                                        //   BigNumber(row?.gauge?.boostedApr1)
+                                        // ),
                                         0
                                       )}%`,
                                       null,
@@ -3274,37 +3285,41 @@ export default function EnhancedTable({ pairs, isLoading }) {
                                             <br />
                                             <b>
                                               {formatCurrency(
-                                                BigNumber.sum(
-                                                  BigNumber(row?.gauge?.apr)
-                                                    .div(100)
-                                                    .times(40),
-                                                  BigNumber(
-                                                    row?.gauge?.boostedApr0
-                                                  ),
-                                                  BigNumber(
-                                                    row?.gauge?.boostedApr1
-                                                  )
-                                                ),
+                                                BigNumber(row?.gauge?.apr)
+                                                  .div(100)
+                                                  .times(40),
+                                                // BigNumber.sum(
+                                                //   BigNumber(row?.gauge?.apr)
+                                                //     .div(100)
+                                                //     .times(40),
+                                                //   BigNumber(
+                                                //     row?.gauge?.boostedApr0
+                                                //   ),
+                                                //   BigNumber(
+                                                //     row?.gauge?.boostedApr1
+                                                //   )
+                                                // ),
                                                 2
                                               )}
                                               %{" - "}
                                               {formatCurrency(
-                                                BigNumber.sum(
-                                                  BigNumber(row?.gauge?.apr),
-                                                  BigNumber(
-                                                    row?.gauge?.boostedApr0
-                                                  ),
-                                                  BigNumber(
-                                                    row?.gauge?.boostedApr1
-                                                  )
-                                                ),
+                                                BigNumber(row?.gauge?.apr),
+                                                // BigNumber.sum(
+                                                //   BigNumber(row?.gauge?.apr),
+                                                //   BigNumber(
+                                                //     row?.gauge?.boostedApr0
+                                                //   ),
+                                                //   BigNumber(
+                                                //     row?.gauge?.boostedApr1
+                                                //   )
+                                                // ),
                                                 2
                                               )}
                                               %
                                             </b>
                                             <br />
                                             <dl>
-                                              <dt>
+                                              {/* <dt>
                                                 <b>
                                                   {formatCurrency(
                                                     BigNumber.sum(
@@ -3344,7 +3359,7 @@ export default function EnhancedTable({ pairs, isLoading }) {
                                                   %
                                                 </b>{" "}
                                                 {row.token1.symbol} APR
-                                              </dd>
+                                              </dd> */}
                                               <dt>
                                                 <b>
                                                   {formatCurrency(

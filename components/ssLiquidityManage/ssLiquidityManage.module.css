@@ -1610,6 +1610,7 @@ input[type=number].mediumInputAmount {
 }
 
 .liqBodyIcon {
+  background-color: #FFF;
   width: 44px;
   height: 44px;
   border-radius: 100px;

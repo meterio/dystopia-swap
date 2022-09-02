@@ -1234,30 +1234,6 @@ class Store {
         pairsCall.data.pairs[i].claimable0 = 0;
         pairsCall.data.pairs[i].claimable1 = 0;
       }
-
-
-      // const find = "miMATIC";
-      // const regex = new RegExp(find, "g");
-      // const regex1 = new RegExp("miMATIC", "g");
-      // let pairsCall2;
-      // try {
-      //   pairsCall2 = pairsCall.data.pairs.map((object) => {
-      //     const obj = object;
-      //     obj.name = obj?.name.replace(regex1, "MAI");
-      //     obj.symbol = obj?.symbol.replace(regex1, "MAI");
-      //     obj.token0.name = obj?.token0?.name?.replace(regex, "MAI");
-      //     obj.token0.symbol = obj?.token0?.symbol?.replace(regex, "MAI");
-      //     obj.token1.name = obj?.token1?.name?.replace(regex, "MAI");
-      //     obj.token1.symbol = obj?.token1?.symbol?.replace(regex, "MAI");
-      //     obj.token0.name = obj?.token0?.name?.replace(regex1, "MAI");
-      //     obj.token0.symbol = obj?.token0?.symbol?.replace(regex1, "MAI");
-      //     obj.token1.name = obj?.token1?.name?.replace(regex1, "MAI");
-      //     obj.token1.symbol = obj?.token1?.symbol?.replace(regex1, "MAI");
-      //     return obj;
-      //   });
-      // } catch (e) {
-      //   console.log(e, "error");
-      // }
       const find = "WMTR";
       const regex = new RegExp(find, "g");
       let pairsCall2;
@@ -1270,11 +1246,22 @@ class Store {
           obj.token0.symbol = obj?.token0?.symbol?.replace(regex, "MTR");
           obj.token1.name = obj?.token1?.name?.replace(regex, "MTR");
           obj.token1.symbol = obj?.token1?.symbol?.replace(regex, "MTR");
+          if (obj.gaugebribes && obj.gaugebribes.bribeTokens) {
+            obj.gaugebribes.bribeTokens = obj.gaugebribes.bribeTokens.map(item => {
+              return {
+                ...item,
+                token: {
+                  symbol: item.token.symbol.replace(regex, "MTR")
+                }
+              }
+            })
+          }
           return obj;
         });
       } catch (e) {
         console.log(e, "error");
       }
+
       pairsCall2 = pairsCall2.filter((pair) => {
         return BLACK_LIST_TOKENS.indexOf(pair.token0.address.toLowerCase()) === -1
           && BLACK_LIST_TOKENS.indexOf(pair.token1.address.toLowerCase()) === -1
@@ -1569,43 +1556,43 @@ class Store {
               }
 
               pair.gauge.apr = apr;
-              pair.gauge.boostedApr0 = new BigNumber(0);
-              pair.gauge.boostedApr1 = new BigNumber(0);
+              // pair.gauge.boostedApr0 = new BigNumber(0);
+              // pair.gauge.boostedApr1 = new BigNumber(0);
 
-              const reserve0ETH = BigNumber(parseFloat(pair.reserve0)).times(pair.token0.derivedETH)
-              const reserve1ETH = BigNumber(parseFloat(pair.reserve1)).times(pair.token1.derivedETH)
+              // const reserve0ETH = BigNumber(parseFloat(pair.reserve0)).times(pair.token0.derivedETH)
+              // const reserve1ETH = BigNumber(parseFloat(pair.reserve1)).times(pair.token1.derivedETH)
 
-              if (
-                pair.token0.address.toLowerCase() ===
-                CONTRACTS.USD_PLUS_ADDRESS.toLowerCase()
-              ) {
-                let boostedApr0Response = await axios.get(
-                  CONTRACTS.USD_PLUS_BOOSTED_DATA_URL
-                );
+              // if (
+              //   pair.token0.address.toLowerCase() ===
+              //   CONTRACTS.USD_PLUS_ADDRESS.toLowerCase()
+              // ) {
+              //   let boostedApr0Response = await axios.get(
+              //     CONTRACTS.USD_PLUS_BOOSTED_DATA_URL
+              //   );
 
-                if (boostedApr0Response.data) {
-                  pair.gauge.boostedApr0 = new BigNumber(
-                    boostedApr0Response.data
-                  ).times(100)
-                    .times(reserve0ETH).div(reserve0ETH.plus(reserve1ETH));
-                }
-              }
+              //   if (boostedApr0Response.data) {
+              //     pair.gauge.boostedApr0 = new BigNumber(
+              //       boostedApr0Response.data
+              //     ).times(100)
+              //       .times(reserve0ETH).div(reserve0ETH.plus(reserve1ETH));
+              //   }
+              // }
 
-              if (
-                pair.token1.address.toLowerCase() ===
-                CONTRACTS.USD_PLUS_ADDRESS.toLowerCase()
-              ) {
-                let boostedApr1Response = await axios.get(
-                  CONTRACTS.USD_PLUS_BOOSTED_DATA_URL
-                );
+              // if (
+              //   pair.token1.address.toLowerCase() ===
+              //   CONTRACTS.USD_PLUS_ADDRESS.toLowerCase()
+              // ) {
+              //   let boostedApr1Response = await axios.get(
+              //     CONTRACTS.USD_PLUS_BOOSTED_DATA_URL
+              //   );
 
-                if (boostedApr1Response.data) {
-                  pair.gauge.boostedApr1 = new BigNumber(
-                    boostedApr1Response.data
-                  ).times(100)
-                    .times(reserve1ETH).div(reserve0ETH.plus(reserve1ETH));
-                }
-              }
+              //   if (boostedApr1Response.data) {
+              //     pair.gauge.boostedApr1 = new BigNumber(
+              //       boostedApr1Response.data
+              //     ).times(100)
+              //       .times(reserve1ETH).div(reserve0ETH.plus(reserve1ETH));
+              //   }
+              // }
 
               return pair;
             }
@@ -6306,7 +6293,7 @@ class Store {
                 bribe.earned = BigNumber(earned)
                   .div(10 ** decimals)
                   .toFixed(parseInt(decimals));
-                bribe.symbol = symbol;
+                bribe.symbol = symbol === 'WMTR' ? 'MTR' : symbol;
                 return bribe;
               })
             );
@@ -6416,6 +6403,7 @@ class Store {
         rewards: filteredRewards,
         veDist: veDistReward,
       };
+      console.log('rewards', rewards)
 
       this.setStore({
         rewards,

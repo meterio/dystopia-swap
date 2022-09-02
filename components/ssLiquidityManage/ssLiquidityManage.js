@@ -23,7 +23,7 @@ import BigNumber from "bignumber.js";
 import { formatCurrency } from "../../utils";
 import classes from "./ssLiquidityManage.module.css";
 import stores from "../../stores";
-import { ACTIONS, CONTRACTS } from "../../stores/constants";
+import { ACTIONS, CONTRACTS, MTRG_ADDR } from "../../stores/constants";
 import {
   Search,
   DeleteOutline,
@@ -203,24 +203,23 @@ export default function ssLiquidityManage() {
           if (asset) {
             setAsset0(asset)
             aa0 = asset
-          } else {
-            setAsset0(storeAssetOptions[0]);
-            aa0 = storeAssetOptions[0];
           }
         } else {
-          setAsset0(storeAssetOptions[0]);
-          aa0 = storeAssetOptions[0];
+          const MTRG = storeAssetOptions.find(item => item.address === MTRG_ADDR)
+          setAsset0(MTRG);
+          aa0 = MTRG;
         }
       }
       if (storeAssetOptions.length > 0 && asset1 == null) {
-        const address0 = router.query.address0
-        if (address0) {
-          const assets = storeAssetOptions.filter(item => item.address !== address0)
-          setAsset1(storeAssetOptions[0]);
-          aa1 = storeAssetOptions[0];
+        const address1 = router.query.address1
+        if (address1) {
+          const assets = storeAssetOptions.find(item => item.address !== address1)
+          setAsset1(assets);
+          aa1 = assets;
         } else {
-          setAsset1(storeAssetOptions[1]);
-          aa1 = storeAssetOptions[1];
+          const MTR = storeAssetOptions.find(item => item.address === 'MTR')
+          setAsset1(MTR);
+          aa1 = MTR;
         }
       }
       if (withdrawAassetOptions.length > 0 && withdrawAsset == null) {

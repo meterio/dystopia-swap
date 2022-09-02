@@ -619,7 +619,7 @@ const useStyles = makeStyles((theme) => {
       top: "0px",
       borderRadius: "30px",
       outline: "2px solid #DBE6EC",
-      background: "#13B5EC",
+      background: "#FFF",
     },
     img2Logo: {
       position: "absolute",
@@ -627,7 +627,7 @@ const useStyles = makeStyles((theme) => {
       zIndex: "1",
       top: "0px",
       outline: "2px solid #DBE6EC",
-      background: "#13B5EC",
+      background: "#FFF",
       borderRadius: "30px",
     },
     "img1Logo--dark": {

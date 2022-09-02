@@ -409,8 +409,8 @@ const useStyles = makeStyles((theme) => {
       position: "absolute",
       left: "0px",
       top: "0px",
-      outline: "2px solid #DBE6EC",
-      background: "#13B5EC",
+      // outline: "2px solid #DBE6EC",
+      background: "#FFF",
       borderRadius: "30px",
     },
     img2Logo: {
@@ -418,8 +418,8 @@ const useStyles = makeStyles((theme) => {
       left: "28px",
       zIndex: "1",
       top: "0px",
-      outline: "2px solid #DBE6EC",
-      background: "#13B5EC",
+      // outline: "2px solid #DBE6EC",
+      background: "#FFF",
       borderRadius: "30px",
     },
     overrideTableHead: {

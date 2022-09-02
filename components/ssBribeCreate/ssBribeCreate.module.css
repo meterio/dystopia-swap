@@ -651,9 +651,9 @@ input[type=number].massiveInputAmount {
 }
 
 .assetOptionIcon {
-  width: 50px;
-  height: 50px;
-  padding: 4px;
+  width: 46px;
+  height: 46px;
+  margin: 4px;
   border-radius: 100px;
   border: 1px solid #9BC9E4;
   background: #CFE5F2;
@@ -665,11 +665,12 @@ input[type=number].massiveInputAmount {
 }
 
 .assetOptionIcon--dark {
-  background: #304E61;
+  background: #fff;
   border: 1px solid #5F7285;
 }
 
 .displayAssetIcon {
+  background-color: #FFF;
   width: 60px;
   height: 60px;
   border-radius: 100px;

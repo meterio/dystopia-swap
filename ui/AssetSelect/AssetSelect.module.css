@@ -83,12 +83,14 @@
 }
 
 .displayAssetIcon {
+  background-color: #FFFFFF;
   width: 60px;
   height: 60px;
   border-radius: 100px;
 }
 
 .displayAssetIconSmall {
+  background-color: #FFFFFF;
   width: 40px;
   height: 40px;
 }
@@ -124,9 +126,9 @@
 }
 
 .assetOptionIcon {
-  width: 50px;
-  height: 50px;
-  padding: 4px;
+  width: 46px;
+  height: 46px;
+  margin: 4px;
   border-radius: 100px;
   border: 1px solid #9BC9E4;
   background: #CFE5F2;
@@ -138,7 +140,7 @@
 }
 
 .assetOptionIcon--dark {
-  background: #304E61;
+  background: #fff;
   border: 1px solid #5F7285;
 }
 
@@ -293,16 +295,16 @@
 }
 
 .displayAssetIconSecond {
-  width: 54px;
-  height: 54px;
+  width: 50px;
+  height: 50px;
   border: 2px solid #9BC9E4;
-  padding: 4px;
-  background: #B9DFF5;
+  margin: 4px;
+  background: #9BC9E4;
 }
 
 .displayAssetIconSecond--dark {
   border: 2px solid #2D3741;
-  background: #24292D;
+  background: #fff;
 }
 
 .displayAssetIconSec {
