@@ -700,12 +700,6 @@ class Store {
   };
 
   getPair = async (addressA, addressB, stab) => {
-    if (addressA === "MTR") {
-      addressA = CONTRACTS.WFTM_ADDRESS;
-    }
-    if (addressB === "MTR") {
-      addressB = CONTRACTS.WFTM_ADDRESS;
-    }
 
     const web3 = await stores.accountStore.getWeb3Provider();
     if (!web3) {
@@ -760,6 +754,14 @@ class Store {
       CONTRACTS.FACTORY_ABI,
       CONTRACTS.FACTORY_ADDRESS
     );
+
+    if (addressA === "MTR") {
+      addressA = CONTRACTS.WFTM_ADDRESS;
+    }
+    if (addressB === "MTR") {
+      addressB = CONTRACTS.WFTM_ADDRESS;
+    }
+
     const pairAddress = await factoryContract.methods
       .getPair(addressA, addressB, stab)
       .call();

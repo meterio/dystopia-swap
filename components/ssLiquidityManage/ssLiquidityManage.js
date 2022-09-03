@@ -123,9 +123,18 @@ export default function ssLiquidityManage() {
       CONTRACTS.VOTER_ADDRESS
     );
 
+    let address0 = pair.token0.address
+    let address1 = pair.token1.address
+    if (address0 === 'MTR') {
+      address0 = CONTRACTS.WFTM_ADDRESS
+    }
+    if (address1 === 'MTR') {
+      address1 = CONTRACTS.WFTM_ADDRESS
+    }
+
     const [token0, token1] = await Promise.all([
-      voterContract.methods.isWhitelisted(pair.token0.address).call(),
-      voterContract.methods.isWhitelisted(pair.token1.address).call(),
+      voterContract.methods.isWhitelisted(address0).call(),
+      voterContract.methods.isWhitelisted(address1).call(),
     ]);
 
     const symbols = [];
@@ -196,6 +205,7 @@ export default function ssLiquidityManage() {
     } else {
       let aa0 = asset0;
       let aa1 = asset1;
+      
       if (storeAssetOptions.length > 0 && asset0 == null) {
         const address0 = router.query.address0
         if (address0) {
@@ -225,13 +235,15 @@ export default function ssLiquidityManage() {
       if (withdrawAassetOptions.length > 0 && withdrawAsset == null) {
         setWithdrawAsset(withdrawAassetOptions[0]);
       }
-
+      console.log({ aa0, aa1 })
       if (aa0 && aa1) {
+        console.log('get pair')
         const p = await stores.stableSwapStore.getPair(
           aa0.address,
           aa1.address,
           stable
         );
+        console.log('pair', p)
         setPair(p);
       }
     }
