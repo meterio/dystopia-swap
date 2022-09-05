@@ -498,17 +498,6 @@ function Header(props) {
                   fill={appTheme === 'dark' ? '#5688A5' : '#5688A5'}/>
             </svg>
           </div>
-          <div
-              className={[classes.statButton, classes[`statButton--${appTheme}`], 'g-flex', 'g-flex--align-center'].join(' ')}
-              onClick={() => window.open("https://voltswap.finance/", "_blank")}>
-            <span className={classes.headSwitchBtnText}>legacy</span>
-
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path
-                  d="M10.6694 6.276L4.93144 12.014L3.98877 11.0713L9.7261 5.33333H4.66944V4H12.0028V11.3333H10.6694V6.276Z"
-                  fill={appTheme === 'dark' ? '#5688A5' : '#5688A5'}/>
-            </svg>
-          </div>
 
           <ThemeSwitcher />
 
