@@ -82,7 +82,7 @@ const HomePage = () => {
                     </div>
                     <div className={classes.layoutPromoDescription}>
                         <div className={classes.layoutPromoDescriptionItem}>
-                            0.05% FEE
+                            FEES as low as 0.04%
                         </div>
                         <div className={classes.layoutPromoDescriptionItem}>
                             TOKENIZED LOCKS AS NFT’s
@@ -205,11 +205,11 @@ const HomePage = () => {
                         )} */}
                     </div>
                     <div className={classes.layoutDescriptionText}>
-                        <p>Voltswap officially launched in April 2022 with a collective goal of <b>fair and balanced access to DeFi</b>.</p>
-                        <p>Voltswap is a decentralized exchange that has launched on the Polygon network with low fees, near 0 slippage on correlated assets and a strong focus on secondary markets for tokenized locks as NFT’s (veToken = lpNFTs).</p>
+                        <p>Voltswap officially launched in Sept 2021 to demonstrate the capability of the Meter network.  The current version is a fork of https://www.dystopia.exchange/</p>
+                        <p>Voltswap is front running resistant, low fees, near 0 slippage on correlated assets.  Volt is the governance token for Voltswap.  Volt holders could lock VOLT to create tokenized NFT’s (veToken = lpNFTs) to decide the reward distribution and the future direction of the decentralized exchange.</p>
                     </div>
                     <div className={classes.layoutDescriptionSmallText}>
-                        <p>One segment of the cryptocurrency landscape that has shown incredible potential is the swapping of stablecoins and volatile assets. Dystopia Swap offers users quick, seamless and cheap transactions while utilizing strategies to maximize their yield.</p>
+                        <p>Voltswap charge 0.3% for swapping uncorrelated assets and 0.04% for correlated assets.  All transactions fees go to the voters of the corresponding pool.</p>
                     </div>
                     <div className={classes.layoutDescriptionButton}>
                         <div
@@ -232,3 +232,4 @@ const HomePage = () => {
 }
 
 export default HomePage
+
