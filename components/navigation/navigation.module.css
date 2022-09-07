@@ -477,7 +477,7 @@ a.linkz {
   background: none !important;
   border: none !important;
   box-shadow: 5px 5px 20px rgba(14, 44, 79, 0.25);
-  border-radius: 0;
+  border-radius: 0 !important;
   overflow: hidden;
 }
 
