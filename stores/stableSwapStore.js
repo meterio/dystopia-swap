@@ -130,7 +130,7 @@ query ve($id: ID!) {
 }
 `;
 
-const client = createClient({ url: process.env.NEXT_PUBLIC_API });
+const client = createClient({ url: process.env.NEXT_PUBLIC_API, requestPolicy: 'network-only' });
 
 const removeDuplicate = (arr) => {
   const assets = arr.reduce((acc, item) => {
@@ -1447,14 +1447,14 @@ class Store {
               CONTRACTS.PAIR_ABI,
               pair.address
             );
-            const token0Contract = new web3.eth.Contract(
-              CONTRACTS.ERC20_ABI,
-              pair.token0.address
-            );
-            const token1Contract = new web3.eth.Contract(
-              CONTRACTS.ERC20_ABI,
-              pair.token1.address
-            );
+            // const token0Contract = new web3.eth.Contract(
+            //   CONTRACTS.ERC20_ABI,
+            //   pair.token0.address
+            // );
+            // const token1Contract = new web3.eth.Contract(
+            //   CONTRACTS.ERC20_ABI,
+            //   pair.token1.address
+            // );
 
             const token0 = await this.getBaseAsset(
               pair.token0.address,
@@ -2645,7 +2645,7 @@ class Store {
                 return this.emitter.emit(ACTIONS.ERROR, err);
               }
 
-              await context.updatePairsCall(web3, account);
+              context.updatePairsCall(web3, account);
 
               this.emitter.emit(ACTIONS.PAIR_CREATED, pairFor);
             }
@@ -2662,11 +2662,12 @@ class Store {
 
   updatePairsCall = async (web3, account) => {
     try {
-      const response = await client.query(pairsQuery).toPromise();
-      const pairsCall = response;
-      this.setStore({ pairs: pairsCall.data.pairs });
+      // const response = await client.query(pairsQuery).toPromise();
+      // const pairsCall = response;
+      this.setStore({ pairs: await this._getPairs() });
 
-      await this._getPairInfo(web3, account, pairsCall.data.pairs);
+      // await this._getPairInfo(web3, account, pairsCall.data.pairs);
+      await this.getBalances()
     } catch (ex) {
       console.log(ex);
     }
@@ -3075,7 +3076,8 @@ class Store {
               return this.emitter.emit(ACTIONS.ERROR, err);
             }
 
-            this._getPairInfo(web3, account);
+            // this._getPairInfo(web3, account);
+            this.updatePairsCall(web3, account)
 
             this.emitter.emit(ACTIONS.LIQUIDITY_STAKED);
           }
@@ -3096,7 +3098,8 @@ class Store {
               return this.emitter.emit(ACTIONS.ERROR, err);
             }
 
-            this._getPairInfo(web3, account);
+            // this._getPairInfo(web3, account);
+            this.updatePairsCall(web3, account)
 
             this.emitter.emit(ACTIONS.LIQUIDITY_STAKED);
           }
@@ -7096,8 +7099,8 @@ class Store {
         console.log('gas amount', gasAmount)
         const context = this;
 
-        let sendGasAmount = BigNumber(gasAmount).times(1.5).toFixed(0);
-        let sendGasPrice = BigNumber(gasPrice).times(1.5).toFixed(0);
+        let sendGasAmount = BigNumber(gasAmount).times(1).toFixed(0);
+        let sendGasPrice = BigNumber(gasPrice).times(1).toFixed(0);
         // if (paddGasCost) {
         //   sendGasAmount = BigNumber(sendGasAmount).times(1.15).toFixed(0)
         // }

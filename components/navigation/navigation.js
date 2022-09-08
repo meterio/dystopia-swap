@@ -46,6 +46,9 @@ function Navigation(props) {
   };
 
   const onActiveClick = (event, val) => {
+    if (val === undefined) {
+      return
+    }
     if (val || (!val && active)) {
       setActive(val || active);
       handleNavigate("/" + (val || active));
