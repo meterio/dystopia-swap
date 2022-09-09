@@ -256,7 +256,7 @@ function Navigation(props) {
                 classes[`filterListTitle--${appTheme}`],
               ].join(" ")}
             >
-              List Resources
+              Resources
             </Typography>
 
             <Close
@@ -302,7 +302,7 @@ function Navigation(props) {
                 classes[`filterLabel--${appTheme}`],
               ].join(" ")}
             >
-              <div id="legacy" onClick={outerLink}>Legacy</div>
+              <div id="legacy" onClick={outerLink}>VoltSwap v1</div>
             </Typography>
 
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -327,7 +327,7 @@ function Navigation(props) {
                 classes[`filterLabel--${appTheme}`],
               ].join(" ")}
             >
-              <div id="bridge" onClick={outerLink}>Meter Bridge</div>
+              <div id="bridge" onClick={outerLink}>Bridge</div>
             </Typography>
 
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
