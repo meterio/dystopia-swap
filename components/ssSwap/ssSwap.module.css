@@ -374,15 +374,18 @@ input[type=number].massiveInputAmount {
   display: flex;
   align-items: baseline;
   width: 100%;
-  height: 67px;
+  overflow: hidden;
+  /* height: 67px; */
 }
 
 .priceInfos--light {
   background: transparent url("/images/ui/price-info-bg--light.svg") no-repeat !important;
+  background-size: 100% 100% !important;
 }
 
 .priceInfos--dark {
   background: transparent url("/images/ui/price-info-bg--dark.svg") no-repeat !important;
+  background-size: 100% 100% !important;
 }
 
 .priceInfo {

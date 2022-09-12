@@ -545,7 +545,7 @@ const useStyles = makeStyles({
   "imgLogoContainer--dark": {
     border: "2px solid #151718",
     ["@media (max-width:660px)"]: {
-      border: "2px solid #24292d",
+      // border: "2px solid #24292d",
     },
   },
   imgLogoContainer2: {

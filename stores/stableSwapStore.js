@@ -4324,7 +4324,45 @@ class Store {
         );
       });
 
-      let amountOuts = [];
+      let amountOuts = [
+          // {
+          //   routes: [
+          //     {
+          //       from: addy0,
+          //       to: '0x24aA189DfAa76c671c279262F94434770F557c35',
+          //       stable: true
+          //     },
+          //     {
+          //       from: '0x24aA189DfAa76c671c279262F94434770F557c35',
+          //       to: '0x228ebBeE999c6a7ad74A6130E81b12f9Fe237Ba3',
+          //       stable: false
+          //     },
+          //     {
+          //       from: '0x228ebBeE999c6a7ad74A6130E81b12f9Fe237Ba3',
+          //       to: addy1,
+          //       stable: false
+          //     }
+          //   ],
+          //   routeAsset: [
+          //     {
+          //       "name": "BUSD from BSC on Meter",
+          //       "address": "0x24aA189DfAa76c671c279262F94434770F557c35",
+          //       "symbol": "BUSD.bsc",
+          //       "decimals": 18,
+          //       "chainId": 82,
+          //       "logoURI": "https://raw.githubusercontent.com/meterio/token-list/master/data/BUSD/logo.png"
+          //     },
+          //     {
+          //       "name": "Meter Governance",
+          //       "address": "0x228ebBeE999c6a7ad74A6130E81b12f9Fe237Ba3",
+          //       "symbol": "MTRG",
+          //       "decimals": 18,
+          //       "chainId": 82,
+          //       "logoURI": "https://raw.githubusercontent.com/meterio/token-list/master/data/MTRG/logo.png"
+          //     }
+          //   ],
+          // }
+      ];
 
       // if (includesRouteAddress.length === 0) {
       amountOuts = routeAssets
@@ -4417,7 +4455,7 @@ class Store {
       });
 
       // const multicall = await stores.accountStore.getMulticall();
-
+      console.log('amountOuts', amountOuts)
       const retryCall = async () => {
         const res = await Promise.allSettled(
           amountOuts.map(async (route) => {
@@ -4472,7 +4510,7 @@ class Store {
             ? best
             : current;
         }, 0);
-
+      console.log('bestAmountOut', bestAmountOut)
       if (!bestAmountOut) {
         this.emitter.emit(
           ACTIONS.ERROR,
