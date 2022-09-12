@@ -752,7 +752,7 @@ function Setup() {
                         ].join(" ")}
                     ></div>
 
-                    {quote?.output?.routeAsset && (
+                    {quote?.output?.routeAsset && quote?.output?.routeAsset.length === 1 && (
                         <>
                           <div
                               className={[
@@ -769,11 +769,7 @@ function Setup() {
                                 classes[`routeIcon--${appTheme}`],
                               ].join(" ")}
                               alt=""
-                              src={
-                                quote.output.routeAsset
-                                    ? `${quote.output.routeAsset.logoURI}`
-                                    : ""
-                              }
+                              src={quote.output.routeAsset[0].logoURI}
                               height="40px"
                               onError={(e) => {
                                 e.target.onerror = null;
@@ -788,6 +784,74 @@ function Setup() {
                               ].join(" ")}
                           >
                             {quote.output.routes[1].stable ? "Stable" : "Volatile"}
+                          </div>
+                        </>
+                    )}
+
+                    {quote?.output?.routeAsset && quote?.output?.routeAsset.length === 2 && (
+                        <>
+                          <div
+                              className={[
+                                classes.routeLinesLeftText,
+                                classes.routeLinesLeftText1,
+                                classes[`routeLinesLeftText--${appTheme}`],
+                              ].join(" ")}
+                          >
+                            {quote.output.routes[0].stable ? "Stable" : "Volatile"}
+                          </div>
+
+                          <img
+                              className={[
+                                classes.routeIcon,
+                                classes[`routeIcon--${appTheme}`],
+                              ].join(" ")}
+                              alt=""
+                              src={quote.output.routeAsset[0].logoURI}
+                              height="40px"
+                              onError={(e) => {
+                                e.target.onerror = null;
+                                e.target.src = `/tokens/unknown-logo--${appTheme}.svg`;
+                              }}
+                          />
+
+                          <div
+                            className={[
+                              classes.routeLinesMiddle,
+                              classes[`routeLinesMiddle--${appTheme}`],
+                            ].join(" ")}
+                          ></div>
+
+                          <div
+                              className={[
+                                classes.routeLinesMiddleText,
+                                classes[`routeLinesMiddleText--${appTheme}`],
+                              ].join(" ")}
+                          >
+                            {quote.output.routes[1].stable ? "Stable" : "Volatile"}
+                          </div>
+
+                          <img
+                              className={[
+                                classes.routeIcon,
+                                classes[`routeIcon--${appTheme}`],
+                              ].join(" ")}
+                              alt=""
+                              src={quote.output.routeAsset[1].logoURI}
+                              height="40px"
+                              onError={(e) => {
+                                e.target.onerror = null;
+                                e.target.src = `/tokens/unknown-logo--${appTheme}.svg`;
+                              }}
+                          />
+
+                          <div
+                              className={[
+                                classes.routeLinesRightText,
+                                classes.routeLinesRightText1,
+                                classes[`routeLinesRightText--${appTheme}`],
+                              ].join(" ")}
+                          >
+                            {quote.output.routes[2].stable ? "Stable" : "Volatile"}
                           </div>
                         </>
                     )}

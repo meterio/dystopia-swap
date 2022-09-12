@@ -618,7 +618,7 @@ const useStyles = makeStyles((theme) => {
       left: "0px",
       top: "0px",
       borderRadius: "30px",
-      outline: "2px solid #DBE6EC",
+      border: "2px solid #DBE6EC",
       background: "#FFF",
     },
     img2Logo: {
@@ -626,20 +626,20 @@ const useStyles = makeStyles((theme) => {
       left: "28px",
       zIndex: "1",
       top: "0px",
-      outline: "2px solid #DBE6EC",
+      border: "2px solid #DBE6EC",
       background: "#FFF",
-      borderRadius: "30px",
+      borderRadius: "100px",
     },
     "img1Logo--dark": {
-      outline: "2px solid #151718",
+      border: "2px solid #151718",
       ["@media (max-width:660px)"]: {
-        outline: "2px solid #24292d",
+        border: "2px solid #24292d",
       },
     },
     "img2Logo--dark": {
-      outline: "2px solid #151718",
+      border: "2px solid #151718",
       ["@media (max-width:660px)"]: {
-        outline: "2px solid #24292d",
+        border: "2px solid #24292d",
       },
     },
     inlineEnd: {

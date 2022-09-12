@@ -503,6 +503,7 @@ input[type=number].massiveInputAmount {
 }
 
 .routeLinesLeftText,
+.routeLinesMiddleText,
 .routeLinesRightText {
   position: absolute;
   left: calc(25% + 2px);
@@ -511,6 +512,7 @@ input[type=number].massiveInputAmount {
   font-weight: 500;
   font-size: 12px;
   color: #0B5E8E;
+  z-index: -1;
 }
 
 .routeLinesRightText {
@@ -518,26 +520,44 @@ input[type=number].massiveInputAmount {
   right: calc(25% - 7px);
   padding: 2px 6px;
 }
+.routeLinesMiddleText {
+  left: 50%;
+  transform: translateX(-50%);
+}
+.routeLinesLeftText1 {
+  left: 18%;
+  padding: 0px;
+}
+.routeLinesRightText1 {
+  right: 18%;
+  padding: 0px;
+}
 
 .routeLinesLeftText--dark,
+.routeLinesMiddleText--dark,
 .routeLinesRightText--dark {
   background: var(--background-dark);
   color: #4CADE6;
 }
 
 .routeLinesLeft,
+.routeLinesMiddle,
 .routeLinesRight {
+  position: relative;
   width: 50%;
   height: 12px;
   margin: 0 7px;
+  z-index: -2;
 }
 
 .routeLinesLeft--light,
+.routeLinesMiddle--light,
 .routeLinesRight--light {
   background-image: url("/images/ui/swap-route-lines--light.svg");
 }
 
 .routeLinesLeft--dark,
+.routeLinesMiddle--dark,
 .routeLinesRight--dark {
   background-image: url("/images/ui/swap-route-lines--dark.svg");
 }
