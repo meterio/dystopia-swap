@@ -8,7 +8,7 @@ let isTestnet = process.env.NEXT_PUBLIC_CHAINID == 83
 // URLS
 let scan = 'https://scan.meter.io/'
 let cont = contracts
-let infoURL = 'https://vs3-main-info.surge.sh'
+let infoURL = 'https://charts.voltswap.finance'
 let mtrg = '0x228ebbee999c6a7ad74a6130e81b12f9fe237ba3'
 
 if(isTestnet) {
