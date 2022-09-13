@@ -1080,6 +1080,11 @@ class Store {
 
   // DISPATCHER FUNCTIONS
   configure = async (payload) => {
+    const { connected } = payload.content
+    console.log('config connected', connected)
+    if (!connected) {
+      return
+    }
     try {
       this.setStore({ govToken: this._getGovTokenBase() });
       this.setStore({ veToken: await this._getVeTokenBase() });
@@ -1106,7 +1111,7 @@ class Store {
       let baseAssets = baseAssetsCall.data.tokens;
       const res =
           await axios.get(
-              `https://raw.githubusercontent.com/meterio/token-list/master/generated/solidly-tokens.json`
+              `https://raw.githubusercontent.com/meterio/token-list/master/generated/voltswapv2-tokens.json`
             )
       
       const defaultTokenList = []
@@ -2928,7 +2933,8 @@ class Store {
             return this.emitter.emit(ACTIONS.ERROR, err);
           }
 
-          this._getPairInfo(web3, account);
+          // this._getPairInfo(web3, account);
+          this.updatePairsCall(web3, account);
 
           this.emitter.emit(ACTIONS.LIQUIDITY_ADDED);
         },
@@ -3543,7 +3549,7 @@ class Store {
         return null;
       }
 
-      const gasPrice = await stores.accountStore.getGasPrice();
+      // const gasPrice = await stores.accountStore.getGasPrice();
       const routerContract = new web3.eth.Contract(
         CONTRACTS.ROUTER_ABI,
         CONTRACTS.ROUTER_ADDRESS
@@ -3836,7 +3842,8 @@ class Store {
             return this.emitter.emit(ACTIONS.ERROR, err);
           }
 
-          this._getPairInfo(web3, account);
+          // this._getPairInfo(web3, account);
+          this.updatePairsCall(web3, account);
 
           this.emitter.emit(ACTIONS.LIQUIDITY_REMOVED);
         }
@@ -4297,14 +4304,14 @@ class Store {
         return null;
       }
       // override the routeAsset
-      let newRouteAssets = null;
-      if (
-        fromAsset.address.toLowerCase() ===
-          CONTRACTS.SPHERE_ADDRESS.toLowerCase() ||
-        toAsset.address.toLowerCase() === CONTRACTS.SPHERE_ADDRESS.toLowerCase()
-      ) {
-        newRouteAssets = await this._getUSDPRouteAssets();
-      }
+      // let newRouteAssets = null;
+      // if (
+      //   fromAsset.address.toLowerCase() ===
+      //     CONTRACTS.SPHERE_ADDRESS.toLowerCase() ||
+      //   toAsset.address.toLowerCase() === CONTRACTS.SPHERE_ADDRESS.toLowerCase()
+      // ) {
+      //   newRouteAssets = await this._getUSDPRouteAssets();
+      // }
       const routeAssets = _routeAssets;
 
       let addy0 = fromAsset.address;
@@ -4317,121 +4324,119 @@ class Store {
         addy1 = CONTRACTS.WFTM_ADDRESS;
       }
 
-      const includesRouteAddress = routeAssets.filter((asset) => {
-        return (
-          asset.address.toLowerCase() == addy0.toLowerCase() ||
-          asset.address.toLowerCase() == addy1.toLowerCase()
-        );
-      });
+      // const includesRouteAddress = routeAssets.filter((asset) => {
+      //   return (
+      //     asset.address.toLowerCase() == addy0.toLowerCase() ||
+      //     asset.address.toLowerCase() == addy1.toLowerCase()
+      //   );
+      // });
 
-      let amountOuts = [
-          // {
-          //   routes: [
-          //     {
-          //       from: addy0,
-          //       to: '0x24aA189DfAa76c671c279262F94434770F557c35',
-          //       stable: true
-          //     },
-          //     {
-          //       from: '0x24aA189DfAa76c671c279262F94434770F557c35',
-          //       to: '0x228ebBeE999c6a7ad74A6130E81b12f9Fe237Ba3',
-          //       stable: false
-          //     },
-          //     {
-          //       from: '0x228ebBeE999c6a7ad74A6130E81b12f9Fe237Ba3',
-          //       to: addy1,
-          //       stable: false
-          //     }
-          //   ],
-          //   routeAsset: [
-          //     {
-          //       "name": "BUSD from BSC on Meter",
-          //       "address": "0x24aA189DfAa76c671c279262F94434770F557c35",
-          //       "symbol": "BUSD.bsc",
-          //       "decimals": 18,
-          //       "chainId": 82,
-          //       "logoURI": "https://raw.githubusercontent.com/meterio/token-list/master/data/BUSD/logo.png"
-          //     },
-          //     {
-          //       "name": "Meter Governance",
-          //       "address": "0x228ebBeE999c6a7ad74A6130E81b12f9Fe237Ba3",
-          //       "symbol": "MTRG",
-          //       "decimals": 18,
-          //       "chainId": 82,
-          //       "logoURI": "https://raw.githubusercontent.com/meterio/token-list/master/data/MTRG/logo.png"
-          //     }
-          //   ],
-          // }
-      ];
+      let amountOuts = [];
 
       // if (includesRouteAddress.length === 0) {
-      amountOuts = routeAssets
-        .map((routeAsset) => {
-          return [
-            {
-              routes: [
-                {
-                  from: addy0,
-                  to: routeAsset.address,
-                  stable: true,
-                },
-                {
-                  from: routeAsset.address,
-                  to: addy1,
-                  stable: true,
-                },
-              ],
-              routeAsset: [routeAsset],
-            },
-            {
-              routes: [
-                {
-                  from: addy0,
-                  to: routeAsset.address,
-                  stable: false,
-                },
-                {
-                  from: routeAsset.address,
-                  to: addy1,
-                  stable: false,
-                },
-              ],
-              routeAsset: [routeAsset],
-            },
-            {
-              routes: [
-                {
-                  from: addy0,
-                  to: routeAsset.address,
-                  stable: true,
-                },
-                {
-                  from: routeAsset.address,
-                  to: addy1,
-                  stable: false,
-                },
-              ],
-              routeAsset: [routeAsset],
-            },
-            {
-              routes: [
-                {
-                  from: addy0,
-                  to: routeAsset.address,
-                  stable: false,
-                },
-                {
-                  from: routeAsset.address,
-                  to: addy1,
-                  stable: true,
-                },
-              ],
-              routeAsset: [routeAsset],
-            },
-          ];
-        })
-        .flat();
-      
+      // amountOuts = routeAssets
+      //   .map((routeAsset) => {
+      //     return [
+      //       {
+      //         routes: [
+      //           {
+      //             from: addy0,
+      //             to: routeAsset.address,
+      //             stable: true,
+      //           },
+      //           {
+      //             from: routeAsset.address,
+      //             to: addy1,
+      //             stable: true,
+      //           },
+      //         ],
+      //         routeAsset: [routeAsset],
+      //       },
+      //       {
+      //         routes: [
+      //           {
+      //             from: addy0,
+      //             to: routeAsset.address,
+      //             stable: false,
+      //           },
+      //           {
+      //             from: routeAsset.address,
+      //             to: addy1,
+      //             stable: false,
+      //           },
+      //         ],
+      //         routeAsset: [routeAsset],
+      //       },
+      //       {
+      //         routes: [
+      //           {
+      //             from: addy0,
+      //             to: routeAsset.address,
+      //             stable: true,
+      //           },
+      //           {
+      //             from: routeAsset.address,
+      //             to: addy1,
+      //             stable: false,
+      //           },
+      //         ],
+      //         routeAsset: [routeAsset],
+      //       },
+      //       {
+      //         routes: [
+      //           {
+      //             from: addy0,
+      //             to: routeAsset.address,
+      //             stable: false,
+      //           },
+      //           {
+      //             from: routeAsset.address,
+      //             to: addy1,
+      //             stable: true,
+      //           },
+      //         ],
+      //         routeAsset: [routeAsset],
+      //       },
+      //     ];
+      //   })
+      //   .flat();
+      for (let i = 0; i < routeAssets.length; i++) {
+        const routeAsset = routeAssets[i]
+        if (routeAsset.address.toLowerCase() === addy0.toLowerCase() || routeAsset.address.toLowerCase() === addy1.toLowerCase()) {
+          continue
+        }
+        const tempRoutes = [
+          {
+            routes: [
+              { from: addy0,to: routeAsset.address, stable: true },
+              { from: routeAsset.address,to: addy1, stable: true },
+            ],
+            routeAsset: [routeAsset],
+          },
+          {
+            routes: [
+              { from: addy0, to: routeAsset.address, stable: false },
+              { from: routeAsset.address, to: addy1, stable: false },
+            ],
+            routeAsset: [routeAsset],
+          },
+          {
+            routes: [
+              { from: addy0, to: routeAsset.address, stable: true },
+              { from: routeAsset.address, to: addy1, stable: false },
+            ],
+            routeAsset: [routeAsset],
+          },
+          {
+            routes: [
+              { from: addy0, to: routeAsset.address, stable: false },
+              { from: routeAsset.address, to: addy1, stable: true },
+            ],
+            routeAsset: [routeAsset],
+          }
+        ]
+        amountOuts.push(...tempRoutes)
+      }
       for (let i = 0; i < routeAssets.length; i++) {
         for (let j = 0; j < routeAssets.length; j++) {
           const routeAsset0 = routeAssets[i]
@@ -5102,6 +5107,7 @@ class Store {
       );
 
       this.setStore({ vestNFTs: nfts });
+      console.log('nfts', nfts)
       this.emitter.emit(ACTIONS.VEST_NFTS_RETURNED, nfts);
     } catch (ex) {
       console.error(ex);

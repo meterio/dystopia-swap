@@ -376,14 +376,7 @@ export default function ssLiquidityManage() {
 
       let addy0 = assetA.address;
       let addy1 = assetB.address;
-
-      if (assetA.address === "MTR") {
-        addy0 = CONTRACTS.WFTM_ADDRESS;
-      }
-      if (assetB.address === "MTR") {
-        addy1 = CONTRACTS.WFTM_ADDRESS;
-      }
-
+      
       if (
         addy1.toLowerCase() == pp.token0.address.toLowerCase() &&
         addy0.toLowerCase() == pp.token1.address.toLowerCase()

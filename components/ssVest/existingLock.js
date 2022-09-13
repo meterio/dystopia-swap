@@ -28,6 +28,23 @@ export default function existingLock({nft, govToken, veToken}) {
   const router = useRouter();
 
   useEffect(() => {
+    const lockReturned = () => {
+      setLockLoading(false);
+      router.push('/vest');
+    };
+    const errorReturned = () => {
+      setLockLoading(false);
+    };
+
+    stores.emitter.on(ACTIONS.ERROR, errorReturned);
+    stores.emitter.on(ACTIONS.INCREASE_VEST_DURATION_RETURNED, lockReturned);
+    return () => {
+      stores.emitter.removeListener(ACTIONS.ERROR, errorReturned);
+      stores.emitter.removeListener(ACTIONS.INCREASE_VEST_DURATION_RETURNED, lockReturned);
+    };
+  }, []);
+
+  useEffect(() => {
     if (nft && nft.lockEnds) {
       setSelectedDate(moment.unix(nft.lockEnds).format('YYYY-MM-DD'));
       setSelectedValue(null);

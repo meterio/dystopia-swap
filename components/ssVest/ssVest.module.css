@@ -1273,5 +1273,6 @@ input[type=number].massiveInputAmount {
 .increaseDurationTip {
   font-size: .8rem;
   color: #e08585;
+  background-color: #5F7285;
 }
 
