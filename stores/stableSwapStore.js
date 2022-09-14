@@ -1006,9 +1006,10 @@ class Store {
     try {
       const baseAssets = this.getStore("baseAssets");
       const theBaseAsset = baseAssets.filter((as) => {
-        if (as.address === 'MTR') {
-          return CONTRACTS.WFTM_ADDRESS.toLowerCase() === address.toLowerCase();
-        }
+        // if (as.address === 'MTR') {
+        //   return CONTRACTS.WFTM_ADDRESS.toLowerCase() === address.toLowerCase() ||
+        //     as.address.toLowerCase() === address.toLowerCase();
+        // }
         return as.address.toLowerCase() === address.toLowerCase();
       });
       if (theBaseAsset.length > 0) {
@@ -4283,7 +4284,6 @@ class Store {
       const _routeAssets = this.getStore("routeAssets");
 
       const { fromAsset, toAsset, fromAmount } = payload.content;
-      console.log({fromAsset, toAsset})
 
       const routerContract = new web3.eth.Contract(
         CONTRACTS.ROUTER_ABI,
@@ -4537,7 +4537,6 @@ class Store {
       });
 
       // const multicall = await stores.accountStore.getMulticall();
-      console.log('amountOuts', amountOuts)
       const retryCall = async () => {
         const res = await Promise.allSettled(
           amountOuts.map(async (route) => {
@@ -5107,7 +5106,6 @@ class Store {
       );
 
       this.setStore({ vestNFTs: nfts });
-      console.log('nfts', nfts)
       this.emitter.emit(ACTIONS.VEST_NFTS_RETURNED, nfts);
     } catch (ex) {
       console.error(ex);

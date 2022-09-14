@@ -126,23 +126,28 @@ function Setup() {
           setToAssetOptions(baseAsset);
           setFromAssetOptions(baseAsset);
 
-          if (baseAsset.length > 0 && toAssetValue == null) {
-            const dystIndex = baseAsset.findIndex((token) => {
-              return token.id == outputCurrency;
-            });
-            if (dystIndex !== -1) {
-              setToAssetValue(baseAsset[dystIndex]);
+          if (baseAsset.length > 0) {
+            let _toAssetValue = null
+            let _fromAssetValue = null
+            if (toAssetValue) {
+              _toAssetValue = baseAsset.find(token => token.id === toAssetValue.id)
+            } else {
+              _toAssetValue = baseAsset.find(token => token.id.toLowerCase() === outputCurrency)
+            }
+
+            if (fromAssetValue) {
+              _fromAssetValue = baseAsset.find(token => token.id === fromAssetValue.id)
+            } else {
+              _fromAssetValue = baseAsset.find(token => token.id.toLowerCase() === inputCurrency)
+            }
+            if (_toAssetValue) {
+              setToAssetValue(_toAssetValue)
             } else {
               setToAssetValue(baseAsset[0]);
             }
-          }
 
-          if (baseAsset.length > 0 && fromAssetValue == null) {
-            const wmaticIndex = baseAsset.findIndex((token) => {
-              return token.id == inputCurrency;
-            });
-            if (wmaticIndex !== -1) {
-              setFromAssetValue(baseAsset[wmaticIndex]);
+            if (_fromAssetValue) {
+              setFromAssetValue(_fromAssetValue)
             } else {
               setFromAssetValue(baseAsset[1]);
             }

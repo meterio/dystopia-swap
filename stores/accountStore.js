@@ -71,17 +71,20 @@ class Store {
       ? await provider.request({ method: "eth_chainId" })
       : null;
 
+    const parsedChainId = parseInt(providerChain + "", 16) + "";
+    const isChainSupported = supportedChainIds.includes(parsedChainId);
+    this.setStore({ chainInvalid: !isChainSupported });
     this.emitter.emit(ACTIONS.ACCOUNT_CONFIGURED);
 
-    this.dispatcher.dispatch({
-      type: ACTIONS.CONFIGURE_SS,
-      content: { connected: false },
-    });
+    // this.dispatcher.dispatch({
+    //   type: ACTIONS.CONFIGURE_SS,
+    //   content: { connected: false },
+    // });
 
-    if (window.ethereum || provider ? provider : null) {
-      // this.subscribeProvider();
-    } else {
-    }
+    // if (window.ethereum || provider ? provider : null) {
+    //   // this.subscribeProvider();
+    // } else {
+    // }
 
     window.removeEventListener("ethereum#initialized", this.subscribeProvider);
     window.addEventListener("ethereum#initialized", this.subscribeProvider, {
@@ -108,7 +111,7 @@ class Store {
 
     window.ethereum.on("accountsChanged", async function (accounts) {
       const address = accounts[0];
-      await stores.stableSwapStore.configure();
+      await stores.stableSwapStore.configure({ content: { connected: !that.chainInvalid }});
       that.setStore({
         account: { address },
       });
@@ -125,7 +128,7 @@ class Store {
       const parsedChainId = parseInt(chainId + "", 16) + "";
       const isChainSupported = supportedChainIds.includes(parsedChainId);
       that.setStore({ chainInvalid: !isChainSupported });
-      await stores.stableSwapStore.configure();
+      await stores.stableSwapStore.configure({ content: { connected: isChainSupported }});
       that.emitter.emit(ACTIONS.ACCOUNT_CHANGED);
       that.emitter.emit(ACTIONS.ACCOUNT_CONFIGURED);
       that.configure();
