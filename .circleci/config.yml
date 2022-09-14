@@ -32,7 +32,7 @@ jobs:
           command: npm run build2
       - run:
           name: s3 sync
-          command: aws s3 sync ./out/ s3://Voltswap-finance/ --delete --acl public-read
+          command: aws s3 sync ./out/ s3://voltswap-finance/ --delete --acl public-read
       - run:
           name: invalidation
           command: aws cloudfront create-invalidation --distribution-id EBU88AFTIQMJV --paths "/*"

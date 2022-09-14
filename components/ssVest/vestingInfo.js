@@ -49,7 +49,7 @@ export default function VestingInfo({
                   classes[`amount--${appTheme}`],
                 ].join(" ")}
               >
-                >{formatCurrency(currentNFT?.lockValue)}{" "}
+                {formatCurrency(currentNFT?.lockValue)}{" "}
                 <span style={{ fontSize: 14 }}>{veToken?.symbol}</span>
               </Typography>
 
