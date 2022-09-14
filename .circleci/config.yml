@@ -15,21 +15,27 @@ jobs:
       - run:
           name: install awscli v2
           command: sudo ./aws/install
+      - restore_cache:
+          key: voltswapv2-deps-{{ checksum "package.json" }}
       - run:
-          name: install yarn dependencies
+          name: install npm dependencies
           command: npm install
+      - save_cache:
+          key: voltswapv2-deps-{{ checksum "package.json" }}
+          paths:
+            - node_modules
       - run:
           name: delete .next
           command: rm -rf .next
       - run:
           name: production build
           command: npm run build2
-      # - run:
-      #     name: s3 sync
-      #     command: aws s3 sync ./out/ s3://Voltswap-finance/ --delete --acl public-read
-      # - run:
-      #     name: invalidation
-      #     command: aws cloudfront create-invalidation --distribution-id EBU88AFTIQMJV --paths "/*"
+      - run:
+          name: s3 sync
+          command: aws s3 sync ./out/ s3://Voltswap-finance/ --delete --acl public-read
+      - run:
+          name: invalidation
+          command: aws cloudfront create-invalidation --distribution-id EBU88AFTIQMJV --paths "/*"
       - slack/notify:
           event: fail
           template: basic_fail_1
