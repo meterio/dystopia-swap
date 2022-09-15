@@ -54,6 +54,7 @@ export default function Unlock({ nft, govToken, veToken }) {
     setLockLoading(true);
     stores.dispatcher.dispatch({
       type: ACTIONS.WITHDRAW_VEST,
+
       content: { tokenID: nft.id },
     });
   };

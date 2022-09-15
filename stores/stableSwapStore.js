@@ -1005,15 +1005,13 @@ class Store {
   getBaseAsset = async (address, save, getBalance) => {
     try {
       const baseAssets = this.getStore("baseAssets");
-      const theBaseAsset = baseAssets.filter((as) => {
-        // if (as.address === 'MTR') {
-        //   return CONTRACTS.WFTM_ADDRESS.toLowerCase() === address.toLowerCase() ||
-        //     as.address.toLowerCase() === address.toLowerCase();
-        // }
-        return as.address.toLowerCase() === address.toLowerCase();
-      });
-      if (theBaseAsset.length > 0) {
-        return theBaseAsset[0];
+      let _address = address
+      if (address.toLowerCase() === CONTRACTS.WFTM_ADDRESS) {
+        _address =  'MTR'
+      }
+      const theBaseAsset = baseAssets.find(item => item.address.toLowerCase() === _address.toLowerCase())
+      if (theBaseAsset) {
+        return theBaseAsset;
       }
 
       // not found, so we search the blockchain for it.
@@ -1141,10 +1139,6 @@ class Store {
             baseAssets[j].logoURI = defaultTokenList[i].logoURI;
           }
 
-          // if (baseAssets[j].address.toLowerCase() === CONTRACTS.GOV_TOKEN_ADDRESS.toLowerCase()) {
-          //   baseAssets[j].logoURI = CONTRACTS.GOV_TOKEN_LOGO
-          // }
-
           if (baseAssets[j].address.toLowerCase() === CONTRACTS.WFTM_ADDRESS.toLowerCase()) {
             baseAssets[j].logoURI = CONTRACTS.WFTM_LOGO
           }
@@ -1247,23 +1241,24 @@ class Store {
       let pairsCall2;
       try {
         pairsCall2 = pairsCall.data.pairs.map((object) => {
-          const obj = object;
-          obj.name = obj?.name.replace(regex, "MTR");
-          obj.symbol = obj?.symbol.replace(regex, "MTR");
-          obj.token0.name = obj?.token0?.name?.replace(regex, "MTR");
-          obj.token0.symbol = obj?.token0?.symbol?.replace(regex, "MTR");
-          obj.token1.name = obj?.token1?.name?.replace(regex, "MTR");
-          obj.token1.symbol = obj?.token1?.symbol?.replace(regex, "MTR");
-          if (obj.gaugebribes && obj.gaugebribes.bribeTokens) {
-            obj.gaugebribes.bribeTokens = obj.gaugebribes.bribeTokens.map(item => {
-              return {
-                ...item,
-                token: {
-                  symbol: item.token.symbol.replace(regex, "MTR")
-                }
-              }
-            })
-          }
+          const obj = JSON.parse(JSON.stringify(object).replace(regex, 'MTR'))
+          // const obj = object;
+          // obj.name = obj?.name.replace(regex, "MTR");
+          // obj.symbol = obj?.symbol.replace(regex, "MTR");
+          // obj.token0.name = obj?.token0?.name?.replace(regex, "MTR");
+          // obj.token0.symbol = obj?.token0?.symbol?.replace(regex, "MTR");
+          // obj.token1.name = obj?.token1?.name?.replace(regex, "MTR");
+          // obj.token1.symbol = obj?.token1?.symbol?.replace(regex, "MTR");
+          // if (obj.gaugebribes && obj.gaugebribes.bribeTokens) {
+          //   obj.gaugebribes.bribeTokens = obj.gaugebribes.bribeTokens.map(item => {
+          //     return {
+          //       ...item,
+          //       token: {
+          //         symbol: item.token.symbol.replace(regex, "MTR")
+          //       }
+          //     }
+          //   })
+          // }
           return obj;
         });
       } catch (e) {
@@ -5618,7 +5613,8 @@ class Store {
           vestTXID,
           (err) => {
             if (err) {
-              reject(err);
+              // reject(err);
+              this.emitter.emit(ACTIONS.ERROR)
               return;
             }
             this._updateVestNFTByID(tokenID);
