@@ -68,7 +68,7 @@ function Navigation(props) {
     let url = ''
     const id = event.target.id
     if (id === 'legacy') {
-      url = 'https://voltswap.finance'
+      url = 'https://v1.voltswap.finance'
     } else if (id === 'bridge') {
       url = 'https://passport.meter.io'
     } else if (id === 'gas') {
