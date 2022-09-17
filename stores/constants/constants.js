@@ -314,14 +314,22 @@ export const ROUTE_ASSETS = [
     "chainId": 83,
     "logoURI": "https://raw.githubusercontent.com/meterio/token-list/master/data/USDT/logo.png"
   },
-  // {
-  //   "name": "Volt",
-  //   "address": "0x8Df95e66Cb0eF38F91D2776DA3c921768982fBa0",
-  //   "symbol": "VOLT",
-  //   "decimals": 18,
-  //   "chainId": 82,
-  //   "logoURI": "https://raw.githubusercontent.com/meterio/token-list/master/data/VOLT/logo.png"
-  // },
+  {
+    "name": "Volt",
+    "address": "0x8Df95e66Cb0eF38F91D2776DA3c921768982fBa0",
+    "symbol": "VOLT",
+    "decimals": 18,
+    "chainId": 82,
+    "logoURI": "https://raw.githubusercontent.com/meterio/token-list/master/data/VOLT/logo.png"
+  },
+  {
+    "name": "Theta Drop",
+    "address": "0xd5e615BB3c761AB4cD9251dEEd78Dac58BE9CcBF",
+    "symbol": "TDROP",
+    "decimals": 18,
+    "chainId": 82,
+    "logoURI": "https://raw.githubusercontent.com/meterio/token-list/master/data/TDROP/logo.png"
+  },
   {
     "name": "Volt",
     "address": "0x6af7f7cddfd0d69ba9b03863347bd762bd70f8dc",
