@@ -141,6 +141,9 @@ export default function ssVotes() {
       });
     }
   };
+  const goCastVoteDOC = () => {
+    window.open('https://docs.voltswap.finance/understanding-ve-3-3/voting-stratgies', '_blank')
+  }
 
   let totalVotes = votes.reduce((acc, curr) => {
     return BigNumber(acc)
@@ -260,6 +263,7 @@ export default function ssVotes() {
                 <CircularProgress size={10} className={classes.loadingCircle} />
               )}
             </Button>
+            <div onClick={goCastVoteDOC} className={[classes.explainVote, classes[`explainVote--${appTheme}`]].join(" ")}>?</div>
             <Button
               className={[
                 classes.buttonOverrideFixed,

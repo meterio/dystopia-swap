@@ -13,7 +13,7 @@ import { useRouter } from "next/router";
 
 const socialLinks = {
     twitter: 'https://twitter.com/Meter_IO',
-    discord: 'https://discord.gg/XZgZsCn',
+    discord: 'https://discord.gg/h9mdV5wCP7',
     telegram: 'https://t.me/Meter_IO',
     gitbook: 'https://docs.voltswap.finance/',
     medium: 'https://medium.com/meter-io',

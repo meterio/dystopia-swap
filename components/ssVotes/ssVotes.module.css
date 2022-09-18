@@ -88,10 +88,27 @@
   background: rgb(19, 44, 60) !important;
 }
 
+.explainVote {
+  width: 25px;
+  height: 25px;
+  border: 2px solid #FFF;
+  border-radius: 100%;
+  color: #FFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 4px;
+  cursor: pointer;
+  font-weight: bold;
+}
+.explainVote--light {
+  border: 2px solid #000;
+  color: #000;
+}
 
 .buttonOverrideFixed {
   padding: 12px 20px !important;
-  margin-left: 20px !important;
+  margin-left: none !important;
   background: #D2D0F2 !important;
   outline: 1px solid #8F5AE8 !important;
   border-radius: 0 !important;
