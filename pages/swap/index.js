@@ -78,7 +78,8 @@ function Swap({ changeTheme }) {
 
   return (
     <>
-      {account && account.address ?
+      <SwapComponent />
+      {/* {account && account.address ?
         <SwapComponent />
         :
         <Paper className={classes.notConnectedContent}>
@@ -115,7 +116,7 @@ function Swap({ changeTheme }) {
 
           </div>
         </Paper>
-      }
+      } */}
       {unlockOpen && <Unlock modalOpen={unlockOpen} closeModal={closeUnlock} />}
     </>
   );

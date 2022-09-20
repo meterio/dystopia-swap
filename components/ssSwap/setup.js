@@ -23,6 +23,7 @@ import BtnSwap from "../../ui/BtnSwap";
 import Hint from "../hint/hint";
 import Loader from "../../ui/Loader";
 import AssetSelect from "../../ui/AssetSelect";
+import { WalletConnect } from '../../components/WalletConnect'
 import { useRouter } from "next/router";
 
 function Setup() {
@@ -56,6 +57,8 @@ function Setup() {
 
   const { appTheme } = useAppThemeContext();
 
+  const [account, setAccount] = useState(stores.accountStore.getStore('account'));
+
   const handleClickPopover = (event) => {
     setHintAnchor(event.currentTarget);
   };
@@ -71,6 +74,17 @@ function Setup() {
   });
 
   const router = useRouter()
+
+  useEffect(() => {
+    const accountConfigure = () => {
+      setAccount(stores.accountStore.getStore('account'));
+    };
+
+    stores.emitter.on(ACTIONS.ACCOUNT_CONFIGURED, accountConfigure);
+    return () => {
+      stores.emitter.removeListener(ACTIONS.ACCOUNT_CONFIGURED, accountConfigure);
+    };
+  }, []);
 
   useEffect(
       function () {
@@ -120,7 +134,7 @@ function Setup() {
             outputCurrency = 'MTR'
           }
           const _baseAsset = stores.stableSwapStore.getStore("baseAssets");
-          // console.log('baseAssets', _baseAsset)
+          console.log('baseAssets', _baseAsset)
           const baseAsset = _baseAsset.filter(item => item.symbol !== 'WMTR')
 
           setToAssetOptions(baseAsset);
@@ -1329,50 +1343,65 @@ function Setup() {
               <Loader color={appTheme === "dark" ? "#8F5AE8" : "#8F5AE8"} />
             </div>
         )}
-
-        <BtnSwap
-            onClick={
-              (fromAssetValue?.symbol == "MTR" && toAssetValue?.symbol == "WMTR")
-                  ? onWrap
-                  : (fromAssetValue?.symbol == "WMTR" && toAssetValue?.symbol == "MTR")
-                      ? onUnwrap
-                      : onSwap
-            }
-            className={classes.btnSwap}
-            labelClassName={
-              !fromAmountValue ||
-              fromAmountValue > Number(fromAssetValue.balance) ||
-              Number(fromAmountValue) <= 0
-                  ? classes["actionButtonText--disabled"]
-                  : classes.actionButtonText
-            }
-            isDisabled={
-              !fromAmountValue ||
-              fromAmountValue > Number(fromAssetValue.balance) ||
-              Number(fromAmountValue) <= 0
-            }
-            label={
-              loading && fromAssetValue?.symbol == "MTR" && toAssetValue?.symbol == "WMTR"
-                  ? "Wrapping"
-                  : loading && fromAssetValue?.symbol == "WMTR" && toAssetValue?.symbol == "MTR"
-                      ? "Unwrapping"
-                      : loading &&
-                      !(
-                          (fromAssetValue?.symbol == "MTR" ||
-                              fromAssetValue?.symbol == "WMTR") &&
-                          (toAssetValue?.symbol == "WMTR" ||
-                              toAssetValue?.symbol == "MTR")
-                      )
-                          ? "Swapping"
-                          : !fromAmountValue || Number(fromAmountValue) <= 0
-                              ? "Enter Amount"
-                              : (fromAssetValue?.symbol == "MTR" && toAssetValue?.symbol == "WMTR")
-                                  ? "Wrap"
-                                  : (fromAssetValue?.symbol == "WMTR" && toAssetValue?.symbol == "MTR")
-                                      ? "Unwrap"
-                                      : "Swap"
-            }
-        ></BtnSwap>
+        {
+          account && account.address ?
+            <BtnSwap
+              onClick={
+                (fromAssetValue?.symbol == "MTR" && toAssetValue?.symbol == "WMTR")
+                    ? onWrap
+                    : (fromAssetValue?.symbol == "WMTR" && toAssetValue?.symbol == "MTR")
+                        ? onUnwrap
+                        : onSwap
+              }
+              className={classes.btnSwap}
+              labelClassName={
+                !fromAmountValue ||
+                fromAmountValue > Number(fromAssetValue.balance) ||
+                Number(fromAmountValue) <= 0
+                    ? classes["actionButtonText--disabled"]
+                    : classes.actionButtonText
+              }
+              isDisabled={
+                !fromAmountValue ||
+                fromAmountValue > Number(fromAssetValue.balance) ||
+                Number(fromAmountValue) <= 0
+              }
+              label={
+                loading && fromAssetValue?.symbol == "MTR" && toAssetValue?.symbol == "WMTR"
+                    ? "Wrapping"
+                    : loading && fromAssetValue?.symbol == "WMTR" && toAssetValue?.symbol == "MTR"
+                        ? "Unwrapping"
+                        : loading &&
+                        !(
+                            (fromAssetValue?.symbol == "MTR" ||
+                                fromAssetValue?.symbol == "WMTR") &&
+                            (toAssetValue?.symbol == "WMTR" ||
+                                toAssetValue?.symbol == "MTR")
+                        )
+                            ? "Swapping"
+                            : !fromAmountValue || Number(fromAmountValue) <= 0
+                                ? "Enter Amount"
+                                : (fromAssetValue?.symbol == "MTR" && toAssetValue?.symbol == "WMTR")
+                                    ? "Wrap"
+                                    : (fromAssetValue?.symbol == "WMTR" && toAssetValue?.symbol == "MTR")
+                                        ? "Unwrap"
+                                        : "Swap"
+              }
+            ></BtnSwap>
+            :
+            <WalletConnect>
+              {({ connect }) => {
+                return (
+                  <BtnSwap
+                    onClick={connect}
+                    className={classes.btnSwap}
+                    labelClassName={classes.actionButtonText}
+                    label={'Connect wallet'}
+                  ></BtnSwap>
+                )
+              }}
+            </WalletConnect>
+        }
       </div>
   );
 }

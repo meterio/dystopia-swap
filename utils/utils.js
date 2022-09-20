@@ -164,7 +164,7 @@ export const formatInputAmount = (value) => {
   return formated;
 };
 
-const MAX_REQUEST_RETRY = 3;
+const MAX_REQUEST_RETRY = 0;
 
 export const retry = ({ fn, args, defaultValue }) => {
   let retryCount = 0;

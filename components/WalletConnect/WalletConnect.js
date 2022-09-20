@@ -19,7 +19,7 @@ export const WalletConnect = (props) => {
   const connect = async function web3Init() {
     const web3modal = new Web3Modal({
       cacheProvider: true,
-      network: "matic",
+      network: "meter",
       providerOptions: {
         walletlink: {
           package: CoinbaseWalletSDK,
@@ -27,10 +27,10 @@ export const WalletConnect = (props) => {
             appName: 'Voltswap app',
             infuraId: `${process.env.NEXT_PUBLIC_INFURA_KEY}`,
             rpc: {
-              137: `https://polygon-rpc.com/`,
+              82: `https://rpc.meter.io`,
             },
-            supportedChainIds: [137],
-            network: "matic",
+            supportedChainIds: [82],
+            network: "meter",
           },
         },
         walletconnect: {
@@ -38,10 +38,10 @@ export const WalletConnect = (props) => {
           options: {
             infuraId: `${process.env.NEXT_PUBLIC_INFURA_KEY}`,
             rpc: {
-              137: `https://polygon-rpc.com/`,
+              137: `https://rpc.meter.io`,
             },
-            network: "matic",
-            supportedChainIds: [137],
+            network: "meter",
+            supportedChainIds: [82],
           },
         },
       },

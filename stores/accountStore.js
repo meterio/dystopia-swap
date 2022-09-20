@@ -76,10 +76,10 @@ class Store {
     this.setStore({ chainInvalid: !isChainSupported });
     this.emitter.emit(ACTIONS.ACCOUNT_CONFIGURED);
 
-    // this.dispatcher.dispatch({
-    //   type: ACTIONS.CONFIGURE_SS,
-    //   content: { connected: false },
-    // });
+    this.dispatcher.dispatch({
+      type: ACTIONS.CONFIGURE_SS,
+      content: { connected: false },
+    });
 
     // if (window.ethereum || provider ? provider : null) {
     //   // this.subscribeProvider();

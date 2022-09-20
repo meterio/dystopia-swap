@@ -1079,11 +1079,11 @@ class Store {
 
   // DISPATCHER FUNCTIONS
   configure = async (payload) => {
-    const { connected } = payload.content
-    console.log('config connected', connected)
-    if (!connected) {
-      return
-    }
+    // const { connected } = payload.content
+    // console.log('config connected', connected)
+    // if (!connected) {
+    //   return
+    // }
     try {
       this.setStore({ govToken: this._getGovTokenBase() });
       this.setStore({ veToken: await this._getVeTokenBase() });
@@ -4327,74 +4327,6 @@ class Store {
       // });
 
       let amountOuts = [];
-
-      // if (includesRouteAddress.length === 0) {
-      // amountOuts = routeAssets
-      //   .map((routeAsset) => {
-      //     return [
-      //       {
-      //         routes: [
-      //           {
-      //             from: addy0,
-      //             to: routeAsset.address,
-      //             stable: true,
-      //           },
-      //           {
-      //             from: routeAsset.address,
-      //             to: addy1,
-      //             stable: true,
-      //           },
-      //         ],
-      //         routeAsset: [routeAsset],
-      //       },
-      //       {
-      //         routes: [
-      //           {
-      //             from: addy0,
-      //             to: routeAsset.address,
-      //             stable: false,
-      //           },
-      //           {
-      //             from: routeAsset.address,
-      //             to: addy1,
-      //             stable: false,
-      //           },
-      //         ],
-      //         routeAsset: [routeAsset],
-      //       },
-      //       {
-      //         routes: [
-      //           {
-      //             from: addy0,
-      //             to: routeAsset.address,
-      //             stable: true,
-      //           },
-      //           {
-      //             from: routeAsset.address,
-      //             to: addy1,
-      //             stable: false,
-      //           },
-      //         ],
-      //         routeAsset: [routeAsset],
-      //       },
-      //       {
-      //         routes: [
-      //           {
-      //             from: addy0,
-      //             to: routeAsset.address,
-      //             stable: false,
-      //           },
-      //           {
-      //             from: routeAsset.address,
-      //             to: addy1,
-      //             stable: true,
-      //           },
-      //         ],
-      //         routeAsset: [routeAsset],
-      //       },
-      //     ];
-      //   })
-      //   .flat();
       for (let i = 0; i < routeAssets.length; i++) {
         const routeAsset = routeAssets[i]
         if (routeAsset.address.toLowerCase() === addy0.toLowerCase() || routeAsset.address.toLowerCase() === addy1.toLowerCase()) {
@@ -4532,6 +4464,13 @@ class Store {
       });
 
       // const multicall = await stores.accountStore.getMulticall();
+      // const res = await multicall.aggregate(amountOuts.map(route => {
+      //   return routerContract.methods.getAmountsOut(
+      //     sendFromAmount,
+      //     route.routes
+      //   )
+      // }))
+      // console.log('route res', res)
       const retryCall = async () => {
         const res = await Promise.allSettled(
           amountOuts.map(async (route) => {
@@ -4562,6 +4501,7 @@ class Store {
       };
 
       const receiveAmounts = await retryCall();
+      // console.log('receiveAmounts', receiveAmounts)
 
       amountOuts = amountOuts.filter((el) => el !== null);
 
@@ -4586,7 +4526,7 @@ class Store {
             ? best
             : current;
         }, 0);
-      console.log('bestAmountOut', bestAmountOut)
+      
       if (!bestAmountOut) {
         this.emitter.emit(
           ACTIONS.ERROR,
