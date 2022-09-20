@@ -93,6 +93,11 @@ function Vote({ changeTheme }) {
                 Use your veVOLT to vote for your selected liquidity pair’s rewards distribution or create a bribe to encourage others to do the same.
               </Typography>
             </div>
+            <div className={[classes.mainDescBg, classes[`mainDescBg--${appTheme}`]].join(' ')}>
+              <Typography className={[classes.mainDescNC, classes[`mainDescNC--${appTheme}`]].join(' ')} variant="body2">
+                The original Voltswap can be found at v1.voltswap.finance
+              </Typography>
+            </div>
             <WalletConnect>
               {({ connect }) => {
                 return (

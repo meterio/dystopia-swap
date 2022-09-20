@@ -78,6 +78,26 @@ function Swap({ changeTheme }) {
 
   return (
     <>
+      {!(account && account.address) ?
+        (<Paper className={classes.notConnectedContent}>
+          <div className={classes.contentFloat}>
+            <Typography className={classes.contentFloatText}>
+              Swap
+            </Typography>
+
+            <div className={[classes.mainDescBg, classes[`mainDescBg--${appTheme}`]].join(' ')}>
+              <Typography
+                className={[classes.mainDescNC, classes[`mainDescNC--${appTheme}`]].join(' ')}
+                variant="body2">
+                The original Voltswap can be found at v1.voltswap.finance
+              </Typography>
+            </div>
+          </div>
+        </Paper>)
+        :
+        null
+      }
+      <div style={{height: '20px'}}></div>
       <SwapComponent />
       {/* {account && account.address ?
         <SwapComponent />

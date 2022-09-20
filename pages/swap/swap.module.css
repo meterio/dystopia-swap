@@ -12,7 +12,7 @@
   width: calc(100%) !important;
   background: transparent !important;
   text-align: center;
-  height: calc(100vh);
+  /* height: calc(100vh); */
   box-shadow: none !important;
   display: flex;
   align-items: center;

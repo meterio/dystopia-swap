@@ -98,6 +98,11 @@ function Vesting({ changeTheme }) {
                 Lock your VOLT to earn rewards and governance rights. Each locked position is created and represented as an NFT, meaning you can hold multiple locked positions.
               </Typography>
             </div>
+            <div className={[classes.mainDescBg, classes[`mainDescBg--${appTheme}`]].join(' ')}>
+              <Typography className={[classes.mainDescNC, classes[`mainDescNC--${appTheme}`]].join(' ')} variant="body2">
+                The original Voltswap can be found at v1.voltswap.finance
+              </Typography>
+            </div>
             <WalletConnect>
               {({ connect }) => {
                 return (
