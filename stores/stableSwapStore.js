@@ -4277,6 +4277,7 @@ class Store {
 
       // some path logic. Have a base asset (FTM) swap from start asset to FTM, swap from FTM back to out asset. Don't know.
       const _routeAssets = this.getStore("routeAssets");
+      const pairs = this.getStore("pairs");
 
       const { fromAsset, toAsset, fromAmount } = payload.content;
 
@@ -4298,210 +4299,184 @@ class Store {
       ) {
         return null;
       }
-      // override the routeAsset
-      // let newRouteAssets = null;
-      // if (
-      //   fromAsset.address.toLowerCase() ===
-      //     CONTRACTS.SPHERE_ADDRESS.toLowerCase() ||
-      //   toAsset.address.toLowerCase() === CONTRACTS.SPHERE_ADDRESS.toLowerCase()
-      // ) {
-      //   newRouteAssets = await this._getUSDPRouteAssets();
-      // }
+
       const routeAssets = _routeAssets;
 
       let addy0 = fromAsset.address;
       let addy1 = toAsset.address;
 
-      if (fromAsset.address === "MTR") {
-        addy0 = CONTRACTS.WFTM_ADDRESS;
-      }
-      if (toAsset.address === "MTR") {
-        addy1 = CONTRACTS.WFTM_ADDRESS;
-      }
-
-      // const includesRouteAddress = routeAssets.filter((asset) => {
-      //   return (
-      //     asset.address.toLowerCase() == addy0.toLowerCase() ||
-      //     asset.address.toLowerCase() == addy1.toLowerCase()
-      //   );
-      // });
-
       let amountOuts = [];
       for (let i = 0; i < routeAssets.length; i++) {
-        const routeAsset = routeAssets[i]
-        if (routeAsset.address.toLowerCase() === addy0.toLowerCase() || routeAsset.address.toLowerCase() === addy1.toLowerCase()) {
+        const routeAddr = routeAssets[i].address.toLowerCase()
+        if (routeAddr === addy0 || routeAddr === addy1) {
           continue
         }
-        const tempRoutes = [
-          {
-            routes: [
-              { from: addy0,to: routeAsset.address, stable: true },
-              { from: routeAsset.address,to: addy1, stable: true },
-            ],
-            routeAsset: [routeAsset],
-          },
-          {
-            routes: [
-              { from: addy0, to: routeAsset.address, stable: false },
-              { from: routeAsset.address, to: addy1, stable: false },
-            ],
-            routeAsset: [routeAsset],
-          },
-          {
-            routes: [
-              { from: addy0, to: routeAsset.address, stable: true },
-              { from: routeAsset.address, to: addy1, stable: false },
-            ],
-            routeAsset: [routeAsset],
-          },
-          {
-            routes: [
-              { from: addy0, to: routeAsset.address, stable: false },
-              { from: routeAsset.address, to: addy1, stable: true },
-            ],
-            routeAsset: [routeAsset],
+        const fromPairs = pairs.filter(item => {
+          return (
+            (item.token0.address === addy0 && item.token1.address === routeAddr)
+            ||
+            (item.token0.address === routeAddr && item.token1.address === addy0)
+          ) && item.tvl !== '0'
+        });
+        const toPairs = pairs.filter(item => {
+          return (
+            (item.token0.address === addy1 && item.token1.address === routeAddr)
+            ||
+            (item.token0.address === routeAddr && item.token1.address === addy1)
+          ) && item.tvl !== '0'
+        })
+
+        if (fromPairs.length && toPairs.length) {
+
+          for (let j = 0; j < fromPairs.length; j++) {
+
+            const fromIsStable = fromPairs[j].isStable
+
+            for (let k = 0; k < toPairs.length; k++) {
+
+              const toIsStable = toPairs[k].isStable
+
+              amountOuts.push({
+                routes: [
+                  { from: addy0, to: routeAddr, stable: fromIsStable },
+                  { from: routeAddr, to: addy1, stable: toIsStable },
+                ],
+                routeAsset: [routeAssets[i]],
+              })
+            }
           }
-        ]
-        amountOuts.push(...tempRoutes)
-      }
-      for (let i = 0; i < routeAssets.length; i++) {
-        for (let j = 0; j < routeAssets.length; j++) {
-          const routeAsset0 = routeAssets[i]
-          const routeAsset1 = routeAssets[j]
-          if (routeAsset0.address === routeAsset1.address) {
-            continue
-          }
-          const tempRoutes = [
-            {
-              routes: [
-                { from: addy0, to: routeAsset0.address,stable: true },
-                { from: routeAsset0.address, to: routeAsset1.address, stable: true},
-                { from: routeAsset1.address,to: addy1,stable: true }
-              ],
-              routeAsset: [routeAsset0, routeAsset1],
-            },
-            {
-              routes: [
-                { from: addy0, to: routeAsset0.address,stable: false },
-                { from: routeAsset0.address, to: routeAsset1.address, stable: false},
-                { from: routeAsset1.address,to: addy1,stable: false }
-              ],
-              routeAsset: [routeAsset0, routeAsset1],
-            },
-            {
-              routes: [
-                { from: addy0, to: routeAsset0.address,stable: true },
-                { from: routeAsset0.address, to: routeAsset1.address, stable: true},
-                { from: routeAsset1.address,to: addy1,stable: false }
-              ],
-              routeAsset: [routeAsset0, routeAsset1],
-            },
-            {
-              routes: [
-                { from: addy0, to: routeAsset0.address,stable: true },
-                { from: routeAsset0.address, to: routeAsset1.address, stable: false},
-                { from: routeAsset1.address,to: addy1,stable: true }
-              ],
-              routeAsset: [routeAsset0, routeAsset1],
-            },
-            {
-              routes: [
-                { from: addy0, to: routeAsset0.address,stable: true },
-                { from: routeAsset0.address, to: routeAsset1.address, stable: false},
-                { from: routeAsset1.address,to: addy1,stable: false }
-              ],
-              routeAsset: [routeAsset0, routeAsset1],
-            },
-            {
-              routes: [
-                { from: addy0, to: routeAsset0.address,stable: false },
-                { from: routeAsset0.address, to: routeAsset1.address, stable: true},
-                { from: routeAsset1.address,to: addy1,stable: true }
-              ],
-              routeAsset: [routeAsset0, routeAsset1],
-            },
-            {
-              routes: [
-                { from: addy0, to: routeAsset0.address,stable: false },
-                { from: routeAsset0.address, to: routeAsset1.address, stable: true},
-                { from: routeAsset1.address,to: addy1,stable: false }
-              ],
-              routeAsset: [routeAsset0, routeAsset1],
-            },
-            {
-              routes: [
-                { from: addy0, to: routeAsset0.address,stable: false },
-                { from: routeAsset0.address, to: routeAsset1.address, stable: false},
-                { from: routeAsset1.address,to: addy1,stable: true }
-              ],
-              routeAsset: [routeAsset0, routeAsset1],
-            },
-          ]
-          amountOuts.push(...tempRoutes)
         }
       }
 
-      amountOuts.push({
-        routes: [
-          {
-            from: addy0,
-            to: addy1,
-            stable: true,
-          },
-        ],
-        routeAsset: null,
-      });
+      for (let i = 0; i < routeAssets.length; i++) {
+        
+        for (let j = 0; j < routeAssets.length; j++) {
+          const route0Addr = routeAssets[i].address.toLowerCase()
+          const route1Addr = routeAssets[j].address.toLowerCase()
+          if (route0Addr === route1Addr) {
+            continue
+          }
 
-      amountOuts.push({
-        routes: [
-          {
-            from: addy0,
-            to: addy1,
-            stable: false,
-          },
-        ],
-        routeAsset: null,
-      });
+          const fromPairs = pairs.filter(item => {
+            return (
+              (item.token0.address === addy0 && item.token1.address === route0Addr)
+              ||
+              (item.token0.address === route0Addr && item.token1.address === addy0)
+            ) && item.tvl !== '0'
+          });
+          const middlePairs = pairs.filter(item => {
+            return (item.token0.address === route0Addr && item.token1.address === route1Addr) && item.tvl !== '0'
+          });
+          const toPairs = pairs.filter(item => {
+            return (
+              (item.token0.address === route1Addr && item.token1.address === addy1)
+              ||
+              (item.token0.address === addy1 && item.token1.address === route1Addr)
+            ) && item.tvl !== '0'
+          });
 
-      // const multicall = await stores.accountStore.getMulticall();
-      // const res = await multicall.aggregate(amountOuts.map(route => {
-      //   return routerContract.methods.getAmountsOut(
-      //     sendFromAmount,
-      //     route.routes
-      //   )
-      // }))
-      // console.log('route res', res)
-      const retryCall = async () => {
-        const res = await Promise.allSettled(
-          amountOuts.map(async (route) => {
-            const fn = retry({
-              fn: routerContract.methods.getAmountsOut(
-                sendFromAmount,
-                route.routes
-              ).call,
-            });
-            return await fn();
-          })
-        );
+          if (fromPairs.length && middlePairs.length && toPairs.length) {
+            for (let m = 0; m < fromPairs.length; m++) {
 
-        return res
-          .filter((el, index) => {
-            if (
-              el.status === "fulfilled" &&
-              el.value !== undefined &&
-              el.value !== null
-            ) {
-              return true;
-            } else {
-              amountOuts[index] = null;
-              return false;
+              const fromIsStable = fromPairs[m].isStable
+
+              for (let k = 0; k < middlePairs.length; k++) {
+
+                const middleIsStable = middlePairs[k].isStable
+
+                for (let z = 0; z < toPairs.length; z++) {
+
+                  const toIsStable = toPairs[z].isStable
+
+                  amountOuts.push({
+                    routes: [
+                      { from: addy0, to: route0Addr, stable: fromIsStable },
+                      { from: route0Addr, to: route1Addr, stable: middleIsStable },
+                      { from: route1Addr, to: addy1, stable: toIsStable }
+                    ],
+                    routeAsset: [routeAssets[i], routeAssets[j]],
+                  })
+                }
+              }
+            }
+          }
+        }
+      }
+
+      const ps = pairs.filter(item => {
+        return (
+          (item.token0.address === addy0 && item.token1.address === addy1)
+          ||
+          (item.token0.address === addy1 && item.token1.address === addy0)
+        ) && item.tvl !== '0'
+      })
+
+      for (let i = 0; i < ps.length; i++) {
+        amountOuts.push({
+          routes: [
+            {
+              from: addy0,
+              to: addy1,
+              stable: ps[i].isStable,
+            },
+          ],
+          routeAsset: null,
+        })
+      }
+
+      amountOuts = amountOuts.map(item => {
+        return {
+          ...item,
+          routes: item.routes.map(route => {
+            return {
+              ...route,
+              from: route.from === 'MTR' ? CONTRACTS.WFTM_ADDRESS : route.from,
+              to: route.to === 'MTR' ? CONTRACTS.WFTM_ADDRESS : route.to
             }
           })
-          .map((el) => el.value);
-      };
+        }
+      })
+      console.log('amountOuts', amountOuts)
 
-      const receiveAmounts = await retryCall();
-      // console.log('receiveAmounts', receiveAmounts)
+      const multicall = await stores.accountStore.getMulticall();
+      const receiveAmounts = await multicall.aggregate(amountOuts.map(route => {
+        return routerContract.methods.getAmountsOut(
+          sendFromAmount,
+          route.routes
+        )
+      }))
+
+      // const retryCall = async () => {
+      //   const res = await Promise.allSettled(
+      //     amountOuts.map(async (route) => {
+      //       const fn = retry({
+      //         fn: routerContract.methods.getAmountsOut(
+      //           sendFromAmount,
+      //           route.routes
+      //         ).call,
+      //       });
+      //       return await fn();
+      //     })
+      //   );
+
+      //   return res
+      //     .filter((el, index) => {
+      //       if (
+      //         el.status === "fulfilled" &&
+      //         el.value !== undefined &&
+      //         el.value !== null
+      //       ) {
+      //         return true;
+      //       } else {
+      //         amountOuts[index] = null;
+      //         return false;
+      //       }
+      //     })
+      //     .map((el) => el.value);
+      // };
+
+      // const receiveAmounts = await retryCall();
+      console.log('receiveAmounts', receiveAmounts)
 
       amountOuts = amountOuts.filter((el) => el !== null);
 
@@ -4596,7 +4571,6 @@ class Store {
 
       const { fromAsset, toAsset, fromAmount, toAmount, quote, slippage } =
         payload.content;
-
       // ADD TRNASCTIONS TO TRANSACTION QUEUE DISPLAY
       let allowanceTXID = this.getTXUUID();
       let swapTXID = this.getTXUUID();
@@ -4769,6 +4743,7 @@ class Store {
           this._getPairInfo(web3, account);
 
           this.emitter.emit(ACTIONS.SWAP_RETURNED);
+          this.emitter.emit(ACTIONS.ACCOUNT_CONFIGURED)
         },
         null,
         sendValue

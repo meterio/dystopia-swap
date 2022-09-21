@@ -134,7 +134,7 @@ function Setup() {
             outputCurrency = 'MTR'
           }
           const _baseAsset = stores.stableSwapStore.getStore("baseAssets");
-          console.log('baseAssets', _baseAsset)
+          // console.log('baseAssets', _baseAsset)
           const baseAsset = _baseAsset.filter(item => item.symbol !== 'WMTR')
 
           setToAssetOptions(baseAsset);
