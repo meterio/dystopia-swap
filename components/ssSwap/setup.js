@@ -88,10 +88,13 @@ function Setup() {
 
   useEffect(
       function () {
-        const errorReturned = () => {
+        const errorReturned = (msg) => {
           setLoading(false);
           setApprovalLoading(false);
           setQuoteLoading(false);
+          setQuote(null);
+          setToAmountValue("");
+          setQuoteError(msg);
         };
 
         const quoteReturned = (val) => {

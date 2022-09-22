@@ -4316,14 +4316,14 @@ class Store {
             (item.token0.address === addy0 && item.token1.address === routeAddr)
             ||
             (item.token0.address === routeAddr && item.token1.address === addy0)
-          ) && item.tvl !== '0'
+          ) && Number(item.tvl).toFixed(0) !== '0'
         });
         const toPairs = pairs.filter(item => {
           return (
             (item.token0.address === addy1 && item.token1.address === routeAddr)
             ||
             (item.token0.address === routeAddr && item.token1.address === addy1)
-          ) && item.tvl !== '0'
+          ) && Number(item.tvl).toFixed(0) !== '0'
         })
 
         if (fromPairs.length && toPairs.length) {
@@ -4362,19 +4362,25 @@ class Store {
               (item.token0.address === addy0 && item.token1.address === route0Addr)
               ||
               (item.token0.address === route0Addr && item.token1.address === addy0)
-            ) && item.tvl !== '0'
+            ) && Number(item.tvl).toFixed(0) !== '0'
           });
+
           const middlePairs = pairs.filter(item => {
-            return (item.token0.address === route0Addr && item.token1.address === route1Addr) && item.tvl !== '0'
+            return (
+              (item.token0.address === route0Addr && item.token1.address === route1Addr)
+              ||
+              (item.token0.address === route1Addr && item.token1.address === route0Addr)
+            ) && Number(item.tvl).toFixed(0) !== '0'
           });
+
           const toPairs = pairs.filter(item => {
             return (
               (item.token0.address === route1Addr && item.token1.address === addy1)
               ||
               (item.token0.address === addy1 && item.token1.address === route1Addr)
-            ) && item.tvl !== '0'
+            ) && Number(item.tvl).toFixed(0) !== '0'
           });
-
+          
           if (fromPairs.length && middlePairs.length && toPairs.length) {
             for (let m = 0; m < fromPairs.length; m++) {
 
@@ -4408,7 +4414,7 @@ class Store {
           (item.token0.address === addy0 && item.token1.address === addy1)
           ||
           (item.token0.address === addy1 && item.token1.address === addy0)
-        ) && item.tvl !== '0'
+        ) && Number(item.tvl).toFixed(0) !== '0'
       })
 
       for (let i = 0; i < ps.length; i++) {
@@ -4439,12 +4445,17 @@ class Store {
       console.log('amountOuts', amountOuts)
 
       const multicall = await stores.accountStore.getMulticall();
-      const receiveAmounts = await multicall.aggregate(amountOuts.map(route => {
-        return routerContract.methods.getAmountsOut(
-          sendFromAmount,
-          route.routes
-        )
-      }))
+      let receiveAmounts = []
+      try {
+        receiveAmounts = await multicall.aggregate(amountOuts.map(route => {
+          return routerContract.methods.getAmountsOut(
+            sendFromAmount,
+            route.routes
+          )
+        }))
+      } catch(e) {
+        console.log('multicall getAmountsOut', e.message)
+      }
 
       // const retryCall = async () => {
       //   const res = await Promise.allSettled(
@@ -4476,7 +4487,7 @@ class Store {
       // };
 
       // const receiveAmounts = await retryCall();
-      console.log('receiveAmounts', receiveAmounts)
+      // console.log('receiveAmounts', receiveAmounts)
 
       amountOuts = amountOuts.filter((el) => el !== null);
 
@@ -5959,6 +5970,7 @@ class Store {
       });
 
       const voteCounts = await multicall.aggregate(calls);
+      console.log('voteCounts', voteCounts)
       let votes = [];
 
       const totalVotes = voteCounts.reduce((curr, acc) => {
@@ -5967,6 +5979,7 @@ class Store {
           : BigNumber(acc).times(-1).toNumber(0);
         return BigNumber(curr).plus(num);
       }, 0);
+      console.log('totalVotes', totalVotes)
       let t = 0;
       for (let i = 0; i < voteCounts.length; i++) {
         t = t + parseInt(voteCounts[i]);
@@ -5976,8 +5989,8 @@ class Store {
         votes.push({
           address: filteredPairs[i].address,
           votePercent:
-            BigNumber(totalVotes).gt(0) || BigNumber(totalVotes).lt(0)
-              ? (voteCounts[i] / t) * 100
+            BigNumber(totalVotes).gt(0)
+              ? new BigNumber(voteCounts[i]).div(totalVotes).times(100)//(voteCounts[i] / t) * 100
               : "0",
         });
       }
