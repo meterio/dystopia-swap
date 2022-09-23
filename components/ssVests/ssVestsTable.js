@@ -393,12 +393,14 @@ const useStyles = makeStyles((theme) => ({
     left: '0px',
     top: '0px',
     borderRadius: '30px',
+    backgroundColor: '#FFF'
   },
   img2Logo: {
     position: 'absolute',
     left: '28px',
     zIndex: '1',
     top: '0px',
+    backgroundColor: '#FFF'
   },
   overrideTableHead: {
     borderBottom: '1px solid rgba(104,108,122,0.2) !important',

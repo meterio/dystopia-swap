@@ -11,7 +11,7 @@ export const VE_TOKEN_ADDRESS = '0xF8B6d9fa56EbdA99980Fe068178a6146722a8716'
 export const VE_TOKEN_NAME = 'veVOLT'
 export const VE_TOKEN_SYMBOL = 'veVOLT'
 export const VE_TOKEN_DECIMALS = 18
-export const VE_TOKEN_LOGO = ''
+export const VE_TOKEN_LOGO = 'https://raw.githubusercontent.com/meterio/token-list/master/data/VOLT/logo.png'
 export const VE_TOKEN_ABI = abis.veTokenABI
 
 export const WFTM_ADDRESS = '0x160361ce13ec33c993b5cca8f62b6864943eb083'
