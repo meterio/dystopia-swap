@@ -542,11 +542,21 @@ function Header(props) {
           subTitle={"The chain you are connected is not supported!"}
           icon={"icon-network"}
           description={
-            "Please check that your wallet is connected to Meter Mainnet, only after you can proceed. The original Voltswap can be found at v1.voltswap.finance "
+            "Please check that your wallet is connected to Meter Mainnet, only after you can proceed."
           }
           btnLabel1={"Switch to Meter"}
           btnLabel2={"Switch Wallet Provider"}
           action2={onAddressClicked}
+          links={[
+            {
+              name: 'The original Voltswap',
+              url: 'https://v1.voltswap.finance/'
+            },
+            {
+              name: 'Bridge Assets to Meter Mainnet',
+              url: 'https://passport.meter.io/'
+            }
+          ]}
         />
       )}
     </TopHeader>

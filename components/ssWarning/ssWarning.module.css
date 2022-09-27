@@ -135,6 +135,10 @@
   color: #7C838A !important;
 }
 
+.links {
+  padding-top: 20px;
+}
+
 @media (max-width: 720px) {
   .dialogContainer {
     min-width: auto;

@@ -2,7 +2,7 @@ import { Dialog, Typography, Button } from "@mui/material";
 import classes from "./ssWarning.module.css";
 import { useAppThemeContext } from '../../ui/AppThemeProvider';
 
-export default function ffWarning({close, title, subTitle, icon, description, btnLabel1, btnLabel2, action2}) {
+export default function ffWarning({close, title, subTitle, icon, description, btnLabel1, btnLabel2, action2, links}) {
   const navigateToMedium = () => {
     window.open("https://docs.voltswap.finance/", "_blank");
   };
@@ -120,6 +120,13 @@ export default function ffWarning({close, title, subTitle, icon, description, bt
                 am
                 not in contravention of any laws governing my jurisdiction of residence or citizenship.
               </>
+            }
+          </Typography>
+          <Typography className={classes.links}>
+            {
+              links ? links.map(link => {
+                return <div><a href={link.url}>{link.name}</a></div>
+              }) : null
             }
           </Typography>
 
