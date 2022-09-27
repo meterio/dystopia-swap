@@ -122,7 +122,7 @@ export default function ffWarning({close, title, subTitle, icon, description, bt
               </>
             }
           </Typography>
-          <Typography className={classes.links}>
+          <Typography className={[classes.links, classes[`links--${appTheme}`]].join(' ')}>
             {
               links ? links.map(link => {
                 return <div><a href={link.url}>{link.name}</a></div>

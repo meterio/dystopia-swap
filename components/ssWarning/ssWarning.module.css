@@ -138,6 +138,12 @@
 .links {
   padding-top: 20px;
 }
+.links a {
+  color: #5688A5;
+}
+.links--dark a {
+  color: #7C838A;
+}
 
 @media (max-width: 720px) {
   .dialogContainer {

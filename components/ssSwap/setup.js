@@ -1417,7 +1417,7 @@ function Setup() {
             fontWeight: 'bold',
             color: `${appTheme === 'light' ? '#000' : '#fff'}`,
             textDecoration: 'none'
-          }} href="https://wallet.meter.io/swap" target="_blank">gas station</a>
+          }} href="https://wallet.meter.io/swap" target="_blank">Gas Station</a>
         </div>
       </div>
   );
