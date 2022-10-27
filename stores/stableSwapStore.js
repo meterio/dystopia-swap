@@ -5839,13 +5839,13 @@ class Store {
       });
 
       let voteCounts = onlyVotes.map((vote) => {
-        return BigNumber(vote.value).times(100).toFixed(0);
+        return BigNumber(vote.value).toFixed(0);
       });
 
       this._callContractWait(
         web3,
         gaugesContract,
-        "vote",
+        "votePart",
         [tokenID, tokens, voteCounts],
         account,
         gasPrice,
@@ -5969,31 +5969,27 @@ class Store {
         return v;
       });
 
-      const voteCounts = await multicall.aggregate(calls);
-      console.log('voteCounts', voteCounts)
-      let votes = [];
+      const vestingContract = new web3.eth.Contract(
+        CONTRACTS.VE_TOKEN_ABI,
+        CONTRACTS.VE_TOKEN_ADDRESS
+      );
 
-      const totalVotes = voteCounts.reduce((curr, acc) => {
-        let num = BigNumber(acc).gt(0)
-          ? acc
-          : BigNumber(acc).times(-1).toNumber(0);
-        return BigNumber(curr).plus(num);
-      }, 0);
-      console.log('totalVotes', totalVotes)
-      let t = 0;
-      for (let i = 0; i < voteCounts.length; i++) {
-        t = t + parseInt(voteCounts[i]);
-      }
+      const totalWeight = await vestingContract.methods.balanceOfNFT(tokenID).call();
+
+      const voteCounts = await multicall.aggregate(calls);
+
+      let votes = [];
 
       for (let i = 0; i < voteCounts.length; i++) {
         votes.push({
           address: filteredPairs[i].address,
           votePercent:
-            BigNumber(totalVotes).gt(0)
-              ? new BigNumber(voteCounts[i]).div(totalVotes).times(100)//(voteCounts[i] / t) * 100
+            BigNumber(totalWeight).gt(0)
+              ? new BigNumber(voteCounts[i]).div(totalWeight).times(100)
               : "0",
         });
       }
+      
       this.emitter.emit(ACTIONS.VEST_VOTES_RETURNED, votes);
     } catch (ex) {
       console.error(ex);

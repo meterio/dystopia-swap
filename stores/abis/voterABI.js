@@ -970,6 +970,29 @@ export const voterABI = [
       "inputs": [
         {
           "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "address[]",
+          "name": "_poolVote",
+          "type": "address[]"
+        },
+        {
+          "internalType": "int256[]",
+          "name": "_weights",
+          "type": "int256[]"
+        }
+      ],
+      "name": "votePart",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
           "name": "",
           "type": "uint256"
         },
