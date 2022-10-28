@@ -627,7 +627,8 @@ export default function EnhancedTable({vestNFTs, govToken, veToken}) {
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [page, setPage] = useState(0);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-  const [tableHeight, setTableHeight] = useState((window.innerHeight - 50 - 64 - 30 - 60 - 54 - 20 - 30) - (windowWidth < 1280 ? 50 : 0));
+  // const [tableHeight, setTableHeight] = useState((window.innerHeight - 50 - 64 - 30 - 60 - 54 - 20 - 30) - (windowWidth < 1280 ? 50 : 0));
+  const [tableHeight, setTableHeight] = useState((window.innerHeight - 50 - 64 - 30 - 60 - 54) - (windowWidth < 1280 ? 50 : 0));
   const [sortDirection, setSortDirection] = useState('asc');
   const [expanded, setExpanded] = useState('');
 
@@ -667,7 +668,8 @@ export default function EnhancedTable({vestNFTs, govToken, veToken}) {
 
   window.addEventListener('resize', () => {
     setWindowWidth(window.innerWidth);
-    setTableHeight((window.innerHeight - 50 - 64 - 30 - 60 - 54 - 20 - 30) - (windowWidth < 1280 ? 50 : 0));
+    // setTableHeight((window.innerHeight - 50 - 64 - 30 - 60 - 54 - 20 - 30) - (windowWidth < 1280 ? 50 : 0));
+    setTableHeight((window.innerHeight - 50 - 64 - 30 - 60 - 54) - (windowWidth < 1280 ? 50 : 0));
   });
 
   const handleChangeAccordion = (panel) => (event, newExpanded) => {
@@ -716,7 +718,7 @@ export default function EnhancedTable({vestNFTs, govToken, veToken}) {
                 {isEmptyTable ? null : (
                 <TableBody>
                 {stableSort(vestNFTs, getComparator(order, orderBy))
-                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  // .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row, index) => {
                     if (!row) {
                       return null;
@@ -903,7 +905,7 @@ export default function EnhancedTable({vestNFTs, govToken, veToken}) {
             {isEmptyTable && emptyMessage}
           </TableContainer>
 
-          <TablePagination
+          {/* <TablePagination
             className={'g-flex-column__item-fixed'}
             style={{
               width: '100%',
@@ -925,7 +927,7 @@ export default function EnhancedTable({vestNFTs, govToken, veToken}) {
             ActionsComponent={TablePaginationActions}
             onPageChange={handleChangePage}
             onRowsPerPageChange={handleChangeRowsPerPage}
-          />
+          /> */}
         </Paper>
       }
 
@@ -934,7 +936,7 @@ export default function EnhancedTable({vestNFTs, govToken, veToken}) {
         {isEmptyTable && emptyMessage}
         <div style={{overflow: 'auto'}}>
           {stableSort(vestNFTs, getComparator(order, orderBy))
-            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+            // .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
             .map((row, index) => {
               if (!row) {
                 return null;
@@ -1212,7 +1214,7 @@ export default function EnhancedTable({vestNFTs, govToken, veToken}) {
             })
           }
         </div>
-         <TablePagination
+         {/* <TablePagination
             className={'g-flex-column__item-fixed'}
             style={{
               width: '100%',
@@ -1232,7 +1234,7 @@ export default function EnhancedTable({vestNFTs, govToken, veToken}) {
             ActionsComponent={TablePaginationActions}
             onPageChange={handleChangePage}
             onRowsPerPageChange={handleChangeRowsPerPage}
-          />
+          /> */}
         </>
       )}
     </>

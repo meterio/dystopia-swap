@@ -538,7 +538,8 @@ export default function EnhancedTable({ rewards, vestNFTs, tokenID }) {
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [page, setPage] = useState(0);
   const [tableHeight, setTableHeight] = useState(
-    window.innerHeight - 50 - 64 - 74 - 60 - 54 - 20 - 30
+    // window.innerHeight - 50 - 64 - 74 - 60 - 54 - 20 - 30
+    window.innerHeight - 50 - 64 - 74 - 60 - 30
   );
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [expanded, setExpanded] = useState("");
@@ -726,7 +727,8 @@ export default function EnhancedTable({ rewards, vestNFTs, tokenID }) {
   };
 
   window.addEventListener("resize", () => {
-    setTableHeight(window.innerHeight - 50 - 64 - 74 - 60 - 54 - 20 - 30);
+    // setTableHeight(window.innerHeight - 50 - 64 - 74 - 60 - 54 - 20 - 30);
+    setTableHeight(window.innerHeight - 50 - 64 - 74 - 60 - 30);
     setWindowWidth(window.innerWidth);
   });
 
@@ -766,10 +768,10 @@ export default function EnhancedTable({ rewards, vestNFTs, tokenID }) {
               >
                 {Array.isArray(rewards) > 0
                   ? stableSort(rewards, getComparator(order, orderBy))
-                      .slice(
-                        page * rowsPerPage,
-                        page * rowsPerPage + rowsPerPage
-                      )
+                      // .slice(
+                      //   page * rowsPerPage,
+                      //   page * rowsPerPage + rowsPerPage
+                      // )
                       .map((row, index) => {
                         if (!row) {
                           return null;
@@ -1104,7 +1106,7 @@ export default function EnhancedTable({ rewards, vestNFTs, tokenID }) {
             </Table>
           </TableContainer>
 
-          <TablePagination
+          {/* <TablePagination
             className={"g-flex-column__item-fixed"}
             style={{
               width: "100%",
@@ -1126,7 +1128,7 @@ export default function EnhancedTable({ rewards, vestNFTs, tokenID }) {
             rowsPerPageOptions={window.innerWidth < 435 ? [] : [5, 10, 25]}
             onPageChange={handleChangePage}
             onRowsPerPageChange={handleChangeRowsPerPage}
-          />
+          /> */}
         </div>
       )}
 
@@ -1135,7 +1137,7 @@ export default function EnhancedTable({ rewards, vestNFTs, tokenID }) {
           <div style={{ overflow: "auto" }}>
             {Array.isArray(rewards) > 0
               ? stableSort(rewards, getComparator(order, orderBy))
-                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  // .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row, index) => {
                     if (!row) {
                       return null;
@@ -1731,7 +1733,7 @@ export default function EnhancedTable({ rewards, vestNFTs, tokenID }) {
                   })
               : null}
           </div>
-          <TablePagination
+          {/* <TablePagination
             className={"g-flex-column__item-fixed"}
             style={{
               width: "100%",
@@ -1752,7 +1754,7 @@ export default function EnhancedTable({ rewards, vestNFTs, tokenID }) {
             rowsPerPageOptions={window.innerWidth < 435 ? [] : [5, 10, 25]}
             onPageChange={handleChangePage}
             onRowsPerPageChange={handleChangeRowsPerPage}
-          />
+          /> */}
         </>
       )}
     </>
