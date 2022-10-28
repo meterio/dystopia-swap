@@ -308,14 +308,16 @@ const StickyTableCell = styled(TableCell)(({ theme, appTheme }) => ({
   position: "sticky",
   zIndex: 5,
   whiteSpace: "nowrap",
-  padding: "20px 25px 15px",
+  // padding: "20px 25px 15px",
+  padding: "20px 6px 15px",
 }));
 
 const StyledTableCell = styled(TableCell)(({ theme, appTheme }) => ({
   background: appTheme === "dark" ? "#24292D" : "#CFE5F2",
   width: "auto",
   whiteSpace: "nowrap",
-  padding: "20px 25px 15px",
+  // padding: "20px 25px 15px",
+  padding: "20px 6px 15px",
 }));
 
 const sortIcon = (sortDirection) => {
@@ -720,7 +722,8 @@ export default function EnhancedTable({
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [page, setPage] = useState(0);
   const [tableHeight, setTableHeight] = useState(
-    window.innerHeight - 50 - 64 - 30 - 60 - 54 - 20 - 30
+    // window.innerHeight - 50 - 64 - 30 - 60 - 54 - 20 - 30
+    window.innerHeight - 50 - 64 - 30 - 60 - 54
   );
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
@@ -944,7 +947,8 @@ export default function EnhancedTable({
   const [newRow, setNewRow] = useState();
 
   window.addEventListener("resize", () => {
-    setTableHeight(window.innerHeight - 50 - 64 - 30 - 60 - 54 - 20 - 30);
+    // setTableHeight(window.innerHeight - 50 - 64 - 30 - 60 - 54 - 20 - 30);
+    setTableHeight(window.innerHeight - 50 - 64 - 30 - 60 - 54);
     setWindowWidth(window.innerWidth);
   });
 
@@ -992,7 +996,7 @@ export default function EnhancedTable({
                 }}
               >
                 {stableSort(gauges, getComparator(order, orderBy, sliderValues))
-                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  // .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row, index) => {
                     if (!row) {
                       return null;
@@ -1291,7 +1295,7 @@ export default function EnhancedTable({
             </Table>
           </TableContainer>
 
-          <TablePagination
+          {/* <TablePagination
             className={"g-flex-column__item-fixed"}
             style={{
               width: "100%",
@@ -1312,7 +1316,7 @@ export default function EnhancedTable({
             ActionsComponent={TablePaginationActions}
             onPageChange={handleChangePage}
             onRowsPerPageChange={handleChangeRowsPerPage}
-          />
+          /> */}
         </div>
       )}
 
@@ -1333,7 +1337,7 @@ export default function EnhancedTable({
             }}
           >
             {stableSort(gauges, getComparator(order, orderBy, sliderValues))
-              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              // .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((row, index) => {
                 if (!row) {
                   return null;
@@ -2098,7 +2102,7 @@ export default function EnhancedTable({
             </div>
           </div>
 
-          <TablePagination
+          {/* <TablePagination
             className={"g-flex-column__item-fixed"}
             style={{
               width: "100%",
@@ -2119,7 +2123,7 @@ export default function EnhancedTable({
             ActionsComponent={TablePaginationActions}
             onPageChange={handleChangePage}
             onRowsPerPageChange={handleChangeRowsPerPage}
-          />
+          /> */}
         </>
       )}
     </>

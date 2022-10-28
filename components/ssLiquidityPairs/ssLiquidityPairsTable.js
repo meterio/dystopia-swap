@@ -1349,7 +1349,8 @@ export default function EnhancedTable({ pairs, isLoading }) {
   );
   const [showSearch, setShowSearch] = useState(localToggles.showSearch);
   const [tableHeight, setTableHeight] = useState(
-    window.innerHeight - 50 - 124 - 30 - 60 - 54 - 20 - 30
+    // window.innerHeight - 50 - 124 - 30 - 60 - 54 - 20 - 30
+    window.innerHeight - 50 - 124 - 30 - 60
   );
   const [expanded, setExpanded] = useState("");
   const [sortDirection, setSortDirection] = useState("asc");
@@ -1473,7 +1474,8 @@ export default function EnhancedTable({ pairs, isLoading }) {
 
   window.addEventListener("resize", () => {
     setWindowWidth(window.innerWidth);
-    setTableHeight(window.innerHeight - 50 - 124 - 30 - 60 - 54 - 20 - 30);
+    // setTableHeight(window.innerHeight - 50 - 124 - 30 - 60 - 54 - 20 - 30);
+    setTableHeight(window.innerHeight - 50 - 124 - 30 - 60);
   });
 
   const handleChangeAccordion = (panel) => (event, newExpanded) => {
@@ -1629,7 +1631,7 @@ export default function EnhancedTable({ pairs, isLoading }) {
 
                 <TableBody>
                   {stableSort(filteredPairs, getComparator(order, orderBy))
-                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                    // .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row, index) => {
                       if (!row) {
                         return null;
@@ -2797,7 +2799,7 @@ export default function EnhancedTable({ pairs, isLoading }) {
               </Table>
             </TableContainer>
 
-            <TablePagination
+            {/* <TablePagination
               className={"g-flex-column__item-fixed"}
               style={{
                 width: "100%",
@@ -2821,7 +2823,7 @@ export default function EnhancedTable({ pairs, isLoading }) {
               ActionsComponent={TablePaginationActions}
               onPageChange={handleChangePage}
               onRowsPerPageChange={handleChangeRowsPerPage}
-            />
+            /> */}
           </div>
         </>
       )}
@@ -2834,7 +2836,7 @@ export default function EnhancedTable({ pairs, isLoading }) {
           }}
         >
           {stableSort(filteredPairs, getComparator(order, orderBy))
-            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+            // .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
             .map((row, index) => {
               if (!row) {
                 return null;
@@ -3526,7 +3528,7 @@ export default function EnhancedTable({ pairs, isLoading }) {
                 </Accordion>
               );
             })}
-          <TablePagination
+          {/* <TablePagination
             className={"g-flex-column__item-fixed"}
             style={{
               width: "100%",
@@ -3550,7 +3552,7 @@ export default function EnhancedTable({ pairs, isLoading }) {
             ActionsComponent={TablePaginationActions}
             onPageChange={handleChangePage}
             onRowsPerPageChange={handleChangeRowsPerPage}
-          />
+          /> */}
         </div>
       )}
     </div>
