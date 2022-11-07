@@ -145,6 +145,21 @@ function descendingComparator(a, b, orderBy, sliderValues) {
         return 1;
       }
       return 0;
+    
+    case "apr":
+      if (BigNumber(b.gauge.apr).lt(a.gauge.apr)) {
+        return -1
+      } else if (BigNumber(b.gauge.apr).gt(a.gauge.apr)) {
+        return 1
+      } else {
+        if (BigNumber(b.gauge.expectAPR).lt(a.gauge.expectAPR)) {
+          return -1
+        } else if (BigNumber(b.gauge.expectAPR).gt(a.gauge.expectAPR)) {
+          return 1
+        } else {
+          return 0
+        }
+      }
 
     case "balance":
       if (BigNumber(b?.gauge?.balance).lt(a?.gauge?.balance)) {
@@ -231,6 +246,7 @@ function getComparator(order, orderBy, sliderValues) {
 
 function stableSort(array, comparator) {
   const stabilizedThis = array.map((el, index) => [el, index]);
+  console.log('stabilizedThis', stabilizedThis)
   stabilizedThis.sort((a, b) => {
     const order = comparator(a[0], b[0]);
     if (order !== 0) return order;
@@ -350,6 +366,10 @@ function EnhancedTableHead(props) {
   const createSortHandler = (property) => (event) => {
     onRequestSort(event, property);
   };
+
+  useEffect(() => {
+    console.log('orderBy', orderBy)
+  }, [orderBy])
 
   const { appTheme } = useAppThemeContext();
 
@@ -776,6 +796,7 @@ export default function EnhancedTable({
   };
 
   const handleRequestSort = (event, property) => {
+    console.log({orderBy, property, order})
     const isAsc = orderBy === property && order === "asc";
     setOrder(isAsc ? "desc" : "asc");
     setOrderBy(property);
