@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useAppThemeContext } from "../AppThemeProvider";
 import classes from './AssetSelect.module.css';
 import stores from '../../stores';
-import { ETHERSCAN_URL } from '../../stores/constants';
 import {
   Button,
   Dialog, DialogContent,
@@ -31,6 +30,7 @@ const AssetSelect = (
     showBalance = true,
     interactiveBorder = true,
     size = 'default',
+    disabledSelect,
   }) => {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState('');
@@ -91,7 +91,10 @@ const AssetSelect = (
   };
 
   const viewOption = (token) => {
-    window.open(`${ETHERSCAN_URL}token/${token.address}`, '_blank');
+    const supportChain = stores.accountStore.getStore('supportChain');
+    if (supportChain) {
+      window.open(`${supportChain.explorerURL}address/${token.address}`, '_blank');
+    }
   };
 
   const renderManageOption = (type, asset, idx) => {
@@ -380,7 +383,7 @@ const AssetSelect = (
           size === 'medium' ? classes.displaySelectContainerMedium : '',
         ].join(' ')}
         onClick={() => {
-          openSearch();
+          !disabledSelect && openSearch();
         }}>
         <div className={classes.assetSelectMenuItem}>
           <div

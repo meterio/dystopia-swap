@@ -22,7 +22,6 @@ import { formatSymbol, formatInputAmount } from '../../utils';
 import stores from '../../stores';
 import {
   ACTIONS,
-  ETHERSCAN_URL,
 } from '../../stores/constants';
 import { useAppThemeContext } from '../../ui/AppThemeProvider';
 import SwapIconBg from '../../ui/SwapIconBg';
@@ -76,7 +75,9 @@ export default function ssBribeCreate() {
           return false
         }
       });
-      const filteredStoreAssetOptions = _filteredStoreAssetOptions.filter(item => item.symbol !== 'MTR')
+      const supportChain = stores.accountStore.getStore('supportChain');
+      const nativeToken = supportChain ? supportChain.contracts.FTM_ADDRESS : ''
+      const filteredStoreAssetOptions = _filteredStoreAssetOptions.filter(item => item.symbol !== nativeToken)
       setAssetOptions(filteredStoreAssetOptions);
       if (filteredStoreAssetOptions.length > 0 && asset == null) {
         setAsset(filteredStoreAssetOptions[0]);
@@ -400,7 +401,9 @@ function AssetSelectManage({type, value, assetOptions, onSelect, manageLocalAsse
   };
 
   const viewOption = (token) => {
-    window.open(`${ETHERSCAN_URL}token/${token.address}`, '_blank');
+    const supportChain = stores.accountStore.getStore('supportChain');
+    if (!supportChain) return;
+    window.open(`${supportChain.explorerURL}address/${token.address}`, '_blank');
   };
 
   const renderManageOption = (type, asset, idx) => {
@@ -766,7 +769,9 @@ function AssetSelectPair({type, value, assetOptions, onSelect, manageLocalAssets
   };
 
   const viewOption = (token) => {
-    window.open(`${ETHERSCAN_URL}token/${token.address}`, '_blank');
+    const supportChain = stores.accountStore.getStore('supportChain');
+    if (!supportChain) return;
+    window.open(`${supportChain.explorerURL}token/${token.address}`, '_blank');
   };
 
   const renderManageOption = (type, asset, idx) => {

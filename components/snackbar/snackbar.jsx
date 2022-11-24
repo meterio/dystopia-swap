@@ -1,10 +1,10 @@
 import React, { Component, useState } from 'react';
 import { Snackbar, IconButton, Button, Typography, SvgIcon } from '@mui/material';
 import { colors } from '../../theme/coreTheme';
-import { ETHERSCAN_URL } from '../../stores/constants';
 import classes from './snackbar.module.css';
 import { useAppThemeContext } from '../../ui/AppThemeProvider';
 import { Close } from '@mui/icons-material';
+import stores from '../../stores';
 
 const iconStyle = {
   fontSize: '30px',
@@ -115,7 +115,10 @@ export default function MySnackbar(props) {
       color = colors.blue;
       messageType = 'Hash';
 
-      let snackbarMessage = ETHERSCAN_URL + 'tx/' + message;
+      const supportChain = stores.accountStore.getStore('supportChain');
+      if (!supportChain) return;
+
+      let snackbarMessage = supportChain.explorerURL + 'tx/' + message;
       actions = [
         <Button variant="text" size="small" onClick={() => window.open(snackbarMessage, '_blank')}>
           View

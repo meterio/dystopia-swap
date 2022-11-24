@@ -10,7 +10,6 @@ import {
   DialogContent,
   Tooltip,
 } from "@mui/material";
-import { styled } from "@mui/material/styles";
 import { Search, KeyboardArrowDown, Close } from "@mui/icons-material";
 import migrate from "../../stores/configurations/migrators";
 import FactoryAbi from "../../stores/abis/FactoryAbi.json";
@@ -19,16 +18,15 @@ import Form from "../../ui/MigratorForm";
 import classes from "./ssMigrate.module.css";
 import { useAppThemeContext } from "../../ui/AppThemeProvider";
 import stores from "../../stores";
-import { ACTIONS, CONTRACTS, ETHERSCAN_URL } from "../../stores/constants";
-import { BigNumber } from "ethers";
+import { ACTIONS } from "../../stores/constants";
 import { parseUnits } from "ethers/lib/utils";
 import Borders from "../../ui/Borders";
 import AssetSelect from "../../ui/AssetSelect";
 import Loader from "../../ui/Loader";
-import Web3 from "web3";
 
 export default function Setup() {
   const [fromAssetValue, setFromAssetValue] = useState(null);
+  const [supportChain, setSupportChain] = useState(stores.accountStore.getStore('supportChain'));
   const [toAssetValue, setToAssetValue] = useState(null);
   const [, updateState] = React.useState();
   const forceUpdate = React.useCallback(() => updateState({}), []);
@@ -95,12 +93,13 @@ export default function Setup() {
 
   const getPairDetails = async (token0, token1) => {
     const multicall = await stores.accountStore.getMulticall();
+    if (!supportChain) return;
 
-    if (token0 == "MATIC") {
-      token0 = CONTRACTS.WFTM_ADDRESS;
+    if (token0 == supportChain.contracts.FTM_ADDRESS) {
+      token0 = supportChain.contracts.WFTM_ADDRESS;
     }
-    if (token1 == "MATIC") {
-      token1 = CONTRACTS.WFTM_ADDRESS;
+    if (token1 == supportChain.contracts.FTM_ADDRESS) {
+      token1 = supportChain.contracts.WFTM_ADDRESS;
     }
 
     try {
@@ -274,11 +273,18 @@ export default function Setup() {
     forceUpdate();
   };
 
+  const accountConfigured = () => {
+    const supportChain = stores.accountStore.getStore('supportChain');
+    setSupportChain(supportChain);
+  }
+
   useEffect(() => {
     stores.emitter.on(ACTIONS.UPDATED, ssUpdated);
+    stores.emitter.on(ACTIONS.ACCOUNT_CONFIGURED, accountConfigured);
     ssUpdated();
     return () => {
       stores.emitter.removeListener(ACTIONS.UPDATED, ssUpdated);
+      stores.emitter.removeListener(ACTIONS.ACCOUNT_CONFIGURED, accountConfigured);
     };
   }, []);
 
@@ -421,23 +427,23 @@ export default function Setup() {
     token0,
     token1
   ) => {
+    if (!supportChain) return;
     const web3 = await stores.accountStore.getWeb3Provider();
     const routerContract = new web3.eth.Contract(
-      CONTRACTS.ROUTER_ABI,
-      CONTRACTS.ROUTER_ADDRESS
+      supportChain.contracts.ROUTER_ABI,
+      supportChain.contracts.ROUTER_ADDRESS
     );
-    console;
     const sendAmount0 = parseUnits(amount0.toString(), token0.decimals);
     const sendAmount1 = parseUnits(amount1.toString(), token0.decimals);
 
     let addy0 = token0.address;
     let addy1 = token1.address;
 
-    if (token0.address === "MATIC") {
-      addy0 = CONTRACTS.WFTM_ADDRESS;
+    if (token0.address === supportChain.contracts.FTM_ADDRESS) {
+      addy0 = supportChain.contracts.WFTM_ADDRESS;
     }
-    if (token1.address === "MATIC") {
-      addy1 = CONTRACTS.WFTM_ADDRESS;
+    if (token1.address === supportChain.contracts.FTM_ADDRESS) {
+      addy1 = supportChain.contracts.WFTM_ADDRESS;
     }
 
     let res = await routerContract.methods

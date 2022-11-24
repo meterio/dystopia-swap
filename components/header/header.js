@@ -28,7 +28,7 @@ import Navigation from "../navigation";
 import Unlock from "../unlock";
 import TransactionQueue from "../transactionQueue";
 
-import { ACTIONS, INFO_URL } from "../../stores/constants";
+import { ACTIONS, getSupportChainList } from "../../stores/constants";
 
 import stores from "../../stores";
 import { formatAddress } from "../../utils";
@@ -142,6 +142,7 @@ function Header(props) {
   const router = useRouter();
 
   const [account, setAccount] = useState(accountStore);
+  const [supportChain, setSupportChain] = useState(stores.accountStore.getStore("supportChain"));
   const [maticBalance, setMaticBalance] = useState();
   const [darkMode, setDarkMode] = useState(
     props.theme.palette.mode === "dark" ? true : false
@@ -171,12 +172,15 @@ function Header(props) {
   useEffect(() => {
     const accountConfigure = () => {
       const accountStore = stores.accountStore.getStore("account");
-      const bb = stores.stableSwapStore.getStore("baseAssets");
+      const supportChain = stores.accountStore.getStore("supportChain");
       if (accountStore) {
         web(accountStore.address);
       }
       setAccount(accountStore);
+      setSupportChain(supportChain);
       closeUnlock();
+      setAnchorEl(false);
+      setSwitchNetwork(false);
     };
 
     const connectWallet = () => {
@@ -273,8 +277,8 @@ function Header(props) {
     });
   };
 
-  const switchChain = async () => {
-    let hexChain = "0x" + Number(process.env.NEXT_PUBLIC_CHAINID).toString(16);
+  const switchChain = async (chainId) => {
+    let hexChain = "0x" + Number(chainId).toString(16);
     try {
       await window.ethereum.request({
         method: "wallet_switchEthereumChain",
@@ -285,15 +289,24 @@ function Header(props) {
     }
   };
 
+  const cancleSwitch = () => {
+    setSwitchNetwork(false)
+  }
+
   const setQueueLength = (length) => {
     setTransactionQueueLength(length);
   };
 
   const [anchorEl, setAnchorEl] = React.useState(false);
+  const [switchNetwork, setSwitchNetwork] = useState(false);
 
   const handleClick = () => {
     setAnchorEl(!anchorEl);
   };
+
+  const supportChainClick = () => {
+    setSwitchNetwork(true)
+  }
 
   const { appTheme } = useAppThemeContext();
 
@@ -315,29 +328,39 @@ function Header(props) {
         <Navigation />
 
         <div className={classes.userBlock}>
-          {process.env.NEXT_PUBLIC_CHAINID == "83" && (
+          {supportChain && (
             <div className={classes.testnetDisclaimer}>
-              <Typography
+              <Button
+                disableElevation
                 className={[
-                  classes.testnetDisclaimerText,
-                  classes[`testnetDisclaimerText--${appTheme}`],
+                  classes.supportChainButton,
+                  classes[`supportChainButton--${appTheme}`],
                 ].join(" ")}
+                variant="contained"
+                aria-controls="simple-menu"
+                aria-haspopup="true"
+                onClick={supportChainClick}
               >
-                Meter Testnet
-              </Typography>
+                <div
+                  style={{
+                    color:
+                      appTheme === "dark" ? "#ffffff" : "#0B5E8E",
+                  }}
+                >
+                  { supportChain.name }
+                </div>
+              </Button>
             </div>
-          )}
-          {process.env.NEXT_PUBLIC_CHAINID == "82" && (
-            <div className={classes.testnetDisclaimer}>
-              <Typography
-                className={[
-                  classes.testnetDisclaimerText,
-                  classes[`testnetDisclaimerText--${appTheme}`],
-                ].join(" ")}
-              >
-                Meter Mainnet
-              </Typography>
-            </div>
+            // <div className={classes.testnetDisclaimer}>
+            //   <Typography
+            //     className={[
+            //       classes.testnetDisclaimerText,
+            //       classes[`testnetDisclaimerText--${appTheme}`],
+            //     ].join(" ")}
+            //   >
+            //     { supportChain.name }
+            //   </Typography>
+            // </div>
           )}
           <WalletConnect>
             {({ connect }) => {
@@ -397,7 +420,7 @@ function Header(props) {
                             "g-flex--align-center",
                           ].join(" ")}
                         >
-                          {maticBalance ? maticBalance : 0} MTR
+                          {maticBalance ? maticBalance : 0} {supportChain ? supportChain.contracts.FTM_SYMBOL : ''}
                         </Typography>
                       </Button>
 
@@ -485,7 +508,12 @@ function Header(props) {
 
           <div
               className={[classes.statButton, classes[`statButton--${appTheme}`], 'g-flex', 'g-flex--align-center'].join(' ')}
-              onClick={() => window.open(INFO_URL, "_blank")}>
+              onClick={() => {
+                const supportChain = stores.accountStore.getStore('supportChain')
+                if (supportChain) {
+                  window.open(supportChain.infoURL, "_blank")
+                }
+              }}>
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path
                   style={{marginRight: 5}}
@@ -542,9 +570,16 @@ function Header(props) {
           subTitle={"The chain you are connected is not supported!"}
           icon={"icon-network"}
           description={
-            "Please check that your wallet is connected to Meter Mainnet, only after you can proceed."
+            "Please check that your wallet is connected to right network, only after you can proceed."
           }
-          btnLabel1={"Switch to Meter"}
+          btnLabelList={
+            getSupportChainList().map(c => {
+              return {
+                label: `Switch to ${c.name}`,
+                chainId: c.id
+              }
+            })
+          }
           btnLabel2={"Switch Wallet Provider"}
           action2={onAddressClicked}
           links={[
@@ -557,6 +592,28 @@ function Header(props) {
               url: 'https://passport.meter.io/'
             }
           ]}
+        />
+      )}
+      {switchNetwork && (
+        <SSWarning
+          close={switchChain}
+          title={"Switch Network:"}
+          subTitle={"You can switch between these networks below!"}
+          description={
+            "Click the button below and the network is about to change."
+          }
+          btnLabelList={
+            getSupportChainList().filter(c => {
+              return supportChain ? c.id !== supportChain.id : true
+            }).map(c => {
+              return {
+                label: `Switch to ${c.name}`,
+                chainId: c.id
+              }
+            })
+          }
+          btnLabel2={"Cancel"}
+          action2={cancleSwitch}
         />
       )}
     </TopHeader>

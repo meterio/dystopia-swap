@@ -5,7 +5,7 @@ import classes from './ffDashboardClaimAll.module.css';
 import RewardsTable from './ffDashboardClaimAllTable.js'
 
 import stores from '../../stores'
-import { ACTIONS, CONTRACTS } from '../../stores/constants';
+import { ACTIONS } from '../../stores/constants';
 
 function NoRewardsIcon(props) {
   const { color, className } = props;
@@ -54,8 +54,9 @@ export default function ffClaimAll() {
 
   const setGetIBEUR = () => {
     const assets = stores.stableSwapStore.getStore('assets')
+    const supportChain = stores.accountStore.getStore('supportChain')
     const ibEURArr = assets.filter((as) => {
-      return as.address === CONTRACTS.IBEUR_ADDRESS
+      return as.address === supportChain.contracts.IBEUR_ADDRESS
     })
 
     if(ibEURArr.length > 0) {

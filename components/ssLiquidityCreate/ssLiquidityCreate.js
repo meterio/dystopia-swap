@@ -22,7 +22,6 @@ import classes from './ssLiquidityCreate.module.css';
 import stores from '../../stores';
 import {
   ACTIONS,
-  ETHERSCAN_URL,
 } from '../../stores/constants';
 import { useAppThemeContext } from '../../ui/AppThemeProvider';
 import { formatSymbol } from '../../utils';
@@ -621,7 +620,9 @@ function AssetSelect({ type, value, assetOptions, onSelect }) {
   }
 
   const viewOption = (token) => {
-    window.open(`${ETHERSCAN_URL}token/${token.address}`, '_blank')
+    const supportChain = stores.accountStore.getStore('supportChain')
+    if (!supportChain) return;
+    window.open(`${supportChain.explorerURL}address/${token.address}`, '_blank')
   }
 
   const renderManageOption = (type, asset, idx) => {

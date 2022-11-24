@@ -11,6 +11,8 @@ import SSWarning from "../ssWarning";
 
 import classes from "./navigation.module.css";
 import { useAppThemeContext } from "../../ui/AppThemeProvider";
+import stores from "../../stores";
+import { ACTIONS } from "../../stores/constants/constants";
 
 function Navigation(props) {
   const router = useRouter();
@@ -18,6 +20,7 @@ function Navigation(props) {
 
   const [menuOpen, setMenuOpen] = useState(false);
   const [active, setActive] = useState("swap");
+  const [supportChain, setSupportChain] = useState(stores.accountStore.getStore("supportChain"));
 
   function handleNavigate(route) {
     router.push(route);
@@ -86,9 +89,32 @@ function Navigation(props) {
   }
 
   useEffect(() => {
+    const accountConfigure = () => {
+      const supportChain = stores.accountStore.getStore("supportChain");
+
+      setSupportChain(supportChain);
+    };
+
+    stores.emitter.on(ACTIONS.ACCOUNT_CONFIGURED, accountConfigure);
+    return () => {
+      stores.emitter.removeListener(ACTIONS.ACCOUNT_CONFIGURED, accountConfigure);
+    };
+  }, []);
+
+  useEffect(() => {
+    const activePath = router.asPath;
+    if (supportChain && activePath.includes("swapvolt") && supportChain.id !== '361') {
+      router.push("/swap");
+    }
+  }, [supportChain])
+
+  useEffect(() => {
     const activePath = router.asPath;
     if (activePath.includes("swap")) {
       setActive("swap");
+    }
+    if (activePath.includes("swapvolt")) {
+      setActive("swapvolt");
     }
     if (activePath.includes("liquidity")) {
       setActive("liquidity");
@@ -125,6 +151,7 @@ function Navigation(props) {
         className={classes.navToggles}
       >
         {renderSubNav("Swap", "swap")}
+        {supportChain && supportChain.id === '361' && renderSubNav("Swapvolt", "swapvolt")}
         {renderSubNav("Liquidity", "liquidity")}
         {renderSubNav("Vest", "vest")}
         {renderSubNav("Vote", "vote")}

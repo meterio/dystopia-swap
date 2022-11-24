@@ -13,7 +13,7 @@ import BigNumber from "bignumber.js";
 import TokenSelect from "../select-token/select-token";
 import classes from "./ssWhitelist.module.css";
 import stores from "../../stores";
-import { ACTIONS, ETHERSCAN_URL } from "../../stores/constants";
+import { ACTIONS } from "../../stores/constants";
 import { formatAddress, formatCurrency } from "../../utils";
 import { formatSymbol } from "../../utils";
 import { useAppThemeContext } from "../../ui/AppThemeProvider";
@@ -127,7 +127,10 @@ export default function ssWhitelist() {
   }, []);
 
   const onAddressClick = (address) => {
-    window.open(`${ETHERSCAN_URL}token/${address}`, "_blank");
+    const supportChain = stores.accountStore.getStore('supportChain');
+    if (supportChain) {
+      window.open(`${supportChain.explorerURL}address/${address}`, "_blank");
+    }
   };
 
   const onWhitelist = () => {

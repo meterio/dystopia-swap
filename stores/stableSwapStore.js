@@ -3,10 +3,10 @@ import {
   MAX_UINT256,
   ZERO_ADDRESS,
   ACTIONS,
-  CONTRACTS,
+  // CONTRACTS,
   BASE_ASSETS_WHITELIST,
   BLACK_LIST_TOKENS,
-  ROUTE_ASSETS
+  // ROUTE_ASSETS
 } from "./constants";
 import { v4 as uuidv4 } from "uuid";
 
@@ -130,7 +130,9 @@ query ve($id: ID!) {
 }
 `;
 
-const client = createClient({ url: process.env.NEXT_PUBLIC_API, requestPolicy: 'network-only' });
+// const client = createClient({ url: process.env.NEXT_PUBLIC_API, requestPolicy: 'network-only' });
+let client = null;
+let CONTRACTS = null;
 
 const removeDuplicate = (arr) => {
   const assets = arr.reduce((acc, item) => {
@@ -164,6 +166,7 @@ class Store {
       },
       tvls: [],
       apr: [],
+      swapTvoltAssets: null,
     };
 
     dispatcher.register(
@@ -220,6 +223,9 @@ class Store {
           // SWAP
           case ACTIONS.QUOTE_SWAP:
             this.quoteSwap(payload);
+            break;
+          case ACTIONS.SWAPVOLT:
+            this.swapvolt(payload);
             break;
           case ACTIONS.SWAP:
             this.swap(payload);
@@ -755,10 +761,10 @@ class Store {
       CONTRACTS.FACTORY_ADDRESS
     );
 
-    if (addressA === "MTR") {
+    if (addressA === CONTRACTS.FTM_ADDRESS) {
       addressA = CONTRACTS.WFTM_ADDRESS;
     }
-    if (addressB === "MTR") {
+    if (addressB === CONTRACTS.FTM_ADDRESS) {
       addressB = CONTRACTS.WFTM_ADDRESS;
     }
 
@@ -1007,7 +1013,7 @@ class Store {
       const baseAssets = this.getStore("baseAssets");
       let _address = address
       if (address.toLowerCase() === CONTRACTS.WFTM_ADDRESS) {
-        _address =  'MTR'
+        _address =  CONTRACTS.FTM_ADDRESS
       }
       const theBaseAsset = baseAssets.find(item => item.address.toLowerCase() === _address.toLowerCase())
       if (theBaseAsset) {
@@ -1084,12 +1090,17 @@ class Store {
     // if (!connected) {
     //   return
     // }
+    const supportChain = stores.accountStore.getStore('supportChain');
+    console.log('support chain', supportChain)
+    if (!supportChain) return;
+    client = createClient({ url: supportChain.subgraphApi, requestPolicy: 'network-only' });
+    CONTRACTS = supportChain.contracts;
     try {
       this.setStore({ govToken: this._getGovTokenBase() });
       this.setStore({ veToken: await this._getVeTokenBase() });
       this.setStore({ baseAssets: await this._getBaseAssets() });
       this.setStore({ pairs: await this._getPairs() });
-      this.setStore({ routeAssets: this._getRouteAssets() });
+      this.setStore({ routeAssets: supportChain.routeAssets });
 
       this.emitter.emit(ACTIONS.UPDATED);
       this.emitter.emit(ACTIONS.CONFIGURED_SS);
@@ -1114,8 +1125,9 @@ class Store {
             )
       
       const defaultTokenList = []
+      const supportChain = stores.accountStore.getStore('supportChain');
       for (let token of res.data.tokens) {
-        if (token.chainId == process.env.NEXT_PUBLIC_CHAINID) {
+        if (token.chainId == supportChain.id) {
           defaultTokenList.push(token)
         }
       }
@@ -1175,22 +1187,6 @@ class Store {
     }
   };
 
-  _getUSDPRouteAssets = async () => {
-    try {
-      const USDPlus = {
-        address: CONTRACTS.USDP_ADDRESS,
-        decimals: CONTRACTS.USDP_DECIMALS,
-        logoURI: CONTRACTS.USDP_LOGO,
-        name: CONTRACTS.USDP_NAME,
-        symbol: CONTRACTS.USDP_SYMBOL,
-      };
-      return [USDPlus];
-    } catch (ex) {
-      console.log(ex);
-      return [];
-    }
-  };
-
   _getPairs = async () => {
     try {
       const pairsCall = await client.query(pairsQuery).toPromise();
@@ -1241,20 +1237,20 @@ class Store {
       let pairsCall2;
       try {
         pairsCall2 = pairsCall.data.pairs.map((object) => {
-          const obj = JSON.parse(JSON.stringify(object).replace(regex, 'MTR'))
+          const obj = JSON.parse(JSON.stringify(object).replace(regex, CONTRACTS.FTM_ADDRESS))
           // const obj = object;
-          // obj.name = obj?.name.replace(regex, "MTR");
-          // obj.symbol = obj?.symbol.replace(regex, "MTR");
-          // obj.token0.name = obj?.token0?.name?.replace(regex, "MTR");
-          // obj.token0.symbol = obj?.token0?.symbol?.replace(regex, "MTR");
-          // obj.token1.name = obj?.token1?.name?.replace(regex, "MTR");
-          // obj.token1.symbol = obj?.token1?.symbol?.replace(regex, "MTR");
+          // obj.name = obj?.name.replace(regex, CONTRACTS.FTM_ADDRESS);
+          // obj.symbol = obj?.symbol.replace(regex, CONTRACTS.FTM_ADDRESS);
+          // obj.token0.name = obj?.token0?.name?.replace(regex, CONTRACTS.FTM_ADDRESS);
+          // obj.token0.symbol = obj?.token0?.symbol?.replace(regex, CONTRACTS.FTM_ADDRESS);
+          // obj.token1.name = obj?.token1?.name?.replace(regex, CONTRACTS.FTM_ADDRESS);
+          // obj.token1.symbol = obj?.token1?.symbol?.replace(regex, CONTRACTS.FTM_ADDRESS);
           // if (obj.gaugebribes && obj.gaugebribes.bribeTokens) {
           //   obj.gaugebribes.bribeTokens = obj.gaugebribes.bribeTokens.map(item => {
           //     return {
           //       ...item,
           //       token: {
-          //         symbol: item.token.symbol.replace(regex, "MTR")
+          //         symbol: item.token.symbol.replace(regex, CONTRACTS.FTM_ADDRESS)
           //       }
           //     }
           //   })
@@ -1335,6 +1331,7 @@ class Store {
       this._getGovTokenInfo(web3, account);
       await this._getBaseAssetInfo(web3, account);
       await this._getPairInfo(web3, account);
+      await this._getSwapVoltAssets(web3, account);
     } catch (ex) {
       console.log(ex);
       this.emitter.emit(ACTIONS.ERROR, ex);
@@ -1411,8 +1408,8 @@ class Store {
         .div(10 ** govToken.decimals)
         .toFixed(govToken.decimals);
 
-      this.setStore({ govToken });
-      this.emitter.emit(ACTIONS.UPDATED);
+      this.setStore({ govToken });ACTIONS.UPDATED
+      this.emitter.emit();
 
       this._getVestNFTs(web3, account);
     } catch (ex) {
@@ -1432,7 +1429,12 @@ class Store {
         pairs = this.getStore("pairs");
       }
 
-      const ethPrice = parseFloat((await client.query(bundleQuery).toPromise()).data.bundle.ethPrice);
+      let ethPrice = 1;
+      const bundleQueryRes = await client.query(bundleQuery).toPromise();
+      console.log('bundleQueryRes', bundleQueryRes)
+      if (bundleQueryRes && bundleQueryRes.data.bundle) {
+        ethPrice = parseFloat(bundleQueryRes.data.bundle.ethPrice)
+      }
 
       const voterContract = new web3.eth.Contract(
         CONTRACTS.VOTER_ABI,
@@ -1621,15 +1623,10 @@ class Store {
         return null;
       }
 
-      const voterContract = new web3.eth.Contract(
-        CONTRACTS.VOTER_ABI,
-        CONTRACTS.VOTER_ADDRESS
-      );
-
       const baseAssetsBalances = await Promise.all(
         baseAssets.map(async (asset) => {
           try {
-            if (asset.address === "MTR") {
+            if (asset.address === CONTRACTS.FTM_ADDRESS) {
               let bal = await web3.eth.getBalance(account.address);
               return {
                 balanceOf: bal,
@@ -1675,6 +1672,54 @@ class Store {
       console.log(ex);
     }
   };
+
+  _getSwapVoltAssets = async (web3, account) => {
+    try {
+      const supportChain = stores.accountStore.getStore('supportChain');
+      if (supportChain.id !== "361") return;
+      let thetaOldVolt = {
+        id: '0xE6a991Ffa8CfE62B0bf6BF72959A3d4f11B2E0f5',
+        name: 'Volt from Meter on Theta',
+        symbol: 'VOLT',
+        decimals: 18,
+        address: '0xE6a991Ffa8CfE62B0bf6BF72959A3d4f11B2E0f5',
+        balance: 0,
+        logoURI: 'https://raw.githubusercontent.com/meterio/token-list/master/data/VOLT/logo.png'
+      }
+      let thetaTvolt = {
+        id: '0xae6f0539e33f624ac685cce9ba57cc1d948d909d',
+        name: 'Theta Tvolt',
+        symbol: 'TVOLT',
+        decimals: 18,
+        address: '0xae6f0539e33f624ac685cce9ba57cc1d948d909d',
+        balance: 0,
+        logoURI: 'https://raw.githubusercontent.com/meterio/token-list/master/data/VOLT/logo.png'
+      }
+  
+      const oldVoltContract = new web3.eth.Contract(
+        CONTRACTS.ERC20_ABI,
+        thetaOldVolt.address
+      );
+
+      const tvoltContract = new web3.eth.Contract(
+        CONTRACTS.ERC20_ABI,
+        thetaTvolt.address
+      );
+  
+      const oldVoltBalanceOf = await oldVoltContract.methods.balanceOf(account.address).call();
+      const tvoltBalanceOf = await tvoltContract.methods.balanceOf(account.address).call();
+  
+      thetaOldVolt.balance = BigNumber(oldVoltBalanceOf).div(10 ** thetaOldVolt.decimals).toFixed(thetaOldVolt.decimals);
+      
+      thetaTvolt.balance = BigNumber(tvoltBalanceOf).div(10 ** thetaTvolt.decimals).toFixed(thetaTvolt.decimals);
+      
+      this.setStore({ swapTvoltAssets: [ thetaOldVolt, thetaTvolt ] })
+  
+        this.emitter.emit(ACTIONS.UPDATED);
+    } catch (ex) {
+      console.log(ex);
+    }
+  }
 
   searchBaseAsset = async (payload) => {
     try {
@@ -1752,10 +1797,10 @@ class Store {
 
       let toki0 = token0.address;
       let toki1 = token1.address;
-      if (token0.address === "MTR") {
+      if (token0.address === CONTRACTS.FTM_ADDRESS) {
         toki0 = CONTRACTS.WFTM_ADDRESS;
       }
-      if (token1.address === "MTR") {
+      if (token1.address === CONTRACTS.FTM_ADDRESS) {
         toki1 = CONTRACTS.WFTM_ADDRESS;
       }
 
@@ -1827,7 +1872,7 @@ class Store {
       let allowance1 = 0;
 
       // CHECK ALLOWANCES AND SET TX DISPLAY
-      if (token0.address !== "MTR") {
+      if (token0.address !== CONTRACTS.FTM_ADDRESS) {
         allowance0 = await this._getDepositAllowance(web3, token0, account);
         if (BigNumber(allowance0).lt(amount0)) {
           this.emitter.emit(ACTIONS.TX_STATUS, {
@@ -1850,7 +1895,7 @@ class Store {
         });
       }
 
-      if (token1.address !== "MTR") {
+      if (token1.address !== CONTRACTS.FTM_ADDRESS) {
         allowance1 = await this._getDepositAllowance(web3, token1, account);
         if (BigNumber(allowance1).lt(amount1)) {
           this.emitter.emit(ACTIONS.TX_STATUS, {
@@ -1974,7 +2019,7 @@ class Store {
       ];
       let sendValue = null;
 
-      if (token0.address === "MTR") {
+      if (token0.address === CONTRACTS.FTM_ADDRESS) {
         func = "addLiquidityMTR";
         params = [
           token1.address,
@@ -1987,7 +2032,7 @@ class Store {
         ];
         sendValue = sendAmount0;
       }
-      if (token1.address === "MTR") {
+      if (token1.address === CONTRACTS.FTM_ADDRESS) {
         func = "addLiquidityMTR";
         params = [
           token0.address,
@@ -2023,10 +2068,10 @@ class Store {
           // GET PAIR FOR NEWLY CREATED LIQUIDITY POOL
           let tok0 = token0.address;
           let tok1 = token1.address;
-          if (token0.address === "MTR") {
+          if (token0.address === CONTRACTS.FTM_ADDRESS) {
             tok0 = CONTRACTS.WFTM_ADDRESS;
           }
-          if (token1.address === "MTR") {
+          if (token1.address === CONTRACTS.FTM_ADDRESS) {
             tok1 = CONTRACTS.WFTM_ADDRESS;
           }
           const pairFor = await factoryContract.methods
@@ -2241,10 +2286,10 @@ class Store {
       const gasPrice = await stores.accountStore.getGasPrice();
       const allowanceCallsPromises = [];
 
-      if (token0.address === "MTR") {
+      if (token0.address === CONTRACTS.FTM_ADDRESS) {
         token0.address = CONTRACTS.WFTM_ADDRESS;
       }
-      if (token1.address === "MTR") {
+      if (token1.address === CONTRACTS.FTM_ADDRESS) {
         token1.address = CONTRACTS.WFTM_ADDRESS;
       }
 
@@ -2360,10 +2405,10 @@ class Store {
 
       let toki0 = token0.address;
       let toki1 = token1.address;
-      if (token0.address === "MTR") {
+      if (token0.address === CONTRACTS.FTM_ADDRESS) {
         toki0 = CONTRACTS.WFTM_ADDRESS;
       }
-      if (token1.address === "MTR") {
+      if (token1.address === CONTRACTS.FTM_ADDRESS) {
         toki1 = CONTRACTS.WFTM_ADDRESS;
       }
 
@@ -2421,7 +2466,7 @@ class Store {
       let allowance1 = 0;
 
       // CHECK ALLOWANCES AND SET TX DISPLAY
-      if (token0.address !== "MTR") {
+      if (token0.address !== CONTRACTS.FTM_ADDRESS) {
         allowance0 = await this._getDepositAllowance(web3, token0, account);
         if (BigNumber(allowance0).lt(amount0)) {
           this.emitter.emit(ACTIONS.TX_STATUS, {
@@ -2444,7 +2489,7 @@ class Store {
         });
       }
 
-      if (token1.address !== "MTR") {
+      if (token1.address !== CONTRACTS.FTM_ADDRESS) {
         allowance1 = await this._getDepositAllowance(web3, token1, account);
         if (BigNumber(allowance1).lt(amount1)) {
           this.emitter.emit(ACTIONS.TX_STATUS, {
@@ -2568,7 +2613,7 @@ class Store {
       ];
       let sendValue = null;
 
-      if (token0.address === "MTR") {
+      if (token0.address === CONTRACTS.FTM_ADDRESS) {
         func = "addLiquidityMTR";
         params = [
           token1.address,
@@ -2581,7 +2626,7 @@ class Store {
         ];
         sendValue = sendAmount0;
       }
-      if (token1.address === "MTR") {
+      if (token1.address === CONTRACTS.FTM_ADDRESS) {
         func = "addLiquidityMTR";
         params = [
           token0.address,
@@ -2616,10 +2661,10 @@ class Store {
           // GET PAIR FOR NEWLY CREATED LIQUIDITY POOL
           let tok0 = token0.address;
           let tok1 = token1.address;
-          if (token0.address === "MTR") {
+          if (token0.address === CONTRACTS.FTM_ADDRESS) {
             tok0 = CONTRACTS.WFTM_ADDRESS;
           }
-          if (token1.address === "MTR") {
+          if (token1.address === CONTRACTS.FTM_ADDRESS) {
             tok1 = CONTRACTS.WFTM_ADDRESS;
           }
           const pairFor = await factoryContract.methods
@@ -2733,7 +2778,7 @@ class Store {
       let allowance1 = 0;
 
       // CHECK ALLOWANCES AND SET TX DISPLAY
-      if (token0.address !== "MTR") {
+      if (token0.address !== CONTRACTS.FTM_ADDRESS) {
         allowance0 = await this._getDepositAllowance(web3, token0, account);
         if (BigNumber(allowance0).lt(amount0)) {
           this.emitter.emit(ACTIONS.TX_STATUS, {
@@ -2756,7 +2801,7 @@ class Store {
         });
       }
 
-      if (token1.address !== "MTR") {
+      if (token1.address !== CONTRACTS.FTM_ADDRESS) {
         allowance1 = await this._getDepositAllowance(web3, token1, account);
         if (BigNumber(allowance1).lt(amount1)) {
           this.emitter.emit(ACTIONS.TX_STATUS, {
@@ -2887,7 +2932,7 @@ class Store {
       ];
       let sendValue = null;
 
-      if (token0.address === "MTR") {
+      if (token0.address === CONTRACTS.FTM_ADDRESS) {
         func = "addLiquidityMTR";
         params = [
           token1.address,
@@ -2900,7 +2945,7 @@ class Store {
         ];
         sendValue = sendAmount0;
       }
-      if (token1.address === "MTR") {
+      if (token1.address === CONTRACTS.FTM_ADDRESS) {
         func = "addLiquidityMTR";
         params = [
           token0.address,
@@ -3184,7 +3229,7 @@ class Store {
       let allowance1 = 0;
 
       // CHECK ALLOWANCES AND SET TX DISPLAY
-      if (token0.address !== "MTR") {
+      if (token0.address !== CONTRACTS.FTM_ADDRESS) {
         allowance0 = await this._getDepositAllowance(web3, token0, account);
         if (BigNumber(allowance0).lt(amount0)) {
           this.emitter.emit(ACTIONS.TX_STATUS, {
@@ -3207,7 +3252,7 @@ class Store {
         });
       }
 
-      if (token1.address !== "MTR") {
+      if (token1.address !== CONTRACTS.FTM_ADDRESS) {
         allowance1 = await this._getDepositAllowance(web3, token1, account);
         if (BigNumber(allowance1).lt(amount1)) {
           this.emitter.emit(ACTIONS.TX_STATUS, {
@@ -3390,7 +3435,7 @@ class Store {
       ];
       let sendValue = null;
 
-      if (token0.address === "MTR") {
+      if (token0.address === CONTRACTS.FTM_ADDRESS) {
         func = "addLiquidityMTR";
         params = [
           token1.address,
@@ -3403,7 +3448,7 @@ class Store {
         ];
         sendValue = sendAmount0;
       }
-      if (token1.address === "MTR") {
+      if (token1.address === CONTRACTS.FTM_ADDRESS) {
         func = "addLiquidityMTR";
         params = [
           token0.address,
@@ -3561,10 +3606,10 @@ class Store {
       let addy0 = token0.address;
       let addy1 = token1.address;
 
-      if (token0.address === "MTR") {
+      if (token0.address === CONTRACTS.FTM_ADDRESS) {
         addy0 = CONTRACTS.WFTM_ADDRESS;
       }
-      if (token1.address === "MTR") {
+      if (token1.address === CONTRACTS.FTM_ADDRESS) {
         addy1 = CONTRACTS.WFTM_ADDRESS;
       }
 
@@ -3790,10 +3835,10 @@ class Store {
 
       let tok0 = token0.address
       let tok1 = token1.address
-      if (tok0 === 'MTR') {
+      if (tok0 === CONTRACTS.FTM_ADDRESS) {
         tok0 = CONTRACTS.WFTM_ADDRESS
       }
-      if (tok1 === 'MTR') {
+      if (tok1 === CONTRACTS.FTM_ADDRESS) {
         tok1 = CONTRACTS.WFTM_ADDRESS
       }
 
@@ -4163,10 +4208,10 @@ class Store {
       
         let tok0 = token0.address;
         let tok1 = token1.address;
-        if (token0.address === "MTR") {
+        if (token0.address === CONTRACTS.FTM_ADDRESS) {
           tok0 = CONTRACTS.WFTM_ADDRESS;
         }
-        if (token1.address === "MTR") {
+        if (token1.address === CONTRACTS.FTM_ADDRESS) {
           tok1 = CONTRACTS.WFTM_ADDRESS;
         }
 
@@ -4436,8 +4481,8 @@ class Store {
           routes: item.routes.map(route => {
             return {
               ...route,
-              from: route.from === 'MTR' ? CONTRACTS.WFTM_ADDRESS : route.from,
-              to: route.to === 'MTR' ? CONTRACTS.WFTM_ADDRESS : route.to
+              from: route.from === CONTRACTS.FTM_ADDRESS ? CONTRACTS.WFTM_ADDRESS : route.from,
+              to: route.to === CONTRACTS.FTM_ADDRESS ? CONTRACTS.WFTM_ADDRESS : route.to
             }
           })
         }
@@ -4609,7 +4654,7 @@ class Store {
       let allowance = 0;
 
       // CHECK ALLOWANCES AND SET TX DISPLAY
-      if (fromAsset.address !== "MTR") {
+      if (fromAsset.address !== CONTRACTS.FTM_ADDRESS) {
         allowance = await this._getSwapAllowance(web3, fromAsset, account);
 
         if (BigNumber(allowance).lt(fromAmount)) {
@@ -4714,7 +4759,7 @@ class Store {
         func = "swapExactTokensForTokensSupportingFeeOnTransferTokens";
       }
 
-      if (fromAsset.address === "MTR") {
+      if (fromAsset.address === CONTRACTS.FTM_ADDRESS) {
         func = "swapExactMTRForTokens";
         params = [
           sendMinAmountOut,
@@ -4724,7 +4769,7 @@ class Store {
         ];
         sendValue = sendFromAmount;
       }
-      if (toAsset.address === "MTR") {
+      if (toAsset.address === CONTRACTS.FTM_ADDRESS) {
         func = "swapExactTokensForMTR";
         if (
           fromAsset.address.toLowerCase() ===
@@ -4764,6 +4809,156 @@ class Store {
       this.emitter.emit(ACTIONS.ERROR, ex);
     }
   };
+
+  swapvolt = async (payload) => {
+    try {
+      const context = this;
+
+      const account = stores.accountStore.getStore("account");
+      if (!account) {
+        console.warn("account not found");
+        return null;
+      }
+
+      const web3 = await stores.accountStore.getWeb3Provider();
+      if (!web3) {
+        console.warn("web3 not found");
+        return null;
+      }
+
+      const { fromAsset, toAsset, fromAmount } = payload.content;
+      // ADD TRNASCTIONS TO TRANSACTION QUEUE DISPLAY
+      let allowanceTXID = this.getTXUUID();
+      let swapTXID = this.getTXUUID();
+
+      this.emitter.emit(ACTIONS.TX_ADDED, {
+        title: `Swap ${fromAsset.symbol} for ${toAsset.symbol}`,
+        type: "Swap",
+        verb: "Swap Successful",
+        transactions: [
+          {
+            uuid: allowanceTXID,
+            description: `Checking your ${fromAsset.symbol} allowance`,
+            status: "WAITING",
+          },
+          {
+            uuid: swapTXID,
+            description: `Swap ${formatCurrency(fromAmount)} ${
+              fromAsset.symbol
+            } for ${toAsset.symbol}`,
+            status: "WAITING",
+          },
+        ],
+      });
+
+      let allowance = 0;
+
+      // CHECK ALLOWANCES AND SET TX DISPLAY
+      if (fromAsset.address !== CONTRACTS.FTM_ADDRESS) {
+        allowance = await this._getSwapvoltAllowance(web3, fromAsset, account);
+
+        if (BigNumber(allowance).lt(fromAmount)) {
+          this.emitter.emit(ACTIONS.TX_STATUS, {
+            uuid: allowanceTXID,
+            description: `Allow the router to spend your ${fromAsset.symbol}`,
+          });
+        } else {
+          this.emitter.emit(ACTIONS.TX_STATUS, {
+            uuid: allowanceTXID,
+            description: `Allowance on ${fromAsset.symbol} sufficient`,
+            status: "DONE",
+          });
+        }
+      } else {
+        allowance = MAX_UINT256;
+        this.emitter.emit(ACTIONS.TX_STATUS, {
+          uuid: allowanceTXID,
+          description: `Allowance on ${fromAsset.symbol} sufficient`,
+          status: "DONE",
+        });
+      }
+
+      const gasPrice = await stores.accountStore.getGasPrice();
+
+      const allowanceCallsPromises = [];
+
+      // SUBMIT REQUIRED ALLOWANCE TRANSACTIONS
+      if (BigNumber(allowance).lt(fromAmount)) {
+        const tokenContract = new web3.eth.Contract(
+          CONTRACTS.ERC20_ABI,
+          fromAsset.address
+        );
+
+        const tokenPromise = new Promise((resolve, reject) => {
+          context._callContractWait(
+            web3,
+            tokenContract,
+            "approve",
+            [CONTRACTS.SWAP_TVOLT_ADDRESS, MAX_UINT256],
+            account,
+            gasPrice,
+            null,
+            null,
+            allowanceTXID,
+            (err) => {
+              if (err) {
+                reject(err);
+                return;
+              }
+
+              resolve();
+            }
+          );
+        });
+
+        allowanceCallsPromises.push(tokenPromise);
+      }
+
+      const done = await Promise.all(allowanceCallsPromises);
+
+      // SUBMIT SWAP TRANSACTION
+
+      const sendFromAmount = BigNumber(fromAmount)
+        .times(10 ** fromAsset.decimals)
+        .toFixed(0);
+
+      const swapTvoltContract = new web3.eth.Contract(
+        CONTRACTS.SWAP_TVOLT_ABI,
+        CONTRACTS.SWAP_TVOLT_ADDRESS
+      );
+
+      let func = "change";
+      let params = [
+        sendFromAmount,
+      ];
+      let sendValue = null;
+
+      this._callContractWait(
+        web3,
+        swapTvoltContract,
+        func,
+        params,
+        account,
+        gasPrice,
+        null,
+        null,
+        swapTXID,
+        async (err) => {
+          if (err) {
+            return this.emitter.emit(ACTIONS.ERROR, err);
+          }
+          await this._getSwapVoltAssets(web3, account);
+
+          this.emitter.emit(ACTIONS.UPDATED);
+        },
+        null,
+        sendValue
+      );
+    } catch (ex) {
+      console.error(ex);
+      this.emitter.emit(ACTIONS.ERROR, ex);
+    }
+  }
   wrap = async (payload) => {
     try {
       const allowanceCallsPromises = [];
@@ -4923,7 +5118,7 @@ class Store {
       const ba = await Promise.all(
         baseAssets.map(async (asset) => {
           if (asset.address.toLowerCase() === assetAddress.toLowerCase()) {
-            if (asset.address === "MTR") {
+            if (asset.address === CONTRACTS.FTM_ADDRESS) {
               let bal = await web3.eth.getBalance(account.address);
               asset.balance = BigNumber(bal)
                 .div(10 ** parseInt(asset.decimals))
@@ -4964,6 +5159,24 @@ class Store {
       );
       const allowance = await tokenContract.methods
         .allowance(account.address, CONTRACTS.ROUTER_ADDRESS)
+        .call();
+      return BigNumber(allowance)
+        .div(10 ** parseInt(token.decimals))
+        .toFixed(parseInt(token.decimals));
+    } catch (ex) {
+      console.error(ex);
+      return null;
+    }
+  };
+
+  _getSwapvoltAllowance = async (web3, token, account) => {
+    try {
+      const tokenContract = new web3.eth.Contract(
+        CONTRACTS.ERC20_ABI,
+        token.address
+      );
+      const allowance = await tokenContract.methods
+        .allowance(account.address, CONTRACTS.SWAP_TVOLT_ADDRESS)
         .call();
       return BigNumber(allowance)
         .div(10 ** parseInt(token.decimals))
@@ -6341,7 +6554,7 @@ class Store {
                 bribe.earned = BigNumber(earned)
                   .div(10 ** decimals)
                   .toFixed(parseInt(decimals));
-                bribe.symbol = symbol === 'WMTR' ? 'MTR' : symbol;
+                bribe.symbol = symbol === CONTRACTS.WFTM_SYMBOL ? CONTRACTS.FTM_ADDRESS : symbol;
                 return bribe;
               })
             );
@@ -7107,7 +7320,7 @@ class Store {
     paddGasCost,
     sendValue = null
   ) => {
-    // console.log(method)
+    console.log(method)
     console.log(params)
     // if(sendValue) {
     //   console.log(sendValue)
@@ -7120,13 +7333,13 @@ class Store {
     //   from: account.address
     // }
 
-    // if (['swapExactMTRForTokens', 'swapExactTokensForMTR', 'whitelist'].includes(method)) {
+    // if (['swapExactMTRForTokens', 'swapExactTokensForMTR', 'whitelist', 'change'].includes(method)) {
     //   let sendGasPrice = BigNumber(gasPrice).times(1.5).toFixed(0);
     //   contract.methods[method](...params)
     //     .send({
     //       from: account.address,
     //       gasPrice: web3.utils.toWei(sendGasPrice, "gwei"),
-    //       gas: 5000000,
+    //       gas: 50000,
     //       value: sendValue,
     //     })
     //   return

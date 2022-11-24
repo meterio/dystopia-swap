@@ -16,7 +16,7 @@ import {
 } from "../../utils";
 import classes from "./ssSwap.module.css";
 import stores from "../../stores";
-import { ACTIONS, MTRG_ADDR } from "../../stores/constants";
+import { ACTIONS } from "../../stores/constants";
 import BigNumber from "bignumber.js";
 import { useAppThemeContext } from "../../ui/AppThemeProvider";
 import BtnSwap from "../../ui/BtnSwap";
@@ -58,6 +58,9 @@ function Setup() {
   const { appTheme } = useAppThemeContext();
 
   const [account, setAccount] = useState(stores.accountStore.getStore('account'));
+  const [supportChain, setSupportChain] = useState(stores.accountStore.getStore('supportChain'));
+  const [nativeToken, setNativeToken] = useState(supportChain ? supportChain.contracts.FTM_ADDRESS : '');
+  const [wNativeToken, setWNativeToken] = useState(supportChain ? supportChain.contracts.WFTM_SYMBOL : '');
 
   const handleClickPopover = (event) => {
     setHintAnchor(event.currentTarget);
@@ -78,6 +81,12 @@ function Setup() {
   useEffect(() => {
     const accountConfigure = () => {
       setAccount(stores.accountStore.getStore('account'));
+      const sc = stores.accountStore.getStore('supportChain');
+      setSupportChain(sc)
+      const nativeToken = sc ? sc.contracts.FTM_ADDRESS : ''
+      const wNativeToken = sc ? sc.contracts.WFTM_SYMBOL : ''
+      setNativeToken(nativeToken);
+      setWNativeToken(wNativeToken);
     };
 
     stores.emitter.on(ACTIONS.ACCOUNT_CONFIGURED, accountConfigure);
@@ -131,14 +140,15 @@ function Setup() {
         const ssUpdated = () => {
           let { inputCurrency, outputCurrency } = router.query
           if (!inputCurrency) {
-            inputCurrency = MTRG_ADDR
+            inputCurrency = supportChain && supportChain.govAddr
           }
           if (!outputCurrency) {
-            outputCurrency = 'MTR'
+            outputCurrency = supportChain && supportChain.contracts.FTM_ADDRESS
           }
           const _baseAsset = stores.stableSwapStore.getStore("baseAssets");
           // console.log('baseAssets', _baseAsset)
-          const baseAsset = _baseAsset.filter(item => item.symbol !== 'WMTR')
+          const wToken = supportChain ? supportChain.contracts.WFTM_SYMBOL : ''
+          const baseAsset = _baseAsset.filter(item => item.symbol !== wToken)
 
           setToAssetOptions(baseAsset);
           setFromAssetOptions(baseAsset);
@@ -184,10 +194,10 @@ function Setup() {
           setToAmountValue("");
           if (
               !(
-                  (fromAssetValue?.symbol == "MTR" ||
-                      fromAssetValue?.symbol == "WMTR") &&
-                  (toAssetValue?.symbol == "WMTR" ||
-                      toAssetValue?.symbol == "MTR")
+                  (fromAssetValue?.symbol == nativeToken ||
+                      fromAssetValue?.symbol == wNativeToken) &&
+                  (toAssetValue?.symbol == wNativeToken ||
+                      toAssetValue?.symbol == nativeToken)
               )
           )
             calculateReceiveAmount(0, fromAssetValue, toAssetValue);
@@ -236,10 +246,10 @@ function Setup() {
         setFromAssetValue(toAssetValue);
         if (
             !(
-                (fromAssetValue?.symbol == "MTR" ||
-                    fromAssetValue?.symbol == "WMTR") &&
-                (toAssetValue?.symbol == "WMTR" ||
-                    toAssetValue?.symbol == "MTR")
+                (fromAssetValue?.symbol == nativeToken ||
+                    fromAssetValue?.symbol == wNativeToken) &&
+                (toAssetValue?.symbol == wNativeToken ||
+                    toAssetValue?.symbol == nativeToken)
             )
         )
           calculateReceiveAmount(fromAmountValue, toAssetValue, fromAssetValue);
@@ -251,9 +261,9 @@ function Setup() {
         setFromAssetValue(value);
         if (
             !(
-                (value?.symbol == "MTR" || value?.symbol == "WMTR") &&
-                (toAssetValue?.symbol == "WMTR" ||
-                    toAssetValue?.symbol == "MTR")
+                (value?.symbol == nativeToken || value?.symbol == wNativeToken) &&
+                (toAssetValue?.symbol == wNativeToken ||
+                    toAssetValue?.symbol == nativeToken)
             )
         )
           calculateReceiveAmount(fromAmountValue, value, toAssetValue);
@@ -268,10 +278,10 @@ function Setup() {
         setToAssetValue(fromAssetValue);
         if (
             !(
-                (fromAssetValue?.symbol == "MTR" ||
-                    fromAssetValue?.symbol == "WMTR") &&
-                (toAssetValue?.symbol == "WMTR" ||
-                    toAssetValue?.symbol == "MTR")
+                (fromAssetValue?.symbol == nativeToken ||
+                    fromAssetValue?.symbol == wNativeToken) &&
+                (toAssetValue?.symbol == wNativeToken ||
+                    toAssetValue?.symbol == nativeToken)
             )
         )
           calculateReceiveAmount(fromAmountValue, toAssetValue, fromAssetValue);
@@ -283,9 +293,9 @@ function Setup() {
         setToAssetValue(value);
         if (
             !(
-                (fromAssetValue?.symbol == "MTR" ||
-                    fromAssetValue?.symbol == "WMTR") &&
-                (value?.symbol == "WMTR" || value?.symbol == "MTR")
+                (fromAssetValue?.symbol == nativeToken ||
+                    fromAssetValue?.symbol == wNativeToken) &&
+                (value?.symbol == wNativeToken || value?.symbol == nativeToken)
             )
         )
           calculateReceiveAmount(fromAmountValue, fromAssetValue, value);
@@ -310,9 +320,9 @@ function Setup() {
     } else {
       if (
           !(
-              (fromAssetValue?.symbol == "MTR" ||
-                  fromAssetValue?.symbol == "WMTR") &&
-              (toAssetValue?.symbol == "WMTR" || toAssetValue?.symbol == "MTR")
+              (fromAssetValue?.symbol == nativeToken ||
+                  fromAssetValue?.symbol == wNativeToken) &&
+              (toAssetValue?.symbol == wNativeToken || toAssetValue?.symbol == nativeToken)
           )
       )
         calculateReceiveAmount(value, fromAssetValue, toAssetValue);
@@ -545,9 +555,9 @@ function Setup() {
     setFromAmountValue(fromAssetValue.balance);
     if (
         !(
-            (fromAssetValue?.symbol == "MTR" ||
-                fromAssetValue?.symbol == "WMTR") &&
-            (toAssetValue?.symbol == "WMTR" || toAssetValue?.symbol == "MTR")
+            (fromAssetValue?.symbol == nativeToken ||
+                fromAssetValue?.symbol == wNativeToken) &&
+            (toAssetValue?.symbol == wNativeToken || toAssetValue?.symbol == nativeToken)
         )
     )
       calculateReceiveAmount(
@@ -568,9 +578,9 @@ function Setup() {
     setToAssetValue(fa);
     if (
         !(
-            (fromAssetValue?.symbol == "MTR" ||
-                fromAssetValue?.symbol == "WMTR") &&
-            (toAssetValue?.symbol == "WMTR" || toAssetValue?.symbol == "MTR")
+            (fromAssetValue?.symbol == nativeToken ||
+                fromAssetValue?.symbol == wNativeToken) &&
+            (toAssetValue?.symbol == wNativeToken || toAssetValue?.symbol == nativeToken)
         )
     )
       calculateReceiveAmount(fromAmountValue, ta, fa);
@@ -1350,9 +1360,9 @@ function Setup() {
           account && account.address ?
             <BtnSwap
               onClick={
-                (fromAssetValue?.symbol == "MTR" && toAssetValue?.symbol == "WMTR")
+                (fromAssetValue?.symbol == nativeToken && toAssetValue?.symbol == wNativeToken)
                     ? onWrap
-                    : (fromAssetValue?.symbol == "WMTR" && toAssetValue?.symbol == "MTR")
+                    : (fromAssetValue?.symbol == wNativeToken && toAssetValue?.symbol == nativeToken)
                         ? onUnwrap
                         : onSwap
               }
@@ -1370,23 +1380,23 @@ function Setup() {
                 Number(fromAmountValue) <= 0
               }
               label={
-                loading && fromAssetValue?.symbol == "MTR" && toAssetValue?.symbol == "WMTR"
+                loading && fromAssetValue?.symbol == nativeToken && toAssetValue?.symbol == wNativeToken
                     ? "Wrapping"
-                    : loading && fromAssetValue?.symbol == "WMTR" && toAssetValue?.symbol == "MTR"
+                    : loading && fromAssetValue?.symbol == wNativeToken && toAssetValue?.symbol == nativeToken
                         ? "Unwrapping"
                         : loading &&
                         !(
-                            (fromAssetValue?.symbol == "MTR" ||
-                                fromAssetValue?.symbol == "WMTR") &&
-                            (toAssetValue?.symbol == "WMTR" ||
-                                toAssetValue?.symbol == "MTR")
+                            (fromAssetValue?.symbol == nativeToken ||
+                                fromAssetValue?.symbol == wNativeToken) &&
+                            (toAssetValue?.symbol == wNativeToken ||
+                                toAssetValue?.symbol == nativeToken)
                         )
                             ? "Swapping"
                             : !fromAmountValue || Number(fromAmountValue) <= 0
                                 ? "Enter Amount"
-                                : (fromAssetValue?.symbol == "MTR" && toAssetValue?.symbol == "WMTR")
+                                : (fromAssetValue?.symbol == nativeToken && toAssetValue?.symbol == wNativeToken)
                                     ? "Wrap"
-                                    : (fromAssetValue?.symbol == "WMTR" && toAssetValue?.symbol == "MTR")
+                                    : (fromAssetValue?.symbol == wNativeToken && toAssetValue?.symbol == nativeToken)
                                         ? "Unwrap"
                                         : "Swap"
               }

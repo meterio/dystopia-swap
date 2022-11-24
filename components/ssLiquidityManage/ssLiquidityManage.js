@@ -23,7 +23,7 @@ import BigNumber from "bignumber.js";
 import { formatCurrency } from "../../utils";
 import classes from "./ssLiquidityManage.module.css";
 import stores from "../../stores";
-import { ACTIONS, CONTRACTS, MTRG_ADDR } from "../../stores/constants";
+import { ACTIONS } from "../../stores/constants";
 import {
   Search,
   DeleteOutline,
@@ -94,6 +94,8 @@ export default function ssLiquidityManage() {
 
   const [withdrawAction, setWithdrawAction] = useState("");
 
+  const [supportChain, setSupportChain] = useState(stores.accountStore.getStore('supportChain'));
+
   const [createLP, setCreateLP] = useState(true);
 
   const { appTheme } = useAppThemeContext();
@@ -118,18 +120,20 @@ export default function ssLiquidityManage() {
 
     const web3 = await stores.accountStore.getWeb3Provider();
 
+    if (!supportChain) return 
+
     const voterContract = new web3.eth.Contract(
-      CONTRACTS.VOTER_ABI,
-      CONTRACTS.VOTER_ADDRESS
+      supportChain.contracts.VOTER_ABI,
+      supportChain.contracts.VOTER_ADDRESS
     );
 
     let address0 = pair.token0.address
     let address1 = pair.token1.address
-    if (address0 === 'MTR') {
-      address0 = CONTRACTS.WFTM_ADDRESS
+    if (address0 === supportChain.contracts.FTM_ADDRESS) {
+      address0 = supportChain.contracts.WFTM_ADDRESS
     }
-    if (address1 === 'MTR') {
-      address1 = CONTRACTS.WFTM_ADDRESS
+    if (address1 === supportChain.contracts.FTM_ADDRESS) {
+      address1 = supportChain.contracts.WFTM_ADDRESS
     }
 
     const [token0, token1] = await Promise.all([
@@ -215,9 +219,11 @@ export default function ssLiquidityManage() {
             aa0 = asset
           }
         } else {
-          const MTRG = storeAssetOptions.find(item => item.address === MTRG_ADDR)
-          setAsset0(MTRG);
-          aa0 = MTRG;
+          if (supportChain) {
+            const govAddr = storeAssetOptions.find(item => item.address === supportChain.govAddr)
+            setAsset0(govAddr);
+            aa0 = govAddr;
+          }
         }
       }
       if (storeAssetOptions.length > 0 && asset1 == null) {
@@ -227,7 +233,8 @@ export default function ssLiquidityManage() {
           setAsset1(assets);
           aa1 = assets;
         } else {
-          const MTR = storeAssetOptions.find(item => item.address === 'MTR')
+          const nativeToken = supportChain ? supportChain.contracts.FTM_ADDRESS : ''
+          const MTR = storeAssetOptions.find(item => item.address === nativeToken)
           setAsset1(MTR);
           aa1 = MTR;
         }
@@ -283,6 +290,11 @@ export default function ssLiquidityManage() {
       setQuote(res.output);
     };
 
+    const accountConfigured = () => {
+      const supportChain = stores.accountStore.getStore('supportChain');
+      setSupportChain(supportChain);
+    }
+
     const quoteRemoveReturned = (res) => {
       if (!res) {
         return;
@@ -307,6 +319,7 @@ export default function ssLiquidityManage() {
     stores.emitter.on(ACTIONS.LIQUIDITY_UNSTAKED, depositReturned);
     stores.emitter.on(ACTIONS.PAIR_CREATED, depositReturned);
     stores.emitter.on(ACTIONS.QUOTE_ADD_LIQUIDITY_RETURNED, quoteAddReturned);
+    stores.emitter.on(ACTIONS.ACCOUNT_CONFIGURED, accountConfigured);
     stores.emitter.on(
       ACTIONS.QUOTE_REMOVE_LIQUIDITY_RETURNED,
       quoteRemoveReturned
@@ -317,6 +330,7 @@ export default function ssLiquidityManage() {
 
     return () => {
       stores.emitter.removeListener(ACTIONS.UPDATED, ssUpdated);
+      stores.emitter.removeListener(ACTIONS.ACCOUNT_CONFIGURED, accountConfigured);
       stores.emitter.removeListener(ACTIONS.LIQUIDITY_ADDED, depositReturned);
       stores.emitter.removeListener(
         ACTIONS.ADD_LIQUIDITY_AND_STAKED,

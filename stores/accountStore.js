@@ -1,5 +1,5 @@
 import async from "async";
-import { ACTIONS, CONTRACTS } from "./constants";
+import { ACTIONS, getSupportChainList } from "./constants";
 import Multicall from "@dopex-io/web3-multicall";
 import detectProvider from "@metamask/detect-provider";
 import { ethers, Contract, providers } from "ethers";
@@ -21,6 +21,7 @@ class Store {
     this.store = {
       account: null,
       chainInvalid: false,
+      supportChain: null,
       web3provider: null,
       web3modal: null,
       web3context: null,
@@ -63,7 +64,9 @@ class Store {
   }
 
   configure = async () => {
-    const supportedChainIds = [process.env.NEXT_PUBLIC_CHAINID];
+    // const supportedChainIds = [process.env.NEXT_PUBLIC_CHAINID];
+    const supportChainList = getSupportChainList()
+    const supportedChainIds = supportChainList.map(c => c.id)
     const provider = await detectProvider();
     this.getGasPrices();
 
@@ -73,6 +76,15 @@ class Store {
 
     const parsedChainId = parseInt(providerChain + "", 16) + "";
     const isChainSupported = supportedChainIds.includes(parsedChainId);
+    if (isChainSupported) {
+      this.setStore({
+        supportChain: supportChainList.find(c => c.id === parsedChainId)
+      })
+    } else {
+      this.setStore({
+        supportChain: null
+      })
+    }
     this.setStore({ chainInvalid: !isChainSupported });
     this.emitter.emit(ACTIONS.ACCOUNT_CONFIGURED);
 
@@ -124,13 +136,24 @@ class Store {
     });
 
     window.ethereum.on("chainChanged", async function (chainId) {
-      const supportedChainIds = [process.env.NEXT_PUBLIC_CHAINID];
-      const parsedChainId = parseInt(chainId + "", 16) + "";
-      const isChainSupported = supportedChainIds.includes(parsedChainId);
-      that.setStore({ chainInvalid: !isChainSupported });
-      await stores.stableSwapStore.configure({ content: { connected: isChainSupported }});
-      that.emitter.emit(ACTIONS.ACCOUNT_CHANGED);
-      that.emitter.emit(ACTIONS.ACCOUNT_CONFIGURED);
+      // const supportedChainIds = [process.env.NEXT_PUBLIC_CHAINID];
+      // const supportChainList = getSupportChainList();
+      // const supportedChainIds = supportChainList.map(c => c.id);
+      // const parsedChainId = parseInt(chainId + "", 16) + "";
+      // const isChainSupported = supportedChainIds.includes(parsedChainId);
+      // if (isChainSupported) {
+      //   that.setStore({
+      //     supportChain: supportChainList.find(c => c.id === parsedChainId)
+      //   })
+      // } else {
+      //   that.setStore({
+      //     supportChain: null
+      //   })
+      // }
+      // that.setStore({ chainInvalid: !isChainSupported });
+      // await stores.stableSwapStore.configure({ content: { connected: isChainSupported }});
+      // that.emitter.emit(ACTIONS.ACCOUNT_CHANGED);
+      // that.emitter.emit(ACTIONS.ACCOUNT_CONFIGURED);
       that.configure();
     });
   };
@@ -204,9 +227,10 @@ class Store {
   };
 
   getMulticall = async () => {
+    const supportChain = this.getStore('supportChain')
     const web3 = await this.getWeb3Provider();
     const multicall = new Multicall({
-      multicallAddress: CONTRACTS.MULTICALL_ADDRESS,
+      multicallAddress: supportChain.contracts.MULTICALL_ADDRESS,
       provider: web3,
     });
     return multicall;

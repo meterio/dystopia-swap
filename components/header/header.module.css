@@ -201,6 +201,21 @@
   color: #4CADE6 !important;
 }
 
+.supportChainButton {
+  padding: 10px;
+  height: 30px;
+  white-space: nowrap;
+  border-radius: 40px !important;
+  border: 1px solid #0B5E8E !important;
+  background: none !important;
+}
+.supportChainButton:hover {
+  background: #86B9D6 !important;
+}
+.supportChainButton--dark:hover {
+  background: #5F7285 !important;
+}
+
 .accountButtonConnect--light {
   background: #9BC9E4 !important;
 }
@@ -496,6 +511,7 @@
 
 .statButton {
   padding: 5px;
+  height: 30px;
   margin-left: 10px;
   background: #DBE6EC;
   border: 2px solid #15B525;

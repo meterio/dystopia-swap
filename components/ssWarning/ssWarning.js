@@ -2,7 +2,7 @@ import { Dialog, Typography, Button } from "@mui/material";
 import classes from "./ssWarning.module.css";
 import { useAppThemeContext } from '../../ui/AppThemeProvider';
 
-export default function ffWarning({close, title, subTitle, icon, description, btnLabel1, btnLabel2, action2, links}) {
+export default function ffWarning({close, title, subTitle, icon, description, btnLabelList, btnLabel2, action2, links}) {
   const navigateToMedium = () => {
     window.open("https://docs.voltswap.finance/", "_blank");
   };
@@ -131,13 +131,27 @@ export default function ffWarning({close, title, subTitle, icon, description, bt
           </Typography>
 
           <div className={classes.buttonsContainer}>
-            <div
-              className={[classes.primaryButton, classes[`primaryButton--${appTheme}`]].join(' ')}
-              onClick={close}>
-              <Typography className={classes.buttonTextPrimary}>
-                {btnLabel1 ? btnLabel1 : 'I understand the risks involved, proceed to the app'}
-              </Typography>
-            </div>
+            {
+              btnLabelList ? btnLabelList.map(b => {
+                return (
+                  <div
+                    className={[classes.primaryButton, classes[`primaryButton--${appTheme}`]].join(' ')}
+                    onClick={e => close(b.chainId)}>
+                    <Typography className={classes.buttonTextPrimary}>
+                      { b.label }
+                    </Typography>
+                  </div>
+                )
+              }) : (
+                <div
+                  className={[classes.primaryButton, classes[`primaryButton--${appTheme}`]].join(' ')}
+                  onClick={close}>
+                  <Typography className={classes.buttonTextPrimary}>
+                    I understand the risks involved, proceed to the app
+                  </Typography>
+                </div>
+              )
+            }
 
             <div
               className={[classes.secondaryButton, classes[`secondaryButton--${appTheme}`]].join(' ')}

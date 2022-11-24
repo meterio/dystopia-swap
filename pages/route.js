@@ -7,6 +7,7 @@ import Vote from "./vote";
 import Rewards from "./rewards";
 import Whitelist from "./whitelist";
 import Bribe from "./bribe/create";
+import Swapvolt from "./swapvolt";
 
 import { useRouter } from "next/router";
 
@@ -36,6 +37,8 @@ function Route({ changeTheme, ...props }) {
     return <Bribe props={props} changeTheme={changeTheme} />;
   } else if (activePath.includes("/")) {
     return <Swap props={props} changeTheme={changeTheme} />;
+  } else if (activePath.includes("swapvolt")) {
+    return <Swapvolt props={props} changeTheme={changeTheme} />;
   } else {
     return <Swap props={props} changeTheme={changeTheme} />;
   }

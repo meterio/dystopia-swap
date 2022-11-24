@@ -5,7 +5,7 @@ import WalletConnectProvider from '@walletconnect/web3-provider'
 import stores from '../../stores'
 import Web3 from 'web3'
 import { Web3Provider } from "@ethersproject/providers"
-import { ACTIONS } from '../../stores/constants'
+import { ACTIONS, getSupportChainList } from '../../stores/constants'
 import { ethers } from 'ethers'
 
 const {
@@ -71,7 +71,8 @@ export const WalletConnect = (props) => {
 
     const chainId = await web3.eth.getChainId()
 
-    const supportedChainIds = [process.env.NEXT_PUBLIC_CHAINID];
+    const supportChainList = getSupportChainList()
+    const supportedChainIds = supportChainList.map(c => c.id)
     const isChainSupported = supportedChainIds.includes(String(chainId));
     stores.accountStore.setStore({ chainInvalid: !isChainSupported });
 

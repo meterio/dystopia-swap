@@ -16,7 +16,7 @@ function Transition(props) {
 
 import classes from './transactionQueue.module.css';
 import stores from '../../stores';
-import { ACTIONS, ETHERSCAN_URL } from '../../stores/constants';
+import { ACTIONS } from '../../stores/constants';
 import { useAppThemeContext } from '../../ui/AppThemeProvider';
 
 export default function TransactionQueue({setQueueLength}) {

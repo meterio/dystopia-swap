@@ -88,6 +88,8 @@ export const UNWRAP = "UNWRAP";
 export const QUOTE_SWAP = "QUOTE_SWAP";
 export const QUOTE_SWAP_RETURNED = "QUOTE_SWAP_RETURNED";
 
+export const SWAPVOLT = "SWAPVOLT"
+
 //VESTING
 export const GET_VEST_NFTS = "GET_VEST_NFTS";
 export const VEST_NFTS_RETURNED = "VEST_NFTS_RETURNED";

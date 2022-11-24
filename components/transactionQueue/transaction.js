@@ -2,7 +2,7 @@ import React, { Component, useState, useEffect } from "react";
 import { Typography, Button, CircularProgress, Tooltip } from "@mui/material";
 import classes from "./transactionQueue.module.css";
 
-import { ACTIONS, ETHERSCAN_URL } from "../../stores/constants";
+import { ACTIONS } from "../../stores/constants";
 import { formatAddress } from "../../utils";
 import {
   HourglassEmpty,
@@ -12,6 +12,7 @@ import {
   Pause,
 } from "@mui/icons-material";
 import { useAppThemeContext } from "../../ui/AppThemeProvider";
+import stores from "../../stores";
 
 export default function Transaction({ transaction }) {
   const [expanded, setExpanded] = useState(false);
@@ -152,7 +153,10 @@ export default function Transaction({ transaction }) {
   };
 
   const onViewTX = () => {
-    window.open(`${ETHERSCAN_URL}tx/${transaction.txHash}`, "_blank");
+    const supportChain = stores.accountStore.getStore('supportChain');
+    if (supportChain) {
+      window.open(`${supportChain.explorerURL}tx/${transaction.txHash}`, "_blank");
+    }
   };
 
   return (
