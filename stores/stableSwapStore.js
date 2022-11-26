@@ -1,31 +1,21 @@
-import async from "promise-async";
 import {
   MAX_UINT256,
   ZERO_ADDRESS,
   ACTIONS,
-  // CONTRACTS,
-  BASE_ASSETS_WHITELIST,
   BLACK_LIST_TOKENS,
   // ROUTE_ASSETS
 } from "./constants";
 import { v4 as uuidv4 } from "uuid";
 
 import * as moment from "moment";
-import { formatCurrency, retry } from "../utils";
+import { formatCurrency } from "../utils";
 import stores from "./";
 
 import BigNumber from "bignumber.js";
 import { createClient } from "urql";
-import { assertValidExecutionArguments } from "graphql/execution/execute";
 import axios from "axios";
 import pairContractAbi from "./abis/pairOldRouter.json";
 import migratorAbi from "./abis/migrator.json";
-import FactoryAbi from "./abis/FactoryAbi.json";
-import { ConstructionOutlined } from "@mui/icons-material";
-import {
-  USD_PLUS_ADDRESS,
-  USD_PLUS_BOOSTED_DATA_URL,
-} from "./constants/contracts";
 import router from "next/router";
 import { assetIcons } from '../public/images/assets/asset-icons'
 
@@ -958,7 +948,8 @@ class Store {
   removeBaseAsset = (asset) => {
     try {
       let localBaseAssets = [];
-      const localBaseAssetsString = localStorage.getItem("stableSwap-assets");
+      const supportChain = stores.accountStore.getStore('supportChain');
+      const localBaseAssetsString = localStorage.getItem(`stableSwap-assets-${supportChain ? supportChain.id : ''}`);
 
       if (localBaseAssetsString && localBaseAssetsString !== "") {
         localBaseAssets = JSON.parse(localBaseAssetsString);
@@ -968,7 +959,7 @@ class Store {
         });
 
         localStorage.setItem(
-          "stableSwap-assets",
+          `stableSwap-assets-${supportChain ? supportChain.id : ''}`,
           JSON.stringify(localBaseAssets)
         );
 
@@ -995,7 +986,8 @@ class Store {
   getLocalAssets = () => {
     try {
       let localBaseAssets = [];
-      const localBaseAssetsString = localStorage.getItem("stableSwap-assets");
+      const supportChain = stores.accountStore.getStore('supportChain');
+      const localBaseAssetsString = localStorage.getItem(`stableSwap-assets-${supportChain ? supportChain.id : ''}`);
 
       if (localBaseAssetsString && localBaseAssetsString !== "") {
         localBaseAssets = JSON.parse(localBaseAssetsString);
@@ -1063,8 +1055,9 @@ class Store {
       if (save) {
         let localBaseAssets = this.getLocalAssets();
         localBaseAssets = [...localBaseAssets, newBaseAsset];
+        const supportChain = stores.accountStore.getStore('supportChain');
         localStorage.setItem(
-          "stableSwap-assets",
+          `stableSwap-assets-${supportChain ? supportChain.id : ''}`,
           JSON.stringify(localBaseAssets)
         );
 
@@ -1101,10 +1094,10 @@ class Store {
       this.setStore({ baseAssets: await this._getBaseAssets() });
       this.setStore({ pairs: await this._getPairs() });
       this.setStore({ routeAssets: supportChain.routeAssets });
-
+      
       this.emitter.emit(ACTIONS.UPDATED);
       this.emitter.emit(ACTIONS.CONFIGURED_SS);
-
+      
       setTimeout(() => {
         this.dispatcher.dispatch({ type: ACTIONS.GET_BALANCES });
       }, 1);
@@ -1232,8 +1225,8 @@ class Store {
         pairsCall.data.pairs[i].claimable0 = 0;
         pairsCall.data.pairs[i].claimable1 = 0;
       }
-      const find = "WMTR";
-      const regex = new RegExp(find, "g");
+
+      const regex = new RegExp(CONTRACTS.WFTM_ADDRESS, "g");
       let pairsCall2;
       try {
         pairsCall2 = pairsCall.data.pairs.map((object) => {
@@ -1271,19 +1264,6 @@ class Store {
       return [];
     }
   };
-  _getRouteAssets = () => {
-    const assets = []
-    for (const a of ROUTE_ASSETS) {
-      if (a.symbol == 'WMTR') {
-        assets.push(a)
-        continue
-      }
-      if (a.chainId == process.env.NEXT_PUBLIC_CHAINID) {
-        assets.push(a)
-      }
-    }
-    return assets
-  }
   _getGovTokenBase = () => {
     return {
       address: CONTRACTS.GOV_TOKEN_ADDRESS,
@@ -1561,43 +1541,6 @@ class Store {
               }
 
               pair.gauge.apr = apr;
-              // pair.gauge.boostedApr0 = new BigNumber(0);
-              // pair.gauge.boostedApr1 = new BigNumber(0);
-
-              // const reserve0ETH = BigNumber(parseFloat(pair.reserve0)).times(pair.token0.derivedETH)
-              // const reserve1ETH = BigNumber(parseFloat(pair.reserve1)).times(pair.token1.derivedETH)
-
-              // if (
-              //   pair.token0.address.toLowerCase() ===
-              //   CONTRACTS.USD_PLUS_ADDRESS.toLowerCase()
-              // ) {
-              //   let boostedApr0Response = await axios.get(
-              //     CONTRACTS.USD_PLUS_BOOSTED_DATA_URL
-              //   );
-
-              //   if (boostedApr0Response.data) {
-              //     pair.gauge.boostedApr0 = new BigNumber(
-              //       boostedApr0Response.data
-              //     ).times(100)
-              //       .times(reserve0ETH).div(reserve0ETH.plus(reserve1ETH));
-              //   }
-              // }
-
-              // if (
-              //   pair.token1.address.toLowerCase() ===
-              //   CONTRACTS.USD_PLUS_ADDRESS.toLowerCase()
-              // ) {
-              //   let boostedApr1Response = await axios.get(
-              //     CONTRACTS.USD_PLUS_BOOSTED_DATA_URL
-              //   );
-
-              //   if (boostedApr1Response.data) {
-              //     pair.gauge.boostedApr1 = new BigNumber(
-              //       boostedApr1Response.data
-              //     ).times(100)
-              //       .times(reserve1ETH).div(reserve0ETH.plus(reserve1ETH));
-              //   }
-              // }
 
               return pair;
             }
@@ -1724,7 +1667,8 @@ class Store {
   searchBaseAsset = async (payload) => {
     try {
       let localBaseAssets = [];
-      const localBaseAssetsString = localStorage.getItem("stableSwap-assets");
+      const supportChain = stores.accountStore.getStore('supportChain');
+      const localBaseAssetsString = localStorage.getItem(`stableSwap-assets-${supportChain ? supportChain.id : ''}`);
 
       if (localBaseAssetsString && localBaseAssetsString !== "") {
         localBaseAssets = JSON.parse(localBaseAssetsString);
@@ -1760,7 +1704,7 @@ class Store {
 
       localBaseAssets = [...localBaseAssets, newBaseAsset];
       localStorage.setItem(
-        "stableSwap-assets",
+        `stableSwap-assets-${supportChain ? supportChain.id : ''}`,
         JSON.stringify(localBaseAssets)
       );
 

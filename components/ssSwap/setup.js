@@ -157,15 +157,15 @@ function Setup() {
             let _toAssetValue = null
             let _fromAssetValue = null
             if (toAssetValue) {
-              _toAssetValue = baseAsset.find(token => token.id === toAssetValue.id)
+              _toAssetValue = baseAsset.find(token => token.address === toAssetValue.address)
             } else {
-              _toAssetValue = baseAsset.find(token => token.id.toLowerCase() === outputCurrency)
+              _toAssetValue = baseAsset.find(token => token.address.toLowerCase() === outputCurrency)
             }
 
             if (fromAssetValue) {
-              _fromAssetValue = baseAsset.find(token => token.id === fromAssetValue.id)
+              _fromAssetValue = baseAsset.find(token => token.address === fromAssetValue.address)
             } else {
-              _fromAssetValue = baseAsset.find(token => token.id.toLowerCase() === inputCurrency)
+              _fromAssetValue = baseAsset.find(token => token.address.toLowerCase() === inputCurrency)
             }
             if (_toAssetValue) {
               setToAssetValue(_toAssetValue)
