@@ -1297,7 +1297,7 @@ class Store {
   getBalances = async (payload) => {
     try {
       const account = stores.accountStore.getStore("account");
-      if (!account) {
+      if (!account || (account && !account.address)) {
         console.warn("account not found");
         return null;
       }

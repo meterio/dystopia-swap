@@ -39,6 +39,7 @@ class Store {
       },
       gasSpeed: "fast",
       currentBlock: 12906197,
+      subscribed: false,
     };
 
     dispatcher.register(
@@ -93,15 +94,16 @@ class Store {
       content: { connected: false },
     });
 
-    // if (window.ethereum || provider ? provider : null) {
-    //   // this.subscribeProvider();
-    // } else {
-    // }
+    const subscribed = this.getStore('subscribed')
 
-    window.removeEventListener("ethereum#initialized", this.subscribeProvider);
-    window.addEventListener("ethereum#initialized", this.subscribeProvider, {
-      once: true,
-    });
+    if (!subscribed) {
+      this.subscribeProvider()
+    }
+
+    // window.removeEventListener("ethereum#initialized", this.subscribeProvider);
+    // window.addEventListener("ethereum#initialized", this.subscribeProvider, {
+    //   once: true,
+    // });
   };
 
   setProvider = async (provider) => {
@@ -121,6 +123,10 @@ class Store {
   subscribeProvider = () => {
     const that = this;
 
+    that.setStore({
+      subscribed: true
+    })
+
     window.ethereum.on("accountsChanged", async function (accounts) {
       const address = accounts[0];
       await stores.stableSwapStore.configure({ content: { connected: !that.chainInvalid }});
@@ -136,6 +142,7 @@ class Store {
     });
 
     window.ethereum.on("chainChanged", async function (chainId) {
+      console.log('chain changed', chainId)
       // const supportedChainIds = [process.env.NEXT_PUBLIC_CHAINID];
       // const supportChainList = getSupportChainList();
       // const supportedChainIds = supportChainList.map(c => c.id);
