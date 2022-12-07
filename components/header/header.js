@@ -277,8 +277,9 @@ function Header(props) {
     });
   };
 
-  const switchChain = async (chainId) => {
-    let hexChain = "0x" + Number(chainId).toString(16);
+  const switchChain = async (network) => {
+    console.log('network', network)
+    let hexChain = "0x" + Number(network.chainId).toString(16);
     try {
       await window.ethereum.request({
         method: "wallet_switchEthereumChain",
@@ -286,6 +287,24 @@ function Header(props) {
       });
     } catch (switchError) {
       console.log("switch error", switchError);
+      if (switchError.code === 4902) {
+        window.ethereum.request({
+          method: "wallet_addEthereumChain",
+          params: [
+            {
+              chainId: hexChain,
+              chainName: network.name,
+              nativeCurrency: {
+                name: network.nativeSymbol,
+                symbol: network.nativeSymbol,
+                decimals: network.nativeDecimals,
+              },
+              rpcUrls: [network.rpc],
+              blockExplorerUrls: [network.explorerURL],
+            },
+          ],
+        });
+      }
     }
   };
 
@@ -575,6 +594,7 @@ function Header(props) {
           btnLabelList={
             getSupportChainList().map(c => {
               return {
+                ...c,
                 label: `Switch to ${c.name}`,
                 chainId: c.id
               }
@@ -607,6 +627,7 @@ function Header(props) {
               return supportChain ? c.id !== supportChain.id : true
             }).map(c => {
               return {
+                ...c,
                 label: `Switch to ${c.name}`,
                 chainId: c.id
               }

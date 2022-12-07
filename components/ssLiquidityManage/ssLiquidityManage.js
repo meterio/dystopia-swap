@@ -164,7 +164,7 @@ export default function ssLiquidityManage() {
     }
     
     const _storeAssetOptions = stores.stableSwapStore.getStore("baseAssets");
-    const storeAssetOptions = _storeAssetOptions.filter(item => item.symbol !== 'WMTR')
+    const storeAssetOptions = _storeAssetOptions.filter(item => item.symbol !== supportChain.contracts.WFTM_SYMBOL)
     const nfts = stores.stableSwapStore.getStore("vestNFTs");
     const veTok = stores.stableSwapStore.getStore("veToken");
     const pairs = stores.stableSwapStore.getStore("pairs");

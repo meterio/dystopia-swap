@@ -151,7 +151,7 @@ function Navigation(props) {
         className={classes.navToggles}
       >
         {renderSubNav("Swap", "swap")}
-        {supportChain && supportChain.id === '361' && renderSubNav("Swapvolt", "swapvolt")}
+        {supportChain && supportChain.id === '361' && renderSubNav("SwapVolt", "swapvolt")}
         {renderSubNav("Liquidity", "liquidity")}
         {renderSubNav("Vest", "vest")}
         {renderSubNav("Vote", "vote")}

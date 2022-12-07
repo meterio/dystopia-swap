@@ -136,7 +136,7 @@ export default function ffWarning({close, title, subTitle, icon, description, bt
                 return (
                   <div
                     className={[classes.primaryButton, classes[`primaryButton--${appTheme}`]].join(' ')}
-                    onClick={e => close(b.chainId)}>
+                    onClick={e => close(b)}>
                     <Typography className={classes.buttonTextPrimary}>
                       { b.label }
                     </Typography>

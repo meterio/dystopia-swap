@@ -1226,7 +1226,7 @@ class Store {
         pairsCall.data.pairs[i].claimable1 = 0;
       }
 
-      const regex = new RegExp(CONTRACTS.WFTM_ADDRESS, "g");
+      const regex = new RegExp(CONTRACTS.WFTM_SYMBOL, "g");
       let pairsCall2;
       try {
         pairsCall2 = pairsCall.data.pairs.map((object) => {
