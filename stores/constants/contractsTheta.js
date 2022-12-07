@@ -14,7 +14,7 @@ export const VE_TOKEN_DECIMALS = 18
 export const VE_TOKEN_LOGO = 'https://raw.githubusercontent.com/meterio/token-list/master/data/VOLT/logo.png'
 export const VE_TOKEN_ABI = abis.veTokenABI
 
-export const WFTM_ADDRESS = '0x4Dc08B15ea0e10B96c41Aec22fAB934bA15C983e'
+export const WFTM_ADDRESS = '0x4dc08b15ea0e10b96c41aec22fab934ba15c983e'
 export const WFTM_NAME = 'Wrapped TFUEL'
 export const WFTM_SYMBOL = 'WTFUEL'
 export const WFTM_DECIMALS = 18
