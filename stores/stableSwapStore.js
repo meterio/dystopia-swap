@@ -283,6 +283,9 @@ class Store {
           case ACTIONS.CLAIM_ALL_REWARDS:
             this.claimAllRewards(payload);
             break;
+          case ACTIONS.DISTRIBUTION_ALL:
+            this.distributionAll(payload);
+            break;
 
           //WHITELIST
           case ACTIONS.SEARCH_WHITELIST:
@@ -350,7 +353,7 @@ class Store {
         return null;
       }
       const account = stores.accountStore.getStore("account");
-      if (!account) {
+      if (!account || (account && !account.address)) {
         console.warn("account not found");
         return null;
       }
@@ -427,7 +430,7 @@ class Store {
         return null;
       }
       const account = stores.accountStore.getStore("account");
-      if (!account) {
+      if (!account || (account && !account.address)) {
         console.warn("account not found");
         return null;
       }
@@ -477,7 +480,7 @@ class Store {
         return null;
       }
       const account = stores.accountStore.getStore("account");
-      if (!account) {
+      if (!account || (account && !account.address)) {
         console.warn("account not found");
         return null;
       }
@@ -703,7 +706,7 @@ class Store {
       return null;
     }
     const account = stores.accountStore.getStore("account");
-    if (!account) {
+    if (!account || (account && !account.address)) {
       console.warn("account not found");
       return null;
     }
@@ -1725,7 +1728,7 @@ class Store {
       const context = this;
 
       const account = stores.accountStore.getStore("account");
-      if (!account) {
+      if (!account || (account && !account.address)) {
         console.warn("account not found");
         return null;
       }
@@ -2183,7 +2186,7 @@ class Store {
       const context = this;
 
       const account = stores.accountStore.getStore("account");
-      if (!account) {
+      if (!account || (account && !account.address)) {
         console.warn("account not found");
         return null;
       }
@@ -2333,7 +2336,7 @@ class Store {
     try {
       const context = this;
       const account = stores.accountStore.getStore("account");
-      if (!account) {
+      if (!account || (account && !account.address)) {
         console.warn("account not found");
         return null;
       }
@@ -2676,7 +2679,7 @@ class Store {
       const context = this;
 
       const account = stores.accountStore.getStore("account");
-      if (!account) {
+      if (!account || (account && !account.address)) {
         console.warn("account not found");
         return null;
       }
@@ -2937,7 +2940,7 @@ class Store {
       const context = this;
 
       const account = stores.accountStore.getStore("account");
-      if (!account) {
+      if (!account || (account && !account.address)) {
         console.warn("account not found");
         return null;
       }
@@ -3107,7 +3110,7 @@ class Store {
       const context = this;
 
       const account = stores.accountStore.getStore("account");
-      if (!account) {
+      if (!account || (account && !account.address)) {
         console.warn("account not found");
         return null;
       }
@@ -3517,7 +3520,7 @@ class Store {
   quoteAddLiquidity = async (payload) => {
     try {
       const account = stores.accountStore.getStore("account");
-      if (!account) {
+      if (!account || (account && !account.address)) {
         console.warn("account not found");
         return null;
       }
@@ -3588,7 +3591,7 @@ class Store {
   getLiquidityBalances = async (payload) => {
     try {
       const account = stores.accountStore.getStore("account");
-      if (!account) {
+      if (!account || (account && !account.address)) {
         console.warn("account not found");
         return null;
       }
@@ -3675,7 +3678,7 @@ class Store {
       const context = this;
 
       const account = stores.accountStore.getStore("account");
-      if (!account) {
+      if (!account || (account && !account.address)) {
         console.warn("account not found");
         return null;
       }
@@ -3844,7 +3847,7 @@ class Store {
       const context = this;
 
       const account = stores.accountStore.getStore("account");
-      if (!account) {
+      if (!account || (account && !account.address)) {
         console.warn("account not found");
         return null;
       }
@@ -4029,7 +4032,7 @@ class Store {
       const context = this;
 
       const account = stores.accountStore.getStore("account");
-      if (!account) {
+      if (!account || (account && !account.address)) {
         console.warn("account not found");
         return null;
       }
@@ -4123,7 +4126,7 @@ class Store {
   quoteRemoveLiquidity = async (payload) => {
     try {
       const account = stores.accountStore.getStore("account");
-      if (!account) {
+      if (!account || (account && !account.address)) {
         console.warn("account not found");
         return null;
       }
@@ -4195,7 +4198,7 @@ class Store {
       const context = this;
 
       const account = stores.accountStore.getStore("account");
-      if (!account) {
+      if (!account || (account && !account.address)) {
         console.warn("account not found");
         return null;
       }
@@ -4558,7 +4561,7 @@ class Store {
       const context = this;
 
       const account = stores.accountStore.getStore("account");
-      if (!account) {
+      if (!account || (account && !account.address)) {
         console.warn("account not found");
         return null;
       }
@@ -4759,7 +4762,7 @@ class Store {
       const context = this;
 
       const account = stores.accountStore.getStore("account");
-      if (!account) {
+      if (!account || (account && !account.address)) {
         console.warn("account not found");
         return null;
       }
@@ -4908,7 +4911,7 @@ class Store {
       const allowanceCallsPromises = [];
 
       const account = stores.accountStore.getStore("account");
-      if (!account) {
+      if (!account || (account && !account.address)) {
         console.warn("account not found");
         return null;
       }
@@ -4984,7 +4987,7 @@ class Store {
       const allowanceCallsPromises = [];
 
       const account = stores.accountStore.getStore("account");
-      if (!account) {
+      if (!account || (account && !account.address)) {
         console.warn("account not found");
         return null;
       }
@@ -5134,7 +5137,7 @@ class Store {
   getVestNFTs = async (payload) => {
     try {
       const account = stores.accountStore.getStore("account");
-      if (!account) {
+      if (!account || (account && !account.address)) {
         console.warn("account not found");
         return null;
       }
@@ -5194,7 +5197,7 @@ class Store {
   createVest = async (payload) => {
     try {
       const account = stores.accountStore.getStore("account");
-      if (!account) {
+      if (!account || (account && !account.address)) {
         console.warn("account not found");
         return null;
       }
@@ -5346,7 +5349,7 @@ class Store {
   increaseVestAmount = async (payload) => {
     try {
       const account = stores.accountStore.getStore("account");
-      if (!account) {
+      if (!account || (account && !account.address)) {
         console.warn("account not found");
         return null;
       }
@@ -5476,7 +5479,7 @@ class Store {
   increaseVestDuration = async (payload) => {
     try {
       const account = stores.accountStore.getStore("account");
-      if (!account) {
+      if (!account || (account && !account.address)) {
         console.warn("account not found");
         return null;
       }
@@ -5556,7 +5559,7 @@ class Store {
       let bribesLength = bribes.length;
 
       const account = stores.accountStore.getStore("account");
-      if (!account) {
+      if (!account || (account && !account.address)) {
         console.warn("account not found");
         return null;
       }
@@ -5734,7 +5737,7 @@ class Store {
       let mergeTXID = this.getTXUUID();
 
       const account = stores.accountStore.getStore("account");
-      if (!account) {
+      if (!account || (account && !account.address)) {
         console.warn("account not found");
         return null;
       }
@@ -5950,7 +5953,7 @@ class Store {
   vote = async (payload) => {
     try {
       const account = stores.accountStore.getStore("account");
-      if (!account) {
+      if (!account || (account && !account.address)) {
         console.warn("account not found");
         return null;
       }
@@ -6026,7 +6029,7 @@ class Store {
   resetVote = async (payload) => {
     try {
       const account = stores.accountStore.getStore("account");
-      if (!account) {
+      if (!account || (account && !account.address)) {
         console.warn("account not found");
         return null;
       }
@@ -6089,7 +6092,7 @@ class Store {
   getVestVotes = async (payload) => {
     try {
       const account = stores.accountStore.getStore("account");
-      if (!account) {
+      if (!account || (account && !account.address)) {
         console.warn("account not found");
         return null;
       }
@@ -6161,7 +6164,7 @@ class Store {
   createBribe = async (payload) => {
     try {
       const account = stores.accountStore.getStore("account");
-      if (!account) {
+      if (!account || (account && !account.address)) {
         console.warn("account not found");
         return null;
       }
@@ -6311,7 +6314,7 @@ class Store {
   getVestBalances = async (payload) => {
     try {
       const account = stores.accountStore.getStore("account");
-      if (!account) {
+      if (!account || (account && !account.address)) {
         console.warn("account not found");
         return null;
       }
@@ -6410,7 +6413,7 @@ class Store {
   getRewardBalances = async (payload) => {
     try {
       const account = stores.accountStore.getStore("account");
-      if (!account) {
+      if (!account || (account && !account.address)) {
         console.warn("account not found");
         return null;
       }
@@ -6624,7 +6627,7 @@ class Store {
   claimBribes = async (payload) => {
     try {
       const account = stores.accountStore.getStore("account");
-      if (!account) {
+      if (!account || (account && !account.address)) {
         console.warn("account not found");
         return null;
       }
@@ -6696,7 +6699,7 @@ class Store {
     try {
       const context = this;
       const account = stores.accountStore.getStore("account");
-      if (!account) {
+      if (!account || (account && !account.address)) {
         console.warn("account not found");
         return null;
       }
@@ -6945,11 +6948,74 @@ class Store {
       this.emitter.emit(ACTIONS.ERROR, ex);
     }
   };
+  
+  distributionAll = async (payload) => {
+    try {
+      const account = stores.accountStore.getStore("account");
+      if (!account || (account && !account.address)) {
+        console.warn("account not found");
+        return null;
+      }
+
+      const web3 = await stores.accountStore.getWeb3Provider();
+      if (!web3) {
+        console.warn("web3 not found");
+        return null;
+      }
+
+      const { tokenID } = payload.content;
+
+      let distributionTXID = this.getTXUUID();
+
+      this.emitter.emit(ACTIONS.TX_ADDED, {
+        title: "Trigger Weekly Distribution",
+        verb: "Distribution Succeed",
+        transactions: [
+          {
+            uuid: distributionTXID,
+            description: `Distribution rewards`,
+            status: "WAITING",
+          },
+        ],
+      });
+
+      const gasPrice = await stores.accountStore.getGasPrice();
+
+      const voterContract = new web3.eth.Contract(
+        CONTRACTS.VOTER_ABI,
+        CONTRACTS.VOTER_ADDRESS
+      );
+
+      this._callContractWait(
+        web3,
+        voterContract,
+        "distributeAll",
+        [],
+        account,
+        gasPrice,
+        null,
+        null,
+        distributionTXID,
+        async (err) => {
+          if (err) {
+            return this.emitter.emit(ACTIONS.ERROR, err);
+          }
+
+          this.getRewardBalances({ content: { tokenID } });
+          this.emitter.emit(ACTIONS.CLAIM_REWARD_RETURNED);
+        }
+      );
+
+    } catch (ex) {
+      console.error(ex);
+      this.emitter.emit(ACTIONS.ERROR, ex);
+    }
+  }
 
   claimRewards = async (payload) => {
     try {
       const account = stores.accountStore.getStore("account");
-      if (!account) {
+      if (!account || (account && !account.address)) {
         console.warn("account not found");
         return null;
       }
@@ -7015,7 +7081,7 @@ class Store {
   claimVeDist = async (payload) => {
     try {
       const account = stores.accountStore.getStore("account");
-      if (!account) {
+      if (!account || (account && !account.address)) {
         console.warn("account not found");
         return null;
       }
@@ -7079,7 +7145,7 @@ class Store {
   claimPairFees = async (payload) => {
     try {
       const account = stores.accountStore.getStore("account");
-      if (!account) {
+      if (!account || (account && !account.address)) {
         console.warn("account not found");
         return null;
       }
@@ -7143,7 +7209,7 @@ class Store {
   searchWhitelist = async (payload) => {
     try {
       const account = stores.accountStore.getStore("account");
-      if (!account) {
+      if (!account || (account && !account.address)) {
         console.warn("account not found");
         return null;
       }
@@ -7183,7 +7249,7 @@ class Store {
   whitelistToken = async (payload) => {
     try {
       const account = stores.accountStore.getStore("account");
-      if (!account) {
+      if (!account || (account && !account.address)) {
         console.warn("account not found");
         return null;
       }

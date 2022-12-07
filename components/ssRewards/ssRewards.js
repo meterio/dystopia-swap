@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Typography } from '@mui/material';
 import classes from './ssRewards.module.css';
 import RewardsTable from './ssRewardsTable.js';
-import { Add } from '@mui/icons-material';
+import { Add, AttachMoney } from '@mui/icons-material';
 import stores from '../../stores';
 import { ACTIONS } from '../../stores/constants';
 import { useAppThemeContext } from '../../ui/AppThemeProvider';
@@ -116,6 +116,14 @@ export default function ssRewards() {
     stores.dispatcher.dispatch({type: ACTIONS.CLAIM_ALL_REWARDS, content: {pairs: rewards, tokenID: sendTokenID}});
   };
 
+  const distributionAll = () => {
+    let sendTokenID = 0;
+    if (token && token.id) {
+      sendTokenID = token.id;
+    }
+    stores.dispatcher.dispatch({type: ACTIONS.DISTRIBUTION_ALL, content: {tokenID: sendTokenID}});
+  }
+
   const handleClick = (event) => {
     setAnchorEl(anchorEl ? null : event.currentTarget);
   };
@@ -147,6 +155,20 @@ export default function ssRewards() {
           <Typography
             className={[classes.actionButtonText, classes[`actionButtonText--${appTheme}`], 'g-flex', 'g-flex--align-center', 'g-flex--justify-center'].join(' ')}>
             Claim All
+          </Typography>
+        </div>
+
+        <div
+          className={[classes.addButton, classes[`addButton--${appTheme}`], 'g-flex', 'g-flex--align-center', 'g-flex--justify-center'].join(' ')}
+          onClick={distributionAll}>
+          <div
+            className={[classes.addButtonIcon, 'g-flex', 'g-flex--align-center', 'g-flex--justify-center'].join(' ')}>
+            <AttachMoney style={{width: 20, color: '#fff'}}/>
+          </div>
+
+          <Typography
+            className={[classes.actionButtonText, classes[`actionButtonText--${appTheme}`], 'g-flex', 'g-flex--align-center', 'g-flex--justify-center'].join(' ')}>
+            Trigger Weekly Distribution
           </Typography>
         </div>
 
