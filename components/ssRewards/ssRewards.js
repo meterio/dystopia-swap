@@ -167,8 +167,9 @@ export default function ssRewards() {
           </div>
 
           <Typography
-            className={[classes.actionButtonText, classes[`actionButtonText--${appTheme}`], 'g-flex', 'g-flex--align-center', 'g-flex--justify-center'].join(' ')}>
-            Trigger Weekly Distribution
+            className={[classes.actionButtonText, classes[`actionButtonText--${appTheme}`], 'g-flex-column', 'g-flex--align-center', 'g-flex--justify-center'].join(' ')}>
+            <span className={classes.textNoWrap}>Trigger Weekly</span> 
+            <span>Distribution</span>
           </Typography>
         </div>
 

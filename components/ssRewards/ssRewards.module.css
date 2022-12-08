@@ -470,6 +470,10 @@
     white-space: nowrap;
   }
 
+  .textNoWrap {
+    white-space: nowrap;
+  }
+
   .vestInfo {
     display: flex;
     flex-direction: column;

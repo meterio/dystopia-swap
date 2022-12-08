@@ -1323,7 +1323,6 @@ class Store {
 
   _getVestNFTs = async (web3, account) => {
     try {
-      const veToken = this.getStore("veToken");
       const govToken = this.getStore("govToken");
 
       const vestingContract = new web3.eth.Contract(
@@ -1391,7 +1390,7 @@ class Store {
         .div(10 ** govToken.decimals)
         .toFixed(govToken.decimals);
 
-      this.setStore({ govToken });ACTIONS.UPDATED
+      this.setStore({ govToken });
       this.emitter.emit();
 
       this._getVestNFTs(web3, account);
@@ -1569,48 +1568,35 @@ class Store {
         return null;
       }
 
-      const baseAssetsBalances = await Promise.all(
-        baseAssets.map(async (asset) => {
-          try {
-            if (asset.address === CONTRACTS.FTM_ADDRESS) {
-              let bal = await web3.eth.getBalance(account.address);
-              return {
-                balanceOf: bal,
-                maticBalance: bal,
-                isWhitelisted: true,
-              };
-            }
-
+      const multicall = await stores.accountStore.getMulticall();
+      let baseAssetsBalances = []
+      try {
+        baseAssetsBalances = await multicall.aggregate(baseAssets
+          .filter(asset => asset.address !== CONTRACTS.FTM_ADDRESS)
+          .map(asset => {
             const assetContract = new web3.eth.Contract(
               CONTRACTS.ERC20_ABI,
               asset.address
             );
-            let bal = await web3.eth.getBalance(account.address);
-            //rechange isWhitelisted!!
-            const [balanceOf] = await Promise.all([
-              //  voterContract.methods.isWhitelisted(asset.address).call(),
-              assetContract.methods.balanceOf(account.address).call(),
-            ]);
-            return {
-              balanceOf,
-              bal,
-              false: Boolean, //rechange isWhitelisted!!
-            };
-          } catch (ex) {
-            return {
-              balanceOf: "0",
-              maticBalance: "0",
-              isWhitelisted: false,
-            };
-          }
-        })
-      );
+            return assetContract.methods.balanceOf(account.address)
+        }))
+      } catch(e) {
+        console.log('multicall baseAssetsBalances', e.message)
+        baseAssetsBalances = new Array(baseAssets.length - 1).fill(0)
+      }
+
+      try {
+        const balanceOf = await web3.eth.getBalance(account.address);
+        baseAssetsBalances.unshift(balanceOf)
+      } catch(e) {
+        console.log('get native token balance', e.message)
+        baseAssetsBalances.unshift(0)
+      }
 
       for (let i = 0; i < baseAssets.length; i++) {
-        baseAssets[i].balance = BigNumber(baseAssetsBalances[i].balanceOf)
+        baseAssets[i].balance = BigNumber(baseAssetsBalances[i])
           .div(10 ** parseInt(baseAssets[i].decimals))
           .toFixed(parseInt(baseAssets[i].decimals));
-        baseAssets[i].isWhitelisted = baseAssetsBalances[i].isWhitelisted;
       }
       this.setStore({ baseAssets });
       this.emitter.emit(ACTIONS.UPDATED);
