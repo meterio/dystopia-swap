@@ -140,7 +140,7 @@ export const SUPPORT_CHAIN = [
     nativeDecimals: 18,
     rpc: 'https://eth-rpc-api.thetatoken.org/rpc',
     contracts: contractsTheta,
-    infoURL: 'https://info-theta.surge.sh',
+    infoURL: 'https://charts-theta.voltswap.finance',
     explorerURL: 'https://explorer.thetatoken.org',
     govAddr: '0x1336739b05c7ab8a526d40dcc0d04a826b5f8b03',
     subgraphApi: 'https://graph-theta.voltswap.finance/subgraphs/name/theta/voltswapv2-subgraph',
