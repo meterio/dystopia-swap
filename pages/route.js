@@ -15,7 +15,9 @@ function Route({ changeTheme, ...props }) {
   const router = useRouter();
   const activePath = router.asPath;
 
-  if (activePath.includes("/swap")) {
+  if (activePath.includes("/swapvolt")) {
+    return <Swapvolt props={props} changeTheme={changeTheme} />;
+  } else if (activePath.includes("/swap")) {
     return <Swap props={props} changeTheme={changeTheme} />;
   } else if (activePath.includes("/liquidity")) {
     if (activePath.includes("/liquidity/0x")) {
@@ -35,8 +37,6 @@ function Route({ changeTheme, ...props }) {
     return <Whitelist props={props} changeTheme={changeTheme} />;
   } else if (activePath.includes("/bribe")) {
     return <Bribe props={props} changeTheme={changeTheme} />;
-  } else if (activePath.includes("/swapvolt")) {
-    return <Swapvolt props={props} changeTheme={changeTheme} />;
   } else if (activePath.includes("/")) {
     return <Swap props={props} changeTheme={changeTheme} />;
   } else {
