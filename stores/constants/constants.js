@@ -193,6 +193,14 @@ export const SUPPORT_CHAIN = [
         "chainId": 361,
         "logoURI": "https://raw.githubusercontent.com/meterio/token-list/master/data/VOLT/logo.png"
       },
+      {
+        "name": "WTheta",
+        "address": "0xaf537fb7e4c77c97403de94ce141b7edb9f7fcf0",
+        "symbol": "WTHETA",
+        "decimals": 18,
+        "chainId": 361,
+        "logoURI": "https://raw.githubusercontent.com/meterio/token-list/master/data/WTHETA/logo.png"
+      }
     ]
   }
 ]

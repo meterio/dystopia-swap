@@ -4651,13 +4651,13 @@ class Store {
 
       // SUBMIT SWAP TRANSACTION
       let _slippage = slippage;
-      if (
-        fromAsset.address.toLowerCase() ===
-          CONTRACTS.SPHERE_ADDRESS.toLowerCase() &&
-        Number(slippage) <= 22
-      ) {
-        _slippage = (30 + Number(slippage)).toString();
-      }
+      // if (
+      //   fromAsset.address.toLowerCase() ===
+      //     CONTRACTS.SPHERE_ADDRESS.toLowerCase() &&
+      //   Number(slippage) <= 22
+      // ) {
+      //   _slippage = (30 + Number(slippage)).toString();
+      // }
       const sendSlippage = BigNumber(100).minus(_slippage).div(100);
 
       const sendFromAmount = BigNumber(fromAmount)
@@ -4684,13 +4684,13 @@ class Store {
       ];
       let sendValue = null;
 
-      if (
-        fromAsset.address.toLowerCase() ===
-        CONTRACTS.SPHERE_ADDRESS.toLowerCase()
-      ) {
-        // SPHERE token address
-        func = "swapExactTokensForTokensSupportingFeeOnTransferTokens";
-      }
+      // if (
+      //   fromAsset.address.toLowerCase() ===
+      //   CONTRACTS.SPHERE_ADDRESS.toLowerCase()
+      // ) {
+      //   // SPHERE token address
+      //   func = "swapExactTokensForTokensSupportingFeeOnTransferTokens";
+      // }
 
       if (fromAsset.address === CONTRACTS.FTM_ADDRESS) {
         func = "swapExactMTRForTokens";
@@ -4704,12 +4704,12 @@ class Store {
       }
       if (toAsset.address === CONTRACTS.FTM_ADDRESS) {
         func = "swapExactTokensForMTR";
-        if (
-          fromAsset.address.toLowerCase() ===
-          CONTRACTS.SPHERE_ADDRESS.toLowerCase()
-        ) {
-          func = "swapExactTokensForMTRSupportingFeeOnTransferTokens";
-        }
+        // if (
+        //   fromAsset.address.toLowerCase() ===
+        //   CONTRACTS.SPHERE_ADDRESS.toLowerCase()
+        // ) {
+        //   func = "swapExactTokensForMTRSupportingFeeOnTransferTokens";
+        // }
       }
 
       this._callContractWait(
