@@ -35,10 +35,10 @@ function Route({ changeTheme, ...props }) {
     return <Whitelist props={props} changeTheme={changeTheme} />;
   } else if (activePath.includes("/bribe")) {
     return <Bribe props={props} changeTheme={changeTheme} />;
+  } else if (activePath.includes("/swapvolt")) {
+    return <Swapvolt props={props} changeTheme={changeTheme} />;
   } else if (activePath.includes("/")) {
     return <Swap props={props} changeTheme={changeTheme} />;
-  } else if (activePath.includes("swapvolt")) {
-    return <Swapvolt props={props} changeTheme={changeTheme} />;
   } else {
     return <Swap props={props} changeTheme={changeTheme} />;
   }
