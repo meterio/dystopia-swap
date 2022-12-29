@@ -148,7 +148,7 @@ function Setup() {
           const _baseAsset = stores.stableSwapStore.getStore("baseAssets");
           // console.log('baseAssets', _baseAsset)
           const wToken = supportChain ? supportChain.contracts.WFTM_SYMBOL : ''
-          const baseAsset = _baseAsset.filter(item => item.symbol !== wToken)
+          const baseAsset = _baseAsset//.filter(item => item.symbol !== wToken)
 
           setToAssetOptions(baseAsset);
           setFromAssetOptions(baseAsset);

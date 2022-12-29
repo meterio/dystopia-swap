@@ -4894,7 +4894,6 @@ class Store {
   }
   wrap = async (payload) => {
     try {
-      const allowanceCallsPromises = [];
 
       const account = stores.accountStore.getStore("account");
       if (!account || (account && !account.address)) {
@@ -4936,33 +4935,31 @@ class Store {
         ],
       });
 
-      const depositPromise = new Promise((resolve, reject) => {
-        this._callContractWait(
-          web3,
-          wmaticContract,
-          "deposit",
-          [],
-          account,
-          gasPrice,
-          null,
-          null,
-          wrapTXID,
-          (err) => {
-            if (err) {
-              reject(err);
-              return;
-            }
+      this._callContractWait(
+        web3,
+        wmaticContract,
+        "deposit",
+        [],
+        account,
+        gasPrice,
+        null,
+        null,
+        wrapTXID,
+        (err) => {
+          if (err) {
+            return this.emitter.emit(ACTIONS.ERROR, err);
+          }
 
-            resolve();
-          },
-          null,
-          sendValue
-        );
-      });
+          this._getSpecificAssetInfo(web3, account, fromAsset.address);
+          this._getSpecificAssetInfo(web3, account, toAsset.address);
+          this._getPairInfo(web3, account);
 
-      allowanceCallsPromises.push(depositPromise);
-      const done = await Promise.all(allowanceCallsPromises);
-      this.emitter.emit(ACTIONS.WRAP_RETURNED);
+          this.emitter.emit(ACTIONS.WRAP_RETURNED);
+          this.emitter.emit(ACTIONS.ACCOUNT_CONFIGURED)
+        },
+        null,
+        sendValue
+      );
     } catch (e) {
       console.log(e);
       this.emitter.emit(ACTIONS.ERROR, e);
@@ -4970,7 +4967,6 @@ class Store {
   };
   unwrap = async (payload) => {
     try {
-      const allowanceCallsPromises = [];
 
       const account = stores.accountStore.getStore("account");
       if (!account || (account && !account.address)) {
@@ -5010,31 +5006,29 @@ class Store {
           },
         ],
       });
-      const withdrawPromise = new Promise((resolve, reject) => {
-        this._callContractWait(
-          web3,
-          wmaticContract,
-          "withdraw",
-          [sendFromAmount],
-          account,
-          gasPrice,
-          null,
-          null,
-          unwrapTXID,
-          (err) => {
-            if (err) {
-              reject(err);
-              return;
-            }
-
-            resolve();
+      this._callContractWait(
+        web3,
+        wmaticContract,
+        "withdraw",
+        [sendFromAmount],
+        account,
+        gasPrice,
+        null,
+        null,
+        unwrapTXID,
+        (err) => {
+          if (err) {
+            return this.emitter.emit(ACTIONS.ERROR, err);
           }
-        );
-      });
 
-      allowanceCallsPromises.push(withdrawPromise);
-      const done = await Promise.all(allowanceCallsPromises);
-      this.emitter.emit(ACTIONS.UNWRAP_RETURNED);
+          this._getSpecificAssetInfo(web3, account, fromAsset.address);
+          this._getSpecificAssetInfo(web3, account, toAsset.address);
+          this._getPairInfo(web3, account);
+
+          this.emitter.emit(ACTIONS.UNWRAP_RETURNED);
+          this.emitter.emit(ACTIONS.ACCOUNT_CONFIGURED)
+        }
+      );
     } catch (e) {
       console.log(e);
       this.emitter.emit(ACTIONS.ERROR, e);
