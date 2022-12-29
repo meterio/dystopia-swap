@@ -1129,7 +1129,7 @@ class Store {
       }
 
       const nativeFTM = {
-        id: CONTRACTS.FTM_ADDRESS,
+        id: CONTRACTS.WFTM_ADDRESS,
         address: CONTRACTS.FTM_ADDRESS,
         decimals: CONTRACTS.FTM_DECIMALS,
         logoURI: CONTRACTS.FTM_LOGO,
@@ -4280,8 +4280,10 @@ class Store {
 
       const routeAssets = _routeAssets;
 
-      let addy0 = fromAsset.address;
-      let addy1 = toAsset.address;
+      let addy0 = fromAsset.id;
+      let addy1 = toAsset.id;
+      // console.log({fromAsset, toAsset})
+      // console.log('pairs', pairs)
 
       let amountOuts = [];
       for (let i = 0; i < routeAssets.length; i++) {
@@ -4291,16 +4293,16 @@ class Store {
         }
         const fromPairs = pairs.filter(item => {
           return (
-            (item.token0.address === addy0 && item.token1.address === routeAddr)
+            (item.token0.id === addy0 && item.token1.id === routeAddr)
             ||
-            (item.token0.address === routeAddr && item.token1.address === addy0)
+            (item.token0.id === routeAddr && item.token1.id === addy0)
           ) && Number(item.tvl).toFixed(0) !== '0'
         });
         const toPairs = pairs.filter(item => {
           return (
-            (item.token0.address === addy1 && item.token1.address === routeAddr)
+            (item.token0.id === addy1 && item.token1.id === routeAddr)
             ||
-            (item.token0.address === routeAddr && item.token1.address === addy1)
+            (item.token0.id === routeAddr && item.token1.id === addy1)
           ) && Number(item.tvl).toFixed(0) !== '0'
         })
 
@@ -4337,25 +4339,25 @@ class Store {
 
           const fromPairs = pairs.filter(item => {
             return (
-              (item.token0.address === addy0 && item.token1.address === route0Addr)
+              (item.token0.id === addy0 && item.token1.id === route0Addr)
               ||
-              (item.token0.address === route0Addr && item.token1.address === addy0)
+              (item.token0.id === route0Addr && item.token1.id === addy0)
             ) && Number(item.tvl).toFixed(0) !== '0'
           });
 
           const middlePairs = pairs.filter(item => {
             return (
-              (item.token0.address === route0Addr && item.token1.address === route1Addr)
+              (item.token0.id === route0Addr && item.token1.id === route1Addr)
               ||
-              (item.token0.address === route1Addr && item.token1.address === route0Addr)
+              (item.token0.id === route1Addr && item.token1.id === route0Addr)
             ) && Number(item.tvl).toFixed(0) !== '0'
           });
 
           const toPairs = pairs.filter(item => {
             return (
-              (item.token0.address === route1Addr && item.token1.address === addy1)
+              (item.token0.id === route1Addr && item.token1.id === addy1)
               ||
-              (item.token0.address === addy1 && item.token1.address === route1Addr)
+              (item.token0.id === addy1 && item.token1.id === route1Addr)
             ) && Number(item.tvl).toFixed(0) !== '0'
           });
           
@@ -4389,9 +4391,9 @@ class Store {
 
       const ps = pairs.filter(item => {
         return (
-          (item.token0.address === addy0 && item.token1.address === addy1)
+          (item.token0.id === addy0 && item.token1.id === addy1)
           ||
-          (item.token0.address === addy1 && item.token1.address === addy0)
+          (item.token0.id === addy1 && item.token1.id === addy0)
         ) && Number(item.tvl).toFixed(0) !== '0'
       })
 
@@ -4408,18 +4410,18 @@ class Store {
         })
       }
 
-      amountOuts = amountOuts.map(item => {
-        return {
-          ...item,
-          routes: item.routes.map(route => {
-            return {
-              ...route,
-              from: route.from === CONTRACTS.FTM_ADDRESS ? CONTRACTS.WFTM_ADDRESS : route.from,
-              to: route.to === CONTRACTS.FTM_ADDRESS ? CONTRACTS.WFTM_ADDRESS : route.to
-            }
-          })
-        }
-      })
+      // amountOuts = amountOuts.map(item => {
+      //   return {
+      //     ...item,
+      //     routes: item.routes.map(route => {
+      //       return {
+      //         ...route,
+      //         from: route.from === CONTRACTS.FTM_ADDRESS ? CONTRACTS.WFTM_ADDRESS : route.from,
+      //         to: route.to === CONTRACTS.FTM_ADDRESS ? CONTRACTS.WFTM_ADDRESS : route.to
+      //       }
+      //     })
+      //   }
+      // })
       console.log('amountOuts', amountOuts)
 
       const multicall = await stores.accountStore.getMulticall();
