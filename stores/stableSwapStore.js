@@ -6583,6 +6583,7 @@ class Store {
           BigNumber(pair.gauge.rewardsEarned).gt(0)
         ) {
           pair.rewardType = "Reward";
+          pair.rewardToken = govToken;
           filteredRewards.push(pair);
         }
       }

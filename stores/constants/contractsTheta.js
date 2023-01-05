@@ -8,8 +8,8 @@ export const GOV_TOKEN_LOGO = 'https://raw.githubusercontent.com/meterio/token-l
 export const GOV_TOKEN_ABI = abis.tokenABI
 
 export const VE_TOKEN_ADDRESS = '0x1E462293109cAf2838a7d680f8D3Ab1f87b259f1'
-export const VE_TOKEN_NAME = 'veVOLT'
-export const VE_TOKEN_SYMBOL = 'veVOLT'
+export const VE_TOKEN_NAME = 'veTVOLT'
+export const VE_TOKEN_SYMBOL = 'veTVOLT'
 export const VE_TOKEN_DECIMALS = 18
 export const VE_TOKEN_LOGO = 'https://raw.githubusercontent.com/meterio/token-list/master/data/VOLT/logo.png'
 export const VE_TOKEN_ABI = abis.veTokenABI
