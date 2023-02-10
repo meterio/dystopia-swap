@@ -102,6 +102,7 @@ function Setup() {
           setApprovalLoading(false);
           setQuoteLoading(false);
           setQuote(null);
+          setFromAmountValue("");
           setToAmountValue("");
           setQuoteError(msg);
         };
