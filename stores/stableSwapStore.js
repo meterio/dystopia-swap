@@ -4437,6 +4437,17 @@ class Store {
         console.log('multicall getAmountsOut', e.message)
       }
 
+      if (!receiveAmounts.length) {
+        const account = stores.accountStore.getStore("account");
+        if (!account) {
+          this.emitter.emit(
+            ACTIONS.ERROR,
+            "Please connect wallet first"
+          );
+        }
+        return;
+      }
+
       // const retryCall = async () => {
       //   const res = await Promise.allSettled(
       //     amountOuts.map(async (route) => {
