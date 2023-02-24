@@ -4296,14 +4296,14 @@ class Store {
             (item.token0.id === addy0 && item.token1.id === routeAddr)
             ||
             (item.token0.id === routeAddr && item.token1.id === addy0)
-          ) && Number(item.tvl).toFixed(0) !== '0'
+          ) && Number(item.reserveUSD).toFixed(0) !== '0'
         });
         const toPairs = pairs.filter(item => {
           return (
             (item.token0.id === addy1 && item.token1.id === routeAddr)
             ||
             (item.token0.id === routeAddr && item.token1.id === addy1)
-          ) && Number(item.tvl).toFixed(0) !== '0'
+          ) && Number(item.reserveUSD).toFixed(0) !== '0'
         })
 
         if (fromPairs.length && toPairs.length) {
@@ -4342,7 +4342,7 @@ class Store {
               (item.token0.id === addy0 && item.token1.id === route0Addr)
               ||
               (item.token0.id === route0Addr && item.token1.id === addy0)
-            ) && Number(item.tvl).toFixed(0) !== '0'
+            ) && Number(item.reserveUSD).toFixed(0) !== '0'
           });
 
           const middlePairs = pairs.filter(item => {
@@ -4350,7 +4350,7 @@ class Store {
               (item.token0.id === route0Addr && item.token1.id === route1Addr)
               ||
               (item.token0.id === route1Addr && item.token1.id === route0Addr)
-            ) && Number(item.tvl).toFixed(0) !== '0'
+            ) && Number(item.reserveUSD).toFixed(0) !== '0'
           });
 
           const toPairs = pairs.filter(item => {
@@ -4358,7 +4358,7 @@ class Store {
               (item.token0.id === route1Addr && item.token1.id === addy1)
               ||
               (item.token0.id === addy1 && item.token1.id === route1Addr)
-            ) && Number(item.tvl).toFixed(0) !== '0'
+            ) && Number(item.reserveUSD).toFixed(0) !== '0'
           });
           
           if (fromPairs.length && middlePairs.length && toPairs.length) {
@@ -4394,7 +4394,7 @@ class Store {
           (item.token0.id === addy0 && item.token1.id === addy1)
           ||
           (item.token0.id === addy1 && item.token1.id === addy0)
-        ) && Number(item.tvl).toFixed(0) !== '0'
+        ) && Number(item.reserveUSD).toFixed(0) !== '0'
       })
 
       for (let i = 0; i < ps.length; i++) {
