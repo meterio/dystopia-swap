@@ -241,6 +241,7 @@ function Header(props) {
 
     window.localStorage.removeItem("walletconnect");
     window.localStorage.removeItem("WEB3_CONNECT_CACHED_PROVIDER");
+    window.localStorage.removeItem("isCoinbaseWallet");
 
     stores.accountStore.emitter.emit(ACTIONS.DISCONNECT_WALLET);
     setWarningOpen(false)
@@ -280,15 +281,16 @@ function Header(props) {
   const switchChain = async (network) => {
     console.log('network', network)
     let hexChain = "0x" + Number(network.chainId).toString(16);
+    const provider = await stores.accountStore.getProvider()
     try {
-      await window.ethereum.request({
+      await provider.request({
         method: "wallet_switchEthereumChain",
         params: [{ chainId: hexChain }],
       });
     } catch (switchError) {
       console.log("switch error", switchError);
       if (switchError.code === 4902) {
-        window.ethereum.request({
+        provider.request({
           method: "wallet_addEthereumChain",
           params: [
             {
@@ -408,9 +410,14 @@ function Header(props) {
                         >
                           {account && account.address && (
                             <>
-                              <div
+                              {
+                                localStorage.getItem('isCoinbaseWallet') === 'true' ? <div
+                                  className={`${classes.accountIcon} ${classes.coinbase}`}
+                                ></div> : <div
                                 className={`${classes.accountIcon} ${classes.metamask}`}
                               ></div>
+                              }
+                              
 
                               <div
                                 style={{

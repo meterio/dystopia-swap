@@ -38,7 +38,7 @@ export const WalletConnect = (props) => {
           options: {
             infuraId: `${process.env.NEXT_PUBLIC_INFURA_KEY}`,
             rpc: {
-              137: `https://rpc.meter.io`,
+              82: `https://rpc.meter.io`,
             },
             network: "meter",
             supportedChainIds: [82],

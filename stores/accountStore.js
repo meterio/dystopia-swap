@@ -68,8 +68,9 @@ class Store {
     // const supportedChainIds = [process.env.NEXT_PUBLIC_CHAINID];
     const supportChainList = getSupportChainList()
     const supportedChainIds = supportChainList.map(c => c.id)
-    const provider = await detectProvider();
-    this.getGasPrices();
+    const provider = await this.getProvider();
+
+    // this.getGasPrices();
 
     let providerChain = provider
       ? await provider.request({ method: "eth_chainId" })
@@ -120,14 +121,15 @@ class Store {
     }
   };
 
-  subscribeProvider = () => {
+  subscribeProvider = async () => {
     const that = this;
 
     that.setStore({
       subscribed: true
     })
 
-    window.ethereum.on("accountsChanged", async function (accounts) {
+    const provider = await this.getProvider()
+    provider.on("accountsChanged", async function (accounts) {
       const address = accounts[0];
       await stores.stableSwapStore.configure({ content: { connected: !that.chainInvalid }});
       that.setStore({
@@ -141,27 +143,29 @@ class Store {
       });
     });
 
-    window.ethereum.on("chainChanged", async function (chainId) {
+    provider.on("chainChanged", async function (chainId) {
       console.log('chain changed', chainId)
-      // const supportedChainIds = [process.env.NEXT_PUBLIC_CHAINID];
-      // const supportChainList = getSupportChainList();
-      // const supportedChainIds = supportChainList.map(c => c.id);
-      // const parsedChainId = parseInt(chainId + "", 16) + "";
-      // const isChainSupported = supportedChainIds.includes(parsedChainId);
-      // if (isChainSupported) {
-      //   that.setStore({
-      //     supportChain: supportChainList.find(c => c.id === parsedChainId)
-      //   })
-      // } else {
-      //   that.setStore({
-      //     supportChain: null
-      //   })
-      // }
-      // that.setStore({ chainInvalid: !isChainSupported });
-      // await stores.stableSwapStore.configure({ content: { connected: isChainSupported }});
-      // that.emitter.emit(ACTIONS.ACCOUNT_CHANGED);
-      // that.emitter.emit(ACTIONS.ACCOUNT_CONFIGURED);
-      that.configure();
+      const supportChainList = getSupportChainList();
+      const supportedChainIds = supportChainList.map(c => c.id);
+      const parsedChainId = Number(chainId) + "";
+      const isChainSupported = supportedChainIds.includes(parsedChainId);
+      if (isChainSupported) {
+        that.setStore({
+          supportChain: supportChainList.find(c => c.id === parsedChainId)
+        })
+      } else {
+        that.setStore({
+          supportChain: null
+        })
+      }
+      that.setStore({ chainInvalid: !isChainSupported });
+      that.emitter.emit(ACTIONS.ACCOUNT_CHANGED);
+      that.emitter.emit(ACTIONS.ACCOUNT_CONFIGURED);
+
+      that.dispatcher.dispatch({
+        type: ACTIONS.CONFIGURE_SS,
+        content: { connected: false },
+      });
     });
   };
 
@@ -227,10 +231,31 @@ class Store {
     let web3provider = this.getStore("web3provider");
 
     if (web3provider === null) {
-      return new Web3(window.ethereum || (await detectProvider()));
+      // return new Web3(window.ethereum || (await detectProvider()));
+      return new Web3(await this.getProvider())
     }
 
     return web3provider;
+  };
+
+  getProvider = async () => {
+    const provider = window.ethereum || (await detectProvider());
+    if (provider.providers) {
+      if (provider.selectedProvider) {
+        const isCoinbaseWallet = provider.selectedProvider.isCoinbaseWallet
+        if (isCoinbaseWallet) {
+          localStorage.setItem('isCoinbaseWallet', true)
+        }
+        return provider.selectedProvider
+      }
+      // if (provider.providerMap.has('MetaMask')) {
+      //   return provider.providerMap.get('MetaMask')
+      // }
+
+      return provider.providers[0]
+    } else {
+      return provider
+    }
   };
 
   getMulticall = async () => {
