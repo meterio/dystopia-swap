@@ -171,6 +171,9 @@ class Store {
           case ACTIONS.SEARCH_ASSET:
             this.searchBaseAsset(payload);
             break;
+          case ACTIONS.GET_BASE_ASSET_BALANCE:
+            this.getBaseAssetsBalance();
+            break;
 
           // LIQUIDITY
           case ACTIONS.CREATE_PAIR_AND_STAKE:
@@ -1559,6 +1562,26 @@ class Store {
       console.log(ex);
     }
   };
+
+  getBaseAssetsBalance = async () => {
+    try {
+      const account = stores.accountStore.getStore("account");
+      if (!account || (account && !account.address)) {
+        console.warn("account not found");
+        return null;
+      }
+
+      const web3 = await stores.accountStore.getWeb3Provider();
+      if (!web3) {
+        console.warn("web3 not found");
+        return null;
+      }
+      console.log('loop get base assets balance')
+      await this._getBaseAssetInfo(web3, account);
+    } catch (ex) {
+      console.log(ex);
+    }
+  }
 
   _getBaseAssetInfo = async (web3, account) => {
     try {

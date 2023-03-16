@@ -62,6 +62,26 @@ function Setup() {
   const [nativeToken, setNativeToken] = useState(supportChain ? supportChain.contracts.FTM_ADDRESS : '');
   const [wNativeToken, setWNativeToken] = useState(supportChain ? supportChain.contracts.WFTM_SYMBOL : '');
 
+  const [loopTimer, setLoopTimer] = useState(null);
+
+  useEffect(() => {
+
+    const timer = setInterval(() => {
+      stores.dispatcher.dispatch({
+        type: ACTIONS.GET_BASE_ASSET_BALANCE,
+        content: {},
+      });
+    }, 5000);
+
+    setLoopTimer(timer)
+
+    return () => {
+      if (loopTimer) {
+        clearInterval(loopTimer)
+      }
+    }
+  }, [])
+
   const handleClickPopover = (event) => {
     setHintAnchor(event.currentTarget);
   };
