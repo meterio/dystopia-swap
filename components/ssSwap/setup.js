@@ -160,13 +160,13 @@ function Setup() {
             if (toAssetValue) {
               _toAssetValue = baseAsset.find(token => token.address === toAssetValue.address)
             } else {
-              _toAssetValue = baseAsset.find(token => token.address.toLowerCase() === outputCurrency)
+              _toAssetValue = baseAsset.find(token => token.address.toLowerCase() === outputCurrency.toLowerCase())
             }
 
             if (fromAssetValue) {
               _fromAssetValue = baseAsset.find(token => token.address === fromAssetValue.address)
             } else {
-              _fromAssetValue = baseAsset.find(token => token.address.toLowerCase() === inputCurrency)
+              _fromAssetValue = baseAsset.find(token => token.address.toLowerCase() === inputCurrency.toLowerCase())
             }
             if (_toAssetValue) {
               setToAssetValue(_toAssetValue)
