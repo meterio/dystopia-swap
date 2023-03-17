@@ -63,7 +63,7 @@ export const SUPPORT_CHAIN = [
     infoURL: 'https://vs3-info.surge.sh',
     explorerURL: 'https://scan-warringstakes.meter.io/',
     govAddr: '0x8a419ef4941355476cf04933e90bf3bbf2f73814',
-    subgraphApi: 'https://graphtest.meter.io/subgraphs/name/meterio/solidly-subgraph',
+    subgraphApi: 'https://graphtest.meter.io/subgraphs/name/meterio/voltswapv2-subgraph',
     routeAssets: [
       {
         "name": "AmpleForth",
