@@ -53,7 +53,7 @@ export const WalletConnect = (props) => {
       .catch((err) => {
         console.log('ERR:', err.message)
         if (err.message === 'No Web3 Provider found') {
-          stores.emitter.emit(ACTIONS.ERROR, err)
+          stores.emitter.emit(ACTIONS.ERROR, err.message)
         }
       })
 
