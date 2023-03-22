@@ -157,6 +157,7 @@ function Setup() {
 
         const ssUpdated = () => {
           let { inputCurrency, outputCurrency } = router.query
+          const supportChain = stores.accountStore.getStore('supportChain');
           if (!inputCurrency) {
             inputCurrency = supportChain && supportChain.govAddr
           }

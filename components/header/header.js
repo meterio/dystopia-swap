@@ -54,6 +54,7 @@ const {
   FIXED_FOREX_VECLAIM_CLAIMED,
   FIXED_FOREX_UPDATED,
   ERROR,
+  CONNECTION_CONNECTED
 } = ACTIONS;
 
 function WrongNetworkIcon(props) {
@@ -153,14 +154,15 @@ function Header(props) {
   const [transactionQueueLength, setTransactionQueueLength] = useState(0);
   const [warningOpen, setWarningOpen] = useState(false);
   const { deactivate } = useEthers();
+  const [isMetaMask, setIsMetaMask] = useState(true)
 
   const web = async (add) => {
-    const maticbalance = await stores.accountStore.getWeb3Provider();
-    if (!maticbalance || !add) {
+    const web3provider = await stores.accountStore.getWeb3Provider();
+    if (!web3provider || !add) {
       return;
     }
 
-    let bal = await maticbalance.eth.getBalance(add);
+    let bal = await web3provider.eth.getBalance(add);
 
     setMaticBalance(
       BigNumber(bal)
@@ -173,6 +175,8 @@ function Header(props) {
     const accountConfigure = () => {
       const accountStore = stores.accountStore.getStore("account");
       const supportChain = stores.accountStore.getStore("supportChain");
+      const provider = stores.accountStore.getStore("provider")
+      setIsMetaMask(provider ? provider.isMetaMask : true)
       if (accountStore) {
         web(accountStore.address);
       }
@@ -193,6 +197,12 @@ function Header(props) {
       setWarningOpen(invalid);
     };
 
+    const connected = () => {
+      const invalid = stores.accountStore.getStore("chainInvalid");
+      setChainInvalid(invalid);
+      setWarningOpen(invalid);
+    };
+
     const invalid = stores.accountStore.getStore("chainInvalid");
     setChainInvalid(invalid);
     setWarningOpen(invalid);
@@ -200,12 +210,14 @@ function Header(props) {
     stores.emitter.on(ACCOUNT_CONFIGURED, accountConfigure);
     stores.emitter.on(CONNECT_WALLET, connectWallet);
     stores.emitter.on(ACCOUNT_CHANGED, accountChanged);
+    stores.emitter.on(CONNECTION_CONNECTED, connected);
 
     // accountConfigure();
     return () => {
       stores.emitter.removeListener(ACCOUNT_CONFIGURED, accountConfigure);
       stores.emitter.removeListener(CONNECT_WALLET, connectWallet);
       stores.emitter.removeListener(ACCOUNT_CHANGED, accountChanged);
+      stores.emitter.removeListener(CONNECTION_CONNECTED, connected);
     };
   }, [maticBalance]);
 
@@ -217,8 +229,8 @@ function Header(props) {
     setWarningOpen(false);
   };
 
-  const onAddressClicked = () => {
-    stores.accountStore.getStore("web3modal").clearCachedProvider();
+  const onAddressClicked = async () => {
+    await stores.accountStore.getStore("web3modal").clearCachedProvider();
 
     deactivate();
 
@@ -227,11 +239,7 @@ function Header(props) {
     stores.accountStore.setStore({
       account: { address: null },
       web3provider: null,
-      web3context: {
-        library: {
-          provider: null,
-        },
-      },
+      provider: null,
     });
 
     stores.dispatcher.dispatch({
@@ -241,7 +249,6 @@ function Header(props) {
 
     window.localStorage.removeItem("walletconnect");
     window.localStorage.removeItem("WEB3_CONNECT_CACHED_PROVIDER");
-    window.localStorage.removeItem("isCoinbaseWallet");
 
     stores.accountStore.emitter.emit(ACTIONS.DISCONNECT_WALLET);
     setWarningOpen(false)
@@ -282,6 +289,11 @@ function Header(props) {
     console.log('network', network)
     let hexChain = "0x" + Number(network.chainId).toString(16);
     const provider = await stores.accountStore.getProvider()
+    if (!provider) {
+      console.log('no provider')
+      return
+    }
+    console.log('switch network', hexChain)
     try {
       await provider.request({
         method: "wallet_switchEthereumChain",
@@ -411,7 +423,7 @@ function Header(props) {
                           {account && account.address && (
                             <>
                               {
-                                localStorage.getItem('isCoinbaseWallet') === 'true' ? <div
+                                !isMetaMask ? <div
                                   className={`${classes.accountIcon} ${classes.coinbase}`}
                                 ></div> : <div
                                 className={`${classes.accountIcon} ${classes.metamask}`}

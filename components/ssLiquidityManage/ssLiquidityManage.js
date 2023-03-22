@@ -162,6 +162,13 @@ export default function ssLiquidityManage() {
     if (!!Number(router.query.remove)) {
       setActiveTab("withdraw");
     }
+
+    const supportChain = stores.accountStore.getStore("supportChain")
+
+    if (!supportChain) {
+      console.log('cannot find supportChain')
+      return
+    }
     
     const _storeAssetOptions = stores.stableSwapStore.getStore("baseAssets");
     const storeAssetOptions = _storeAssetOptions.filter(item => item.symbol !== supportChain.contracts.WFTM_SYMBOL)

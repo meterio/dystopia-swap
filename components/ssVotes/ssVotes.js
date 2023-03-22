@@ -37,6 +37,7 @@ export default function ssVotes() {
   const { appTheme } = useAppThemeContext();
 
   const ssUpdated = async () => {
+    console.log('vetoken', stores.stableSwapStore.getStore("veToken"))
     setVeToken(stores.stableSwapStore.getStore("veToken"));
     const as = stores.stableSwapStore.getStore("pairs");
 
@@ -45,7 +46,7 @@ export default function ssVotes() {
     });
     setGauges(filteredAssets);
 
-    const tvldata = await stores.stableSwapStore.getStore("tvls");
+    // const tvldata = await stores.stableSwapStore.getStore("tvls");
 
     const nfts = stores.stableSwapStore.getStore("vestNFTs");
     setVestNFTs(nfts);

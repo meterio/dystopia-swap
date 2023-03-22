@@ -4417,7 +4417,7 @@ class Store {
           (item.token0.id === addy0 && item.token1.id === addy1)
           ||
           (item.token0.id === addy1 && item.token1.id === addy0)
-        ) && Number(item.reserveUSD).toFixed(0) !== '0'
+        ) // && Number(item.reserveUSD).toFixed(0) !== '0'
       })
 
       for (let i = 0; i < ps.length; i++) {
@@ -4446,6 +4446,12 @@ class Store {
       //   }
       // })
       console.log('amountOuts', amountOuts)
+      if (!amountOuts.length) {
+        return this.emitter.emit(
+          ACTIONS.ERROR,
+          "No valid route found to complete swap"
+        );
+      }
 
       const multicall = await stores.accountStore.getMulticall();
       let receiveAmounts = []
@@ -5152,6 +5158,12 @@ class Store {
 
   getVestNFTs = async (payload) => {
     try {
+      const supportChain = stores.accountStore.getStore('supportChain');
+      if (!supportChain) {
+        console.log('no support chain')
+        return
+      }
+      const CONTRACTS = supportChain.contracts
       const account = stores.accountStore.getStore("account");
       if (!account || (account && !account.address)) {
         console.warn("account not found");
@@ -5166,6 +5178,10 @@ class Store {
 
       const veToken = this.getStore("veToken");
       const govToken = this.getStore("govToken");
+      if (!govToken) {
+        console.log('no govToken yet')
+        return
+      }
 
       const vestingContract = new web3.eth.Contract(
         CONTRACTS.VE_TOKEN_ABI,

@@ -20,11 +20,12 @@ class Store {
 
     this.store = {
       account: null,
+      chainId: '',
       chainInvalid: false,
       supportChain: null,
       web3provider: null,
       web3modal: null,
-      web3context: null,
+      provider: null,
       tokens: [],
       // connectorsByName: {
       //   MetaMask: injected,
@@ -66,17 +67,97 @@ class Store {
 
   configure = async () => {
     // const supportedChainIds = [process.env.NEXT_PUBLIC_CHAINID];
-    const supportChainList = getSupportChainList()
-    const supportedChainIds = supportChainList.map(c => c.id)
-    const provider = await this.getProvider();
+    // const supportChainList = getSupportChainList()
+    // const supportedChainIds = supportChainList.map(c => c.id)
+    // const provider = await this.getProvider();
 
-    // this.getGasPrices();
+    // if (!provider) {
+    //   return
+    // }
 
-    let providerChain = provider
-      ? await provider.request({ method: "eth_chainId" })
-      : null;
+    // // this.getGasPrices();
 
-    const parsedChainId = parseInt(providerChain + "", 16) + "";
+    // let providerChain = provider
+    //   ? await provider.request({ method: "eth_chainId" })
+    //   : null;
+
+    // const parsedChainId = parseInt(providerChain + "", 16) + "";
+    // const isChainSupported = supportedChainIds.includes(parsedChainId);
+    // if (isChainSupported) {
+    //   this.setStore({
+    //     supportChain: supportChainList.find(c => c.id === parsedChainId)
+    //   })
+    // } else {
+    //   this.setStore({
+    //     supportChain: null
+    //   })
+    // }
+    // this.setStore({ chainInvalid: !isChainSupported });
+    this.emitter.emit(ACTIONS.ACCOUNT_CONFIGURED);
+
+    // this.dispatcher.dispatch({
+    //   type: ACTIONS.CONFIGURE_SS,
+    //   content: { connected: false },
+    // });
+
+    // const subscribed = this.getStore('subscribed')
+
+    // if (!subscribed) {
+    //   this.subscribeProvider()
+    // }
+
+    // window.removeEventListener("ethereum#initialized", this.subscribeProvider);
+    // window.addEventListener("ethereum#initialized", this.subscribeProvider, {
+    //   once: true,
+    // });
+  };
+
+  // setProvider = async (provider) => {
+  //   this.ethersProvider = new ethers.providers.Web3Provider(provider);
+  //   const signer = this.ethersProvider.getSigner();
+  //   this.provider = provider;
+
+  //   try {
+  //     const address = await signer.getAddress();
+  //     this.setWalletAddress(address);
+  //     // await this.getNetwork()
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
+
+  subscribeProvider = async () => {
+    // const subscribed = this.getStore('subscribed')
+    // if (subscribed) {
+    //   console.log('subscribed return')
+    //   return
+    // }
+
+    const provider = await this.getProvider()
+    if (!provider) {
+      console.log('no privider for subscribe provider')
+      return
+    }
+    // this.setStore({
+    //   subscribed: true
+    // })
+    this.emitter.emit(ACTIONS.ACCOUNT_CONFIGURED);
+
+    if (provider.removeListener) {
+      provider.removeListener("accountsChanged", this.accountChanged.bind(this));
+      provider.removeListener("chainChanged", this.chainChanged.bind(this));
+    }
+
+    provider.on("accountsChanged", this.accountChanged.bind(this));
+
+    provider.on("chainChanged", this.chainChanged.bind(this));
+  };
+
+  chainChanged = async function (chainId) {
+    console.log('chain changed', chainId)
+    const supportChainList = getSupportChainList();
+    const supportedChainIds = supportChainList.map(c => c.id);
+    const parsedChainId = Number(chainId) + "";
     const isChainSupported = supportedChainIds.includes(parsedChainId);
     if (isChainSupported) {
       this.setStore({
@@ -88,86 +169,28 @@ class Store {
       })
     }
     this.setStore({ chainInvalid: !isChainSupported });
+    this.emitter.emit(ACTIONS.ACCOUNT_CHANGED);
     this.emitter.emit(ACTIONS.ACCOUNT_CONFIGURED);
 
     this.dispatcher.dispatch({
       type: ACTIONS.CONFIGURE_SS,
       content: { connected: false },
     });
+  }
 
-    const subscribed = this.getStore('subscribed')
-
-    if (!subscribed) {
-      this.subscribeProvider()
-    }
-
-    // window.removeEventListener("ethereum#initialized", this.subscribeProvider);
-    // window.addEventListener("ethereum#initialized", this.subscribeProvider, {
-    //   once: true,
-    // });
-  };
-
-  setProvider = async (provider) => {
-    this.ethersProvider = new ethers.providers.Web3Provider(provider);
-    const signer = this.ethersProvider.getSigner();
-    this.provider = provider;
-
-    try {
-      const address = await signer.getAddress();
-      this.setWalletAddress(address);
-      // await this.getNetwork()
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  subscribeProvider = async () => {
-    const that = this;
-
-    that.setStore({
-      subscribed: true
-    })
-
-    const provider = await this.getProvider()
-    provider.on("accountsChanged", async function (accounts) {
-      const address = accounts[0];
-      await stores.stableSwapStore.configure({ content: { connected: !that.chainInvalid }});
-      that.setStore({
-        account: { address },
-      });
-      that.emitter.emit(ACTIONS.ACCOUNT_CHANGED);
-      that.emitter.emit(ACTIONS.ACCOUNT_CONFIGURED);
-      that.dispatcher.dispatch({
-        type: ACTIONS.CONFIGURE_SS,
-        content: { connected: true },
-      });
+  accountChanged = async function (accounts) {
+    const address = accounts[0];
+    await stores.stableSwapStore.configure();
+    this.setStore({
+      account: { address },
     });
-
-    provider.on("chainChanged", async function (chainId) {
-      console.log('chain changed', chainId)
-      const supportChainList = getSupportChainList();
-      const supportedChainIds = supportChainList.map(c => c.id);
-      const parsedChainId = Number(chainId) + "";
-      const isChainSupported = supportedChainIds.includes(parsedChainId);
-      if (isChainSupported) {
-        that.setStore({
-          supportChain: supportChainList.find(c => c.id === parsedChainId)
-        })
-      } else {
-        that.setStore({
-          supportChain: null
-        })
-      }
-      that.setStore({ chainInvalid: !isChainSupported });
-      that.emitter.emit(ACTIONS.ACCOUNT_CHANGED);
-      that.emitter.emit(ACTIONS.ACCOUNT_CONFIGURED);
-
-      that.dispatcher.dispatch({
-        type: ACTIONS.CONFIGURE_SS,
-        content: { connected: false },
-      });
+    this.emitter.emit(ACTIONS.ACCOUNT_CHANGED);
+    this.emitter.emit(ACTIONS.ACCOUNT_CONFIGURED);
+    this.dispatcher.dispatch({
+      type: ACTIONS.CONFIGURE_SS,
+      content: { connected: true },
     });
-  };
+  }
 
   getGasPrices = async (payload) => {
     const gasPrices = await this._getGasPrices();
@@ -230,32 +253,33 @@ class Store {
     // }
     let web3provider = this.getStore("web3provider");
 
-    if (web3provider === null) {
-      // return new Web3(window.ethereum || (await detectProvider()));
-      return new Web3(await this.getProvider())
-    }
+    // if (web3provider === null) {
+    //   // return new Web3(window.ethereum || (await detectProvider()));
+    //   return new Web3(await this.getProvider())
+    // }
 
     return web3provider;
   };
 
   getProvider = async () => {
-    const provider = window.ethereum || (await detectProvider());
-    if (provider.providers) {
-      if (provider.selectedProvider) {
-        const isCoinbaseWallet = provider.selectedProvider.isCoinbaseWallet
-        if (isCoinbaseWallet) {
-          localStorage.setItem('isCoinbaseWallet', true)
-        }
-        return provider.selectedProvider
-      }
-      // if (provider.providerMap.has('MetaMask')) {
-      //   return provider.providerMap.get('MetaMask')
-      // }
+    return this.getStore('provider')
+    // const provider = window.ethereum || (await detectProvider());
+    // if (provider.providers) {
+    //   if (provider.selectedProvider) {
+    //     const isCoinbaseWallet = provider.selectedProvider.isCoinbaseWallet
+    //     if (isCoinbaseWallet) {
+    //       localStorage.setItem('isCoinbaseWallet', true)
+    //     }
+    //     return provider.selectedProvider
+    //   }
+    //   // if (provider.providerMap.has('MetaMask')) {
+    //   //   return provider.providerMap.get('MetaMask')
+    //   // }
 
-      return provider.providers[0]
-    } else {
-      return provider
-    }
+    //   return provider.providers[0]
+    // } else {
+    //   return provider
+    // }
   };
 
   getMulticall = async () => {

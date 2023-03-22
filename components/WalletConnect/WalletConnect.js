@@ -25,68 +25,81 @@ export const WalletConnect = (props) => {
           package: CoinbaseWalletSDK,
           options: {
             appName: 'Voltswap app',
-            infuraId: `${process.env.NEXT_PUBLIC_INFURA_KEY}`,
+            // infuraId: `${process.env.NEXT_PUBLIC_INFURA_KEY}`,
             rpc: {
               82: `https://rpc.meter.io`,
+              83: 'https://rpctest.meter.io'
             },
-            supportedChainIds: [82],
-            network: "meter",
+            supportedChainIds: [82, 83],
+            network: 82,
           },
         },
-        walletconnect: {
-          package: WalletConnectProvider,
-          options: {
-            infuraId: `${process.env.NEXT_PUBLIC_INFURA_KEY}`,
-            rpc: {
-              82: `https://rpc.meter.io`,
-            },
-            network: "meter",
-            supportedChainIds: [82],
-          },
-        },
+        // walletconnect: {
+        //   package: WalletConnectProvider,
+        //   options: {
+        //     // infuraId: `${process.env.NEXT_PUBLIC_INFURA_KEY}`,
+        //     rpc: {
+        //       82: `https://rpc.meter.io`,
+        //     },
+        //     network: 82,
+        //     supportedChainIds: [82],
+        //   },
+        // },
       },
     })
 
 
     const instance = await web3modal.connect()
       .catch((err) => {
-        console.log('ERR:', err)
+        console.log('ERR:', err.message)
+        if (err.message === 'No Web3 Provider found') {
+          stores.emitter.emit(ACTIONS.ERROR, err)
+        }
       })
 
     if (instance === undefined) {
       return
     }
 
-    const provider = new ethers.providers.Web3Provider(instance)
+    // const provider = new ethers.providers.Web3Provider(instance)
 
-    const signer = provider.getSigner()
-    const address = await signer.getAddress()
+    // const signer = provider.getSigner()
+    // const address = await signer.getAddress()
 
-    if (!provider) {
-      return
-    }
-
+    // if (!provider) {
+    //   return
+    // }
+    console.log('instance', instance)
     const web3 = new Web3(instance);
-    stores.accountStore.subscribeProvider();
-
+    
     const chainId = await web3.eth.getChainId()
-
+    const account = await web3.eth.getAccounts()
+    console.log({chainId, account})
+    
     const supportChainList = getSupportChainList()
     const supportedChainIds = supportChainList.map(c => c.id)
     const isChainSupported = supportedChainIds.includes(String(chainId));
     stores.accountStore.setStore({ chainInvalid: !isChainSupported });
-
+    if (isChainSupported) {
+      const supportChain = supportChainList.find(c => c.id === String(chainId))
+      stores.accountStore.setStore({
+        supportChain
+      })
+    } else {
+      stores.accountStore.setStore({
+        supportChain: null
+      })
+    }
+    
     stores.accountStore.setStore({
-      account: { address },
+      chainId: String(chainId),
+      account: { address: account[0] },
       web3provider: web3,
       web3modal,
-      web3context: {
-        library: {
-          provider: web3,
-          instance,
-        }
-      },
+      provider: instance,
     });
+    
+    stores.accountStore.subscribeProvider();
 
     setTimeout(() => {
       stores.emitter.emit(CONNECTION_CONNECTED);
@@ -97,7 +110,7 @@ export const WalletConnect = (props) => {
       });
     }, 100)
 
-    return { web3provider: web3, address }
+    return { web3provider: web3, address: account[0] }
   }
 
   useEffect(() => {

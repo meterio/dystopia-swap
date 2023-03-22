@@ -37,13 +37,25 @@ export default function ssVests() {
       forceUpdate();
     };
 
+    const accountConfigured = () => {
+      const supportChain = stores.accountStore.getStore('supportChain');
+      if (supportChain) {
+        stores.dispatcher.dispatch({type: ACTIONS.GET_VEST_NFTS, content: {}});
+      }
+    }
+
     window.setTimeout(() => {
-      stores.dispatcher.dispatch({type: ACTIONS.GET_VEST_NFTS, content: {}});
+      const supportChain = stores.accountStore.getStore('supportChain');
+      if (supportChain) {
+        stores.dispatcher.dispatch({type: ACTIONS.GET_VEST_NFTS, content: {}});
+      }
     }, 1);
 
     stores.emitter.on(ACTIONS.VEST_NFTS_RETURNED, vestNFTsReturned);
+    stores.emitter.on(ACTIONS.ACCOUNT_CONFIGURED, accountConfigured);
     return () => {
       stores.emitter.removeListener(ACTIONS.VEST_NFTS_RETURNED, vestNFTsReturned);
+      stores.emitter.removeListener(ACTIONS.ACCOUNT_CONFIGURED, accountConfigured);
     };
   }, []);
 
