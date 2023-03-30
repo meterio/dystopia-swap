@@ -216,7 +216,7 @@ export const BLACK_LIST_TOKENS = []
 
 export const BASE_ASSETS_WHITELIST = []
 
-const isMainnet = process.env.NEXT_PUBLIC_NETWORK !== 'testnet'
+// const isMainnet = process.env.NEXT_PUBLIC_NETWORK !== 'testnet'
 export const getSupportChainList = () => {
-  return SUPPORT_CHAIN.filter(c => c.mainnet === isMainnet)
+  return SUPPORT_CHAIN  // .filter(c => c.mainnet === isMainnet)
 }
