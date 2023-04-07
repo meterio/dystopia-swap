@@ -37,13 +37,19 @@ export default function ssVotes() {
   const { appTheme } = useAppThemeContext();
 
   const ssUpdated = async () => {
-    console.log('vetoken', stores.stableSwapStore.getStore("veToken"))
+    console.log("vetoken", stores.stableSwapStore.getStore("veToken"));
     setVeToken(stores.stableSwapStore.getStore("veToken"));
     const as = stores.stableSwapStore.getStore("pairs");
 
-    const filteredAssets = as.filter((asset) => {
-      return asset.gauge && asset.gauge.address;
-    }).filter(p => p.id !== '0x5da6ceb9dea34bfe6611bec4982506fdeb54a5a2');
+    const filteredAssets = as
+      .filter((asset) => {
+        return asset.gauge && asset.gauge.address;
+      })
+      .filter(
+        (p) =>
+          p.id !== "0x5da6ceb9dea34bfe6611bec4982506fdeb54a5a2" &&
+          p.id !== "0x3f637a435313d8de30e0fbe7b4e546a85b40e581"
+      );
     setGauges(filteredAssets);
 
     // const tvldata = await stores.stableSwapStore.getStore("tvls");
@@ -143,8 +149,11 @@ export default function ssVotes() {
     }
   };
   const goCastVoteDOC = () => {
-    window.open('https://docs.voltswap.finance/understanding-ve-3-3/voting-stratgies', '_blank')
-  }
+    window.open(
+      "https://docs.voltswap.finance/understanding-ve-3-3/voting-stratgies",
+      "_blank"
+    );
+  };
 
   let totalVotes = votes.reduce((acc, curr) => {
     return BigNumber(acc)
@@ -264,7 +273,15 @@ export default function ssVotes() {
                 <CircularProgress size={10} className={classes.loadingCircle} />
               )}
             </Button>
-            <div onClick={goCastVoteDOC} className={[classes.explainVote, classes[`explainVote--${appTheme}`]].join(" ")}>?</div>
+            <div
+              onClick={goCastVoteDOC}
+              className={[
+                classes.explainVote,
+                classes[`explainVote--${appTheme}`],
+              ].join(" ")}
+            >
+              ?
+            </div>
             <Button
               className={[
                 classes.buttonOverrideFixed,
