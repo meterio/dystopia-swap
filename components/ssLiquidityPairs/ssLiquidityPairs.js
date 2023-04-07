@@ -15,6 +15,7 @@ export default function ssLiquidityPairs() {
 
   useEffect(() => {
     const stableSwapUpdated = () => {
+      //0x5da6ceb9dea34bfe6611bec4982506fdeb54a5a2 stable mtrg/busd
       setPairs(stores.stableSwapStore.getStore('pairs'));
       forceUpdate();
       setIsLoading(false)
@@ -29,6 +30,6 @@ export default function ssLiquidityPairs() {
   }, []);
 
   return (
-    <PairsTable pairs={pairs} isLoading={isLoading} />
+    <PairsTable pairs={pairs.filter(p => p.id !== '0x5da6ceb9dea34bfe6611bec4982506fdeb54a5a2')} isLoading={isLoading} />
   );
 }

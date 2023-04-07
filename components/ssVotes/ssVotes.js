@@ -43,7 +43,7 @@ export default function ssVotes() {
 
     const filteredAssets = as.filter((asset) => {
       return asset.gauge && asset.gauge.address;
-    });
+    }).filter(p => p.id !== '0x5da6ceb9dea34bfe6611bec4982506fdeb54a5a2');
     setGauges(filteredAssets);
 
     // const tvldata = await stores.stableSwapStore.getStore("tvls");
