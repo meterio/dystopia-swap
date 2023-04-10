@@ -195,7 +195,7 @@ function descendingComparator(a, b, orderBy, sliderValues) {
       let apyA = a?.gaugebribes.bribeTokens.length
         ? a?.gaugebribes.bribeTokens
             .map((bribe, idx) => {
-              return BigNumber(bribe.left).toNumber();
+              return BigNumber(bribe.apr).toNumber();
             })
             .reduce((partialSum, a) => partialSum + a, 0)
         : 0;
@@ -203,7 +203,7 @@ function descendingComparator(a, b, orderBy, sliderValues) {
       let apyB = b?.gaugebribes.bribeTokens.length
         ? b?.gaugebribes.bribeTokens
             .map((bribe, idx) => {
-              return BigNumber(bribe.left).toNumber();
+              return BigNumber(bribe.apr).toNumber();
             })
             .reduce((partialSum, a) => partialSum + a, 0)
         : 0;
@@ -1016,6 +1016,7 @@ export default function EnhancedTable({
                 }}
               >
                 {stableSort(gauges, getComparator(order, orderBy, sliderValues))
+                  .filter(g => BigNumber(g.tvl).gt(500))
                   // .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row, index) => {
                     if (!row) {
@@ -1357,6 +1358,7 @@ export default function EnhancedTable({
             }}
           >
             {stableSort(gauges, getComparator(order, orderBy, sliderValues))
+              .filter(g => BigNumber(g.tvl).gt(500))
               // .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((row, index) => {
                 if (!row) {

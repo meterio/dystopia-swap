@@ -45,11 +45,6 @@ export default function ssVotes() {
       .filter((asset) => {
         return asset.gauge && asset.gauge.address;
       })
-      .filter(
-        (p) =>
-          p.id !== "0x5da6ceb9dea34bfe6611bec4982506fdeb54a5a2" &&
-          p.id !== "0x3f637a435313d8de30e0fbe7b4e546a85b40e581"
-      );
     setGauges(filteredAssets);
 
     // const tvldata = await stores.stableSwapStore.getStore("tvls");
