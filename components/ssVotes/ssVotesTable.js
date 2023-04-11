@@ -487,6 +487,13 @@ const useStyles = makeStyles((theme) => {
   const { appTheme } = useAppThemeContext();
 
   return {
+    voteTextField: {
+      "& > div": {
+        "&:hover": {
+          border: "none !important"
+        }
+      }
+    },
     root: {
       width: "100%",
     },
@@ -722,6 +729,7 @@ const useStyles = makeStyles((theme) => {
         margin: 0,
       },
     },
+
   };
 });
 
@@ -1294,7 +1302,25 @@ export default function EnhancedTable({
                               paddingRight: 12,
                             }}
                           >
-                            <CustomSlider
+                            <TextField
+                              className={classes.voteTextField}
+                              value={sliderValue}
+                              onChange={(e) => {
+                                onSliderChange(null, e.target.value, row)
+                              }}
+                              inputProps={{
+                                style: {
+                                  padding: 5,
+                                  border: "1px solid",
+                                  borderRadius: 3,
+                                  fontSize: 16,
+                                  fontWeight: 400,
+                                  color: appTheme === "dark" ? "#C6CDD2" : "#325569",
+                                  borderColor: appTheme === "dark" ? "#5F7285" : "#86B9D6",
+                                },
+                              }}
+                            ></TextField>
+                            {/* <CustomSlider
                               appTheme={appTheme}
                               valueLabelDisplay="auto"
                               value={sliderValue}
@@ -1306,7 +1332,7 @@ export default function EnhancedTable({
                               marks
                               step={1}
                               disabled={noTokenSelected}
-                            />
+                            /> */}
                           </div>
                         </TableCell>
                       </TableRow>
