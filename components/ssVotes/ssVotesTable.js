@@ -9,7 +9,6 @@ import {
   TableHead,
   TableRow,
   TableSortLabel,
-  TablePagination,
   Typography,
   Slider,
   Skeleton,
@@ -20,14 +19,9 @@ import {
   DialogTitle,
   DialogContent,
   Dialog,
-  Hidden,
-  Input,
   TextField,
   InputAdornment,
 } from "@mui/material";
-import Tooltip from "@mui/material/Tooltip";
-import QuizIcon from "@mui/icons-material/Quiz";
-import Icon from "@mui/material/Icon";
 import numeral from "numeral";
 import BigNumber from "bignumber.js";
 
@@ -311,7 +305,7 @@ const headCells = [
     numeric: true,
     disablePadding: false,
     label: "My Vote %",
-    width: 200,
+    width: 100,
     isHideInDetails: true,
   },
 ];
@@ -487,13 +481,6 @@ const useStyles = makeStyles((theme) => {
   const { appTheme } = useAppThemeContext();
 
   return {
-    voteTextField: {
-      "& > div": {
-        "&:hover": {
-          border: "none !important"
-        }
-      }
-    },
     root: {
       width: "100%",
     },
@@ -784,7 +771,11 @@ export default function EnhancedTable({
 
     newSliderValues = newSliderValues.map((val) => {
       if (asset?.address === val.address) {
-        val.value = value;
+        if (!value) {
+          val.value = 0
+        } else {
+          val.value = value;
+        }
       }
       return val;
     });
@@ -1303,23 +1294,35 @@ export default function EnhancedTable({
                             }}
                           >
                             <TextField
-                              className={classes.voteTextField}
+                              autoComplete="false"
+                              variant="standard"
+                              className={classes.input}
+                              label=""
                               value={sliderValue}
-                              onChange={(e) => {
-                                onSliderChange(null, e.target.value, row)
-                              }}
-                              inputProps={{
+                              InputProps={{
                                 style: {
-                                  padding: 5,
+                                  padding: "0 2px",
                                   border: "1px solid",
                                   borderRadius: 3,
                                   fontSize: 16,
                                   fontWeight: 400,
-                                  color: appTheme === "dark" ? "#C6CDD2" : "#325569",
+                                  color: appTheme === "dark" ? "#fff" : "#325569",
                                   borderColor: appTheme === "dark" ? "#5F7285" : "#86B9D6",
                                 },
+                                endAdornment: (
+                                  <InputAdornment
+                                    position="end"
+                                  >
+                                    <span style={{
+                                      color: appTheme === "dark" ? "#C6CDD2" : "#325569",
+                                    }}>%</span>
+                                  </InputAdornment>
+                                ),
                               }}
-                            ></TextField>
+                              onChange={(e) => {
+                                onSliderChange(null, e.target.value, row)
+                              }}
+                            />
                             {/* <CustomSlider
                               appTheme={appTheme}
                               valueLabelDisplay="auto"
