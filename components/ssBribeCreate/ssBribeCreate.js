@@ -41,7 +41,7 @@ export default function ssBribeCreate() {
 
   const ssUpdated = async () => {
     
-    const storePairs = stores.stableSwapStore.getStore('pairs');
+    const storePairs = stores.stableSwapStore.getStore('pairs').filter(p => BigNumber(p.tvl).gt(500));
     
     setGaugeOptions(storePairs);
 
@@ -79,7 +79,7 @@ export default function ssBribeCreate() {
       const nativeToken = supportChain ? supportChain.contracts.FTM_ADDRESS : ''
       const filteredStoreAssetOptions = _filteredStoreAssetOptions.filter(item => item.symbol !== nativeToken)
       setAssetOptions(filteredStoreAssetOptions);
-      if (filteredStoreAssetOptions.length > 0 && asset == null) {
+      if (filteredStoreAssetOptions.length > 0) {
         setAsset(filteredStoreAssetOptions[0]);
       }
     }
