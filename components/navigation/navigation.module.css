@@ -319,6 +319,10 @@ a.linkz {
   padding: 0;
 }
 
+.text-nowrap {
+  white-space: nowrap;
+}
+
 .nav-button-corner-top::before,
 .nav-button-corner-top::after {
   margin-top: 3.5px;

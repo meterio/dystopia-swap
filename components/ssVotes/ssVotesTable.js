@@ -305,7 +305,7 @@ const headCells = [
     numeric: true,
     disablePadding: false,
     label: "My Vote %",
-    width: 100,
+    width: 120,
     isHideInDetails: true,
   },
 ];
