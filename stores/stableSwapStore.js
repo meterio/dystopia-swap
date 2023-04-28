@@ -126,11 +126,14 @@ let CONTRACTS = null;
 
 const removeDuplicate = (arr) => {
   const assets = arr.reduce((acc, item) => {
-    if (item.symbol in assetIcons) {
-      item.logoURI = '/images/assets/' + assetIcons[item.symbol]
+    if (!item.logoURI) {
+      item.logoURI = `https://raw.githubusercontent.com/meterio/token-list/master/data/${item.symbol}/logo.png`
     }
     // acc[item.symbol] = item;
-    acc[item.address.toLowerCase()] = item;
+    acc[item.address.toLowerCase()] = {
+      id: item.address,
+      ...item
+    };
     return acc;
   }, {});
   return Object.values(assets);
@@ -1037,6 +1040,7 @@ class Store {
       ]);
 
       const newBaseAsset = {
+        id: address,
         address: address,
         symbol: symbol,
         name: name,
@@ -1708,6 +1712,7 @@ class Store {
       ]);
 
       const newBaseAsset = {
+        id: payload.content.address,
         address: payload.content.address,
         symbol: symbol,
         name: name,
@@ -4464,6 +4469,10 @@ class Store {
         }))
       } catch(e) {
         console.log('multicall getAmountsOut', e.message)
+        this.emitter.emit(
+          ACTIONS.ERROR,
+          e.message
+        );
       }
 
       if (!receiveAmounts.length) {
