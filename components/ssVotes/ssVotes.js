@@ -104,7 +104,7 @@ export default function ssVotes() {
 
     ssUpdated();
 
-    stores.emitter.on(ACTIONS.UPDATED, stableSwapUpdated);
+    stores.emitter.on(ACTIONS.VEST_NFTS_RETURNED, stableSwapUpdated);
     stores.emitter.on(ACTIONS.VOTE_RETURNED, voteReturned);
     stores.emitter.on(ACTIONS.ERROR, voteReturned);
     stores.emitter.on(ACTIONS.VEST_VOTES_RETURNED, vestVotesReturned);
@@ -112,7 +112,7 @@ export default function ssVotes() {
     stores.emitter.on(ACTIONS.VEST_BALANCES_RETURNED, vestBalancesReturned);
 
     return () => {
-      stores.emitter.removeListener(ACTIONS.UPDATED, stableSwapUpdated);
+      stores.emitter.removeListener(ACTIONS.VEST_NFTS_RETURNED, stableSwapUpdated);
       stores.emitter.removeListener(ACTIONS.VOTE_RETURNED, voteReturned);
       stores.emitter.removeListener(ACTIONS.ERROR, voteReturned);
       stores.emitter.removeListener(

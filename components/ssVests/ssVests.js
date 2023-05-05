@@ -19,15 +19,19 @@ export default function ssVests() {
 
   useEffect(() => {
     const ssUpdated = async () => {
-      setGovToken(stores.stableSwapStore.getStore("govToken"));
-      setVeToken(stores.stableSwapStore.getStore("veToken"));
+      const govToken = stores.stableSwapStore.getStore("govToken");
+      const veToken = stores.stableSwapStore.getStore("veToken");
+      if (govToken && veToken) {
+        setGovToken(govToken);
+        setVeToken(veToken);
+      }
     };
 
     ssUpdated();
 
-    stores.emitter.on(ACTIONS.UPDATED, ssUpdated);
+    stores.emitter.on(ACTIONS.UPDATED_VETOKEN, ssUpdated);
     return () => {
-      stores.emitter.removeListener(ACTIONS.UPDATED, ssUpdated);
+      stores.emitter.removeListener(ACTIONS.UPDATED_VETOKEN, ssUpdated);
     };
   }, []);
 
@@ -38,18 +42,20 @@ export default function ssVests() {
     };
 
     const accountConfigured = () => {
-      const supportChain = stores.accountStore.getStore('supportChain');
-      if (supportChain) {
+      // const supportChain = stores.accountStore.getStore('supportChain');
+      // if (supportChain) {
         stores.dispatcher.dispatch({type: ACTIONS.GET_VEST_NFTS, content: {}});
-      }
+      // }
     }
 
-    window.setTimeout(() => {
-      const supportChain = stores.accountStore.getStore('supportChain');
-      if (supportChain) {
-        stores.dispatcher.dispatch({type: ACTIONS.GET_VEST_NFTS, content: {}});
-      }
-    }, 1);
+    // window.setTimeout(() => {
+    //   const supportChain = stores.accountStore.getStore('supportChain');
+    //   if (supportChain) {
+    //     stores.dispatcher.dispatch({type: ACTIONS.GET_VEST_NFTS, content: {}});
+    //   }
+    // }, 1);
+
+    accountConfigured()
 
     stores.emitter.on(ACTIONS.VEST_NFTS_RETURNED, vestNFTsReturned);
     stores.emitter.on(ACTIONS.ACCOUNT_CONFIGURED, accountConfigured);

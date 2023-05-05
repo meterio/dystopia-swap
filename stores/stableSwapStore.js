@@ -470,7 +470,7 @@ class Store {
       });
 
       this.setStore({ vestNFTs: newVestNFTs });
-      this.emitter.emit(ACTIONS.UPDATED);
+      this.emitter.emit(ACTIONS.VEST_NFTS_RETURNED, newVestNFTs);
       return null;
     } catch (ex) {
       console.log(ex);
@@ -1107,6 +1107,7 @@ class Store {
       
       this.emitter.emit(ACTIONS.UPDATED);
       this.emitter.emit(ACTIONS.CONFIGURED_SS);
+      this.emitter.emit(ACTIONS.UPDATED_VETOKEN);
       
       setTimeout(() => {
         this.dispatcher.dispatch({ type: ACTIONS.GET_BALANCES });
@@ -1193,7 +1194,7 @@ class Store {
   _getPairs = async () => {
     try {
       const pairsCall = await client.query(pairsQuery).toPromise();
-      console.log('QUERY PAIRS ERROR', pairsCall);
+      console.log('QUERY PAIRS', pairsCall);
       if(!!pairsCall.error) {
         console.log('QUERY PAIRS ERROR', pairsCall.error);
       }
@@ -1368,7 +1369,7 @@ class Store {
       );
 
       this.setStore({ vestNFTs: nfts });
-      this.emitter.emit(ACTIONS.UPDATED);
+      this.emitter.emit(ACTIONS.VEST_NFTS_RETURNED, nfts);
     } catch (ex) {
       console.error(ex);
       this.emitter.emit(ACTIONS.ERROR, ex);
@@ -1590,7 +1591,8 @@ class Store {
   _getBaseAssetInfo = async (web3, account) => {
     try {
       const baseAssets = this.getStore("baseAssets");
-      if (!baseAssets) {
+
+      if (!baseAssets || !baseAssets.length) {
         console.warn("baseAssets not found");
         return null;
       }
@@ -5165,7 +5167,7 @@ class Store {
     }
   };
 
-  getVestNFTs = async (payload) => {
+  getVestNFTs = async () => {
     try {
       const supportChain = stores.accountStore.getStore('supportChain');
       if (!supportChain) {
@@ -5178,19 +5180,19 @@ class Store {
         console.warn("account not found");
         return null;
       }
-
+      
       const web3 = await stores.accountStore.getWeb3Provider();
       if (!web3) {
         console.warn("web3 not found");
         return null;
       }
-
-      const veToken = this.getStore("veToken");
+      
       const govToken = this.getStore("govToken");
       if (!govToken) {
         console.log('no govToken yet')
         return
       }
+      console.log('getVestNFTs')
 
       const vestingContract = new web3.eth.Contract(
         CONTRACTS.VE_TOKEN_ABI,
@@ -6137,14 +6139,15 @@ class Store {
         console.warn("account not found");
         return null;
       }
-
+      
       const web3 = await stores.accountStore.getWeb3Provider();
       if (!web3) {
         console.warn("web3 not found");
         return null;
       }
-
+      
       const { tokenID } = payload.content;
+      console.log('getVestVotes', tokenID)
       const pairs = this.getStore("pairs");
 
       if (!pairs) {
@@ -6466,6 +6469,7 @@ class Store {
       }
 
       const { tokenID } = payload.content;
+      console.log('getRewardBalances id：', tokenID)
 
       const pairs = this.getStore("pairs");
       const veToken = this.getStore("veToken");
@@ -6496,27 +6500,37 @@ class Store {
               CONTRACTS.BRIBE_ABI,
               pair.gauge.bribeAddress
             );
-            const [rewardsListLength] = await multicall.aggregate([
-              bribeContract.methods.rewardTokensLength(),
-            ]);
+            // const [rewardsListLength] = await multicall.aggregate([
+            //   bribeContract.methods.rewardTokensLength(),
+            // ]);
 
             const bribeTokens = [
-              { rewardRate: "", rewardAmount: "", address: "", symbol: "" },
+              // { rewardRate: "", rewardAmount: "", address: "", symbol: "" },
             ];
-            for (let i = 0; i < rewardsListLength; i++) {
-              let [bribeTokenAddress] = await multicall.aggregate([
-                bribeContract.methods.rewardTokens(i),
-              ]);
+            // for (let i = 0; i < rewardsListLength; i++) {
+            //   let [bribeTokenAddress] = await multicall.aggregate([
+            //     bribeContract.methods.rewardTokens(i),
+            //   ]);
 
+            //   bribeTokens.push({
+            //     address: bribeTokenAddress,
+            //     rewardAmount: 0,
+            //     rewardRate: 0,
+            //     symbol: null,
+            //   });
+            // }
+
+            
+            // bribeTokens.shift();
+
+            for (const addr of pair.gauge.rewardTokensAddresses) {
               bribeTokens.push({
-                address: bribeTokenAddress,
+                address: addr,
                 rewardAmount: 0,
                 rewardRate: 0,
                 symbol: null,
-              });
+              })
             }
-
-            bribeTokens.shift();
 
             const bribesEarned = await Promise.all(
               bribeTokens.map(async (bribe) => {

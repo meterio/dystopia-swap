@@ -109,6 +109,8 @@ export const WITHDRAW_VEST_RETURNED = "WITHDRAW_VEST_RETURNED";
 
 export const MERGE_NFT = "MERGE_NFT";
 
+export const UPDATED_VETOKEN = "UPDATED_VETOKEN";
+
 //VOTING
 export const VOTE = "VOTE";
 export const VOTE_RETURNED = "VOTE_RETURNED";

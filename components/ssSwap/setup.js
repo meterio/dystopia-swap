@@ -72,7 +72,7 @@ function Setup() {
         content: {},
       });
       setLoopNum(loopNum + 1)
-    }, 10000);
+    }, 30000);
 
     return () => {
       clearTimeout(timer)

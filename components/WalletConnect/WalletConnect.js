@@ -115,6 +115,7 @@ export const WalletConnect = (props) => {
 
   useEffect(() => {
     if (window.localStorage.getItem('WEB3_CONNECT_CACHED_PROVIDER')) {
+      console.log('action connect')
       connect()
     }
   }, [])

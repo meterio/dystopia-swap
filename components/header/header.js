@@ -380,7 +380,7 @@ function Header(props) {
                       appTheme === "dark" ? "#ffffff" : "#0B5E8E",
                   }}
                 >
-                  { supportChain.name }
+                  {supportChain.name}
                 </div>
               </Button>
             </div>
@@ -395,7 +395,102 @@ function Header(props) {
             //   </Typography>
             // </div>
           )}
-          <WalletConnect>
+          <div>
+            {account && account.address && <div className={classes.accountButtonContainer}>
+              <Button
+                disableElevation
+                className={[
+                  classes.accountButton,
+                  classes[`accountButton--${appTheme}`],
+                ].join(" ")}
+                variant="contained"
+                aria-controls="simple-menu"
+                aria-haspopup="true"
+                onClick={handleClick}
+              >
+                <div
+                  className={[
+                    classes.accountButtonAddress,
+                    classes[`accountButtonAddress--${appTheme}`],
+                    "g-flex",
+                    "g-flex--align-center",
+                  ].join(" ")}
+                >
+                  {account && account.address && (
+                    <>
+                      {
+                        !isMetaMask ? <div
+                          className={`${classes.accountIcon} ${classes.coinbase}`}
+                        ></div> : <div
+                          className={`${classes.accountIcon} ${classes.metamask}`}
+                        ></div>
+                      }
+
+
+                      <div
+                        style={{
+                          marginLeft: 5,
+                          marginRight: 5,
+                          color:
+                            appTheme === "dark" ? "#ffffff" : "#0B5E8E",
+                        }}
+                      >
+                        •
+                      </div>
+                    </>
+                  )}
+                  <Typography className={classes.headBtnTxt}>
+                    {account && account.address
+                      ? formatAddress(account.address)
+                      : "Connect Wallet 1"}
+                  </Typography>
+                </div>
+
+                <Typography
+                  className={[
+                    classes.headBalanceTxt,
+                    classes[`headBalanceTxt--${appTheme}`],
+                    "g-flex",
+                    "g-flex--align-center",
+                  ].join(" ")}
+                >
+                  {maticBalance ? maticBalance : 0} {supportChain ? supportChain.contracts.FTM_SYMBOL : ''}
+                </Typography>
+              </Button>
+
+              {anchorEl && (
+                <div
+                  className={[
+                    classes.headSwitchBtn,
+                    classes[`headSwitchBtn--${appTheme}`],
+                    "g-flex",
+                    "g-flex--align-center",
+                  ].join(" ")}
+                  onClick={onAddressClicked}
+                >
+                  <img
+                    src="/images/ui/icon-wallet.svg"
+                    className={classes.walletIcon}
+                  />
+
+                  <div
+                    style={{
+                      marginLeft: 5,
+                      marginRight: 5,
+                      color: "#ffffff",
+                    }}
+                  >
+                    •
+                  </div>
+
+                  <div className={classes.headSwitchBtnText}>
+                    Disconnect Wallet
+                  </div>
+                </div>
+              )}
+            </div>}
+          </div>
+          {/* <WalletConnect>
             {({ connect }) => {
               return (
                 <>
@@ -542,27 +637,27 @@ function Header(props) {
                 </>
               );
             }}
-          </WalletConnect>
+          </WalletConnect> */}
 
           <div
-              className={[classes.statButton, classes[`statButton--${appTheme}`], 'g-flex', 'g-flex--align-center'].join(' ')}
-              onClick={() => {
-                const supportChain = stores.accountStore.getStore('supportChain')
-                if (supportChain) {
-                  window.open(supportChain.infoURL, "_blank")
-                }
-              }}>
+            className={[classes.statButton, classes[`statButton--${appTheme}`], 'g-flex', 'g-flex--align-center'].join(' ')}
+            onClick={() => {
+              const supportChain = stores.accountStore.getStore('supportChain')
+              if (supportChain) {
+                window.open(supportChain.infoURL, "_blank")
+              }
+            }}>
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path
-                  style={{marginRight: 5}}
-                  d="M1.3335 8.66667H5.3335V14H1.3335V8.66667ZM6.00016 2H10.0002V14H6.00016V2ZM10.6668 5.33333H14.6668V14H10.6668V5.33333Z"
-                  fill={appTheme === 'dark' ? '#4CADE6' : '#0B5E8E'}/>
+                style={{ marginRight: 5 }}
+                d="M1.3335 8.66667H5.3335V14H1.3335V8.66667ZM6.00016 2H10.0002V14H6.00016V2ZM10.6668 5.33333H14.6668V14H10.6668V5.33333Z"
+                fill={appTheme === 'dark' ? '#4CADE6' : '#0B5E8E'} />
             </svg>
 
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path
-                  d="M10.6694 6.276L4.93144 12.014L3.98877 11.0713L9.7261 5.33333H4.66944V4H12.0028V11.3333H10.6694V6.276Z"
-                  fill={appTheme === 'dark' ? '#5688A5' : '#5688A5'}/>
+                d="M10.6694 6.276L4.93144 12.014L3.98877 11.0713L9.7261 5.33333H4.66944V4H12.0028V11.3333H10.6694V6.276Z"
+                fill={appTheme === 'dark' ? '#5688A5' : '#5688A5'} />
             </svg>
           </div>
 
