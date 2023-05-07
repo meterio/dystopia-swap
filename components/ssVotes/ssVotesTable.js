@@ -26,6 +26,7 @@ import numeral from "numeral";
 import BigNumber from "bignumber.js";
 
 import { formatCurrency } from "../../utils";
+import css from './ssVotes.module.css'
 import {
   ArrowDropDown,
   Close,
@@ -139,7 +140,7 @@ function descendingComparator(a, b, orderBy, sliderValues) {
         return 1;
       }
       return 0;
-    
+
     case "apr":
       if (BigNumber(b.gauge.apr).lt(a.gauge.apr)) {
         return -1
@@ -188,18 +189,18 @@ function descendingComparator(a, b, orderBy, sliderValues) {
     case "apy":
       let apyA = a?.gaugebribes.bribeTokens.length
         ? a?.gaugebribes.bribeTokens
-            .map((bribe, idx) => {
-              return BigNumber(bribe.apr).toNumber();
-            })
-            .reduce((partialSum, a) => partialSum + a, 0)
+          .map((bribe, idx) => {
+            return BigNumber(bribe.apr).toNumber();
+          })
+          .reduce((partialSum, a) => partialSum + a, 0)
         : 0;
 
       let apyB = b?.gaugebribes.bribeTokens.length
         ? b?.gaugebribes.bribeTokens
-            .map((bribe, idx) => {
-              return BigNumber(bribe.apr).toNumber();
-            })
-            .reduce((partialSum, a) => partialSum + a, 0)
+          .map((bribe, idx) => {
+            return BigNumber(bribe.apr).toNumber();
+          })
+          .reduce((partialSum, a) => partialSum + a, 0)
         : 0;
 
       return apyA - apyB;
@@ -761,6 +762,17 @@ export default function EnhancedTable({
 
   const { appTheme } = useAppThemeContext();
 
+  const isEmptyTable = false //gauges.length === 0
+  const emptyMessage = <div
+    style={{
+      background: appTheme === 'dark' ? '#151718' : '#DBE6EC',
+      border: '1px dashed #CFE5F2',
+      borderColor: appTheme === 'dark' ? '#2D3741' : '#CFE5F2',
+      color: appTheme === 'dark' ? '#C6CDD2' : '#325569'
+    }}
+    className={css.tableEmptyMessage}
+  >Waitting</div>
+
   useEffect(() => {
     setSliderValues(defaultVotes);
   }, [defaultVotes]);
@@ -794,7 +806,7 @@ export default function EnhancedTable({
   };
 
   const handleRequestSort = (event, property) => {
-    console.log({orderBy, property, order})
+    console.log({ orderBy, property, order })
     const isAsc = orderBy === property && order === "asc";
     setOrder(isAsc ? "desc" : "asc");
     setOrderBy(property);
@@ -984,13 +996,13 @@ export default function EnhancedTable({
                 ? 45
                 : 0,
           }}
-          // className={['g-flex-column__item', 'g-flex-column'].join(' ')}
+        // className={['g-flex-column__item', 'g-flex-column'].join(' ')}
         >
           <TableContainer
             className={"g-flex-column__item"}
             style={{
               overflow: "auto",
-              maxHeight: tableHeight,
+              maxHeight: isEmptyTable ? 'auto' : tableHeight,
               height: "auto",
               background: appTheme === "dark" ? "#24292D" : "#dbe6ec",
             }}
@@ -1008,322 +1020,314 @@ export default function EnhancedTable({
                 orderBy={orderBy}
                 onRequestSort={handleRequestSort}
               />
+              {
+                isEmptyTable ? null : (
+                  <TableBody
+                    classes={{
+                      root: classes.tableBody,
+                    }}
+                  >
+                    {stableSort(gauges, getComparator(order, orderBy, sliderValues))
+                      // .filter(g => BigNumber(g.tvl).gt(500))
+                      // .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                      .map((row, index) => {
+                        if (!row) {
+                          return null;
+                        }
+                        let sliderValue = sliderValues.find(
+                          (el) => el.address === row?.address
+                        )?.value;
+                        if (sliderValue) {
+                          sliderValue = BigNumber(sliderValue).toNumber(0);
+                        } else {
+                          sliderValue = 0;
+                        }
 
-              <TableBody
-                classes={{
-                  root: classes.tableBody,
-                }}
-              >
-                {stableSort(gauges, getComparator(order, orderBy, sliderValues))
-                  .filter(g => BigNumber(g.tvl).gt(500))
-                  // .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                  .map((row, index) => {
-                    if (!row) {
-                      return null;
-                    }
-                    let sliderValue = sliderValues.find(
-                      (el) => el.address === row?.address
-                    )?.value;
-                    if (sliderValue) {
-                      sliderValue = BigNumber(sliderValue).toNumber(0);
-                    } else {
-                      sliderValue = 0;
-                    }
-
-                    return (
-                      <TableRow key={row?.gauge?.address}>
-                        <StickyTableCell
-                          style={{
-                            background:
-                              appTheme === "dark" ? "#151718" : "#DBE6EC",
-                            borderBottom: `1px solid ${
-                              appTheme === "dark" ? "#2D3741" : "#CFE5F2"
-                            }`,
-                          }}
-                          className={classes.cell}
-                        >
-                          <div className={classes.inline}>
-                            <div className={classes.doubleImages}>
-                              <img
-                                className={[
-                                  classes.img1Logo,
-                                  classes[`img1Logo--${appTheme}`],
-                                ].join(" ")}
-                                src={
-                                  row && row.token0 && row.token0.logoURI
-                                    ? row.token0.logoURI
-                                    : ``
-                                }
-                                width="37"
-                                height="37"
-                                alt=""
-                                onError={(e) => {
-                                  e.target.onerror = null;
-                                  e.target.src = `/tokens/unknown-logo--${appTheme}.svg`;
-                                }}
-                              />
-                              <img
-                                className={[
-                                  classes.img2Logo,
-                                  classes[`img2Logo--${appTheme}`],
-                                ].join(" ")}
-                                src={
-                                  row && row.token1 && row.token1.logoURI
-                                    ? row.token1.logoURI
-                                    : ``
-                                }
-                                width="37"
-                                height="37"
-                                alt=""
-                                onError={(e) => {
-                                  e.target.onerror = null;
-                                  e.target.src = `/tokens/unknown-logo--${appTheme}.svg`;
-                                }}
-                              />
-                            </div>
-                            <div>
-                              <Typography
-                                className={classes.textSpaced}
-                                style={{
-                                  fontWeight: 500,
-                                  fontSize: 14,
-                                  lineHeight: "120%",
-                                  color:
-                                    appTheme === "dark" ? "#ffffff" : "#0A2C40",
-                                }}
-                                noWrap
-                              >
-                                {formatSymbol(row?.symbol)}
-                              </Typography>
-                              <Typography
-                                className={classes.textSpaced}
-                                style={{
-                                  fontWeight: 400,
-                                  fontSize: 14,
-                                  lineHeight: "120%",
-                                  color:
-                                    appTheme === "dark" ? "#7C838A" : "#5688A5",
-                                }}
-                                noWrap
-                              >
-                                {row?.isStable
-                                  ? "Stable Pool"
-                                  : "Volatile Pool"}
-                              </Typography>
-                            </div>
-                          </div>
-                        </StickyTableCell>
-                        <TableCell
-                          className={classes.cell}
-                          align="right"
-                          style={{
-                            background:
-                              appTheme === "dark" ? "#151718" : "#DBE6EC",
-                            borderBottom: `1px solid ${
-                              appTheme === "dark" ? "#2D3741" : "#CFE5F2"
-                            }`,
-                            overflow: "hidden",
-                          }}
-                        >
-                          {tableCellContent(
-                            `${numeral(parseInt(row?.tvl)).format("($ 0a)")} `,
-                            null,
-                            null,
-                            null
-                          )}
-                        </TableCell>
-                        <TableCell
-                          className={classes.cell}
-                          align="right"
-                          style={{
-                            background:
-                              appTheme === "dark" ? "#151718" : "#DBE6EC",
-                            borderBottom: `1px solid ${
-                              appTheme === "dark" ? "#2D3741" : "#CFE5F2"
-                            }`,
-                            overflow: "hidden",
-                          }}
-                        >
-                          {tableCellContent(
-                            `${formatCurrency(BigNumber(row?.gauge?.apr), 0)}%`,
-                            `${formatCurrency(BigNumber(row?.gauge?.expectAPR), 0)}%`,
-                            'Current',
-                            'Expected'
-                          )}
-                        </TableCell>
-
-                        <TableCell
-                          className={classes.cell}
-                          align="right"
-                          style={{
-                            background:
-                              appTheme === "dark" ? "#151718" : "#DBE6EC",
-                            borderBottom: `1px solid ${
-                              appTheme === "dark" ? "#2D3741" : "#CFE5F2"
-                            }`,
-                            overflow: "hidden",
-                          }}
-                        >
-                          {tableCellContent(
-                            formatCurrency(
-                              BigNumber(row?.gauge?.balance)
-                                .div(row?.gauge?.totalSupply)
-                                .times(row?.gauge?.reserve0)
-                            ),
-                            formatCurrency(
-                              BigNumber(row?.gauge?.balance)
-                                .div(row?.gauge?.totalSupply)
-                                .times(row?.gauge?.reserve1)
-                            ),
-                            row.token0.symbol,
-                            row.token1.symbol
-                          )}
-                        </TableCell>
-
-                        <TableCell
-                          className={classes.cell}
-                          align="right"
-                          style={{
-                            background:
-                              appTheme === "dark" ? "#151718" : "#DBE6EC",
-                            borderBottom: `1px solid ${
-                              appTheme === "dark" ? "#2D3741" : "#CFE5F2"
-                            }`,
-                            overflow: "hidden",
-                          }}
-                        >
-                          {tableCellContent(
-                            formatCurrency(BigNumber(row?.reserve0)),
-                            formatCurrency(BigNumber(row?.reserve1)),
-                            row.token0.symbol,
-                            row.token1.symbol
-                          )}
-                        </TableCell>
-
-                        <TableCell
-                          className={classes.cell}
-                          align="right"
-                          style={{
-                            background:
-                              appTheme === "dark" ? "#151718" : "#DBE6EC",
-                            borderBottom: `1px solid ${
-                              appTheme === "dark" ? "#2D3741" : "#CFE5F2"
-                            }`,
-                            overflow: "hidden",
-                          }}
-                        >
-                          {tableCellContent(
-                            formatCurrency(row?.gauge?.weight),
-                            `${formatCurrency(row?.gauge?.weightPercent)} %`,
-                            null,
-                            null
-                          )}
-                        </TableCell>
-
-                        <TableCell
-                          className={classes.cell}
-                          align="right"
-                          style={{
-                            background:
-                              appTheme === "dark" ? "#151718" : "#DBE6EC",
-                            borderBottom: `1px solid ${
-                              appTheme === "dark" ? "#2D3741" : "#CFE5F2"
-                            }`,
-                            overflow: "hidden",
-                          }}
-                        >
-                          {row?.gaugebribes.bribeTokens.length
-                            ? row?.gaugebribes.bribeTokens
-                              .filter(x => !BigNumber(x?.left).isZero())
-                              .map((bribe, idx) => {
-                                return (
-                                  <>
-                                    {tableCellContent(
-                                      formatCurrency(bribe.left),
-                                      null,
-                                      bribe.token.symbol + ` (${Number(bribe.apr).toFixed(1)}% APR)`,
-                                      null
-                                    )}
-                                  </>
-                                );
-                              })
-                            : null}
-                        </TableCell>
-
-                        <TableCell
-                          className={classes.cell}
-                          align="right"
-                          style={{
-                            background:
-                              appTheme === "dark" ? "#151718" : "#DBE6EC",
-                            borderBottom: `1px solid ${
-                              appTheme === "dark" ? "#2D3741" : "#CFE5F2"
-                            }`,
-                            overflow: "hidden",
-                          }}
-                        >
-                          {tableCellContent(
-                            formatCurrency(
-                              BigNumber(sliderValue)
-                                .div(100)
-                                .times(token?.lockValue)
-                            ),
-                            `${formatCurrency(sliderValue)} %`,
-                            null,
-                            null
-                          )}
-                        </TableCell>
-
-                        <TableCell
-                          className={classes.cell}
-                          align="right"
-                          style={{
-                            background:
-                              appTheme === "dark" ? "#151718" : "#DBE6EC",
-                            borderBottom: `1px solid ${
-                              appTheme === "dark" ? "#2D3741" : "#CFE5F2"
-                            }`,
-                            overflow: "hidden",
-                          }}
-                        >
-                          <div
-                            style={{
-                              paddingTop: 12,
-                              paddingLeft: 12,
-                              paddingRight: 12,
-                            }}
-                          >
-                            <TextField
-                              autoComplete="false"
-                              variant="standard"
-                              className={classes.input}
-                              label=""
-                              value={sliderValue}
-                              InputProps={{
-                                style: {
-                                  padding: "0 2px",
-                                  border: "1px solid",
-                                  borderRadius: 3,
-                                  fontSize: 16,
-                                  fontWeight: 400,
-                                  color: appTheme === "dark" ? "#fff" : "#325569",
-                                  borderColor: appTheme === "dark" ? "#5F7285" : "#86B9D6",
-                                },
-                                endAdornment: (
-                                  <InputAdornment
-                                    position="end"
+                        return (
+                          <TableRow key={row.id}>
+                            <StickyTableCell
+                              style={{
+                                background:
+                                  appTheme === "dark" ? "#151718" : "#DBE6EC",
+                                borderBottom: `1px solid ${appTheme === "dark" ? "#2D3741" : "#CFE5F2"
+                                  }`,
+                              }}
+                              className={classes.cell}
+                            >
+                              <div className={classes.inline}>
+                                <div className={classes.doubleImages}>
+                                  <img
+                                    className={[
+                                      classes.img1Logo,
+                                      classes[`img1Logo--${appTheme}`],
+                                    ].join(" ")}
+                                    src={
+                                      row && row.token0 && row.token0.logoURI
+                                        ? row.token0.logoURI
+                                        : ``
+                                    }
+                                    width="37"
+                                    height="37"
+                                    alt=""
+                                    onError={(e) => {
+                                      e.target.onerror = null;
+                                      e.target.src = `/tokens/unknown-logo--${appTheme}.svg`;
+                                    }}
+                                  />
+                                  <img
+                                    className={[
+                                      classes.img2Logo,
+                                      classes[`img2Logo--${appTheme}`],
+                                    ].join(" ")}
+                                    src={
+                                      row && row.token1 && row.token1.logoURI
+                                        ? row.token1.logoURI
+                                        : ``
+                                    }
+                                    width="37"
+                                    height="37"
+                                    alt=""
+                                    onError={(e) => {
+                                      e.target.onerror = null;
+                                      e.target.src = `/tokens/unknown-logo--${appTheme}.svg`;
+                                    }}
+                                  />
+                                </div>
+                                <div>
+                                  <Typography
+                                    className={classes.textSpaced}
+                                    style={{
+                                      fontWeight: 500,
+                                      fontSize: 14,
+                                      lineHeight: "120%",
+                                      color:
+                                        appTheme === "dark" ? "#ffffff" : "#0A2C40",
+                                    }}
+                                    noWrap
                                   >
-                                    <span style={{
-                                      color: appTheme === "dark" ? "#C6CDD2" : "#325569",
-                                    }}>%</span>
-                                  </InputAdornment>
+                                    {formatSymbol(row?.symbol)}
+                                  </Typography>
+                                  <Typography
+                                    className={classes.textSpaced}
+                                    style={{
+                                      fontWeight: 400,
+                                      fontSize: 14,
+                                      lineHeight: "120%",
+                                      color:
+                                        appTheme === "dark" ? "#7C838A" : "#5688A5",
+                                    }}
+                                    noWrap
+                                  >
+                                    {row?.isStable
+                                      ? "Stable Pool"
+                                      : "Volatile Pool"}
+                                  </Typography>
+                                </div>
+                              </div>
+                            </StickyTableCell>
+                            <TableCell
+                              className={classes.cell}
+                              align="right"
+                              style={{
+                                background:
+                                  appTheme === "dark" ? "#151718" : "#DBE6EC",
+                                borderBottom: `1px solid ${appTheme === "dark" ? "#2D3741" : "#CFE5F2"
+                                  }`,
+                                overflow: "hidden",
+                              }}
+                            >
+                              {tableCellContent(
+                                `${numeral(parseInt(row?.tvl)).format("($ 0a)")} `,
+                                null,
+                                null,
+                                null
+                              )}
+                            </TableCell>
+                            <TableCell
+                              className={classes.cell}
+                              align="right"
+                              style={{
+                                background:
+                                  appTheme === "dark" ? "#151718" : "#DBE6EC",
+                                borderBottom: `1px solid ${appTheme === "dark" ? "#2D3741" : "#CFE5F2"
+                                  }`,
+                                overflow: "hidden",
+                              }}
+                            >
+                              {tableCellContent(
+                                `${formatCurrency(BigNumber(row?.gauge?.apr), 0)}%`,
+                                `${formatCurrency(BigNumber(row?.gauge?.expectAPR), 0)}%`,
+                                'Current',
+                                'Expected'
+                              )}
+                            </TableCell>
+
+                            <TableCell
+                              className={classes.cell}
+                              align="right"
+                              style={{
+                                background:
+                                  appTheme === "dark" ? "#151718" : "#DBE6EC",
+                                borderBottom: `1px solid ${appTheme === "dark" ? "#2D3741" : "#CFE5F2"
+                                  }`,
+                                overflow: "hidden",
+                              }}
+                            >
+                              {tableCellContent(
+                                formatCurrency(
+                                  BigNumber(row?.gauge?.balance)
+                                    .div(row?.gauge?.totalSupply)
+                                    .times(row?.gauge?.reserve0)
                                 ),
+                                formatCurrency(
+                                  BigNumber(row?.gauge?.balance)
+                                    .div(row?.gauge?.totalSupply)
+                                    .times(row?.gauge?.reserve1)
+                                ),
+                                row.token0.symbol,
+                                row.token1.symbol
+                              )}
+                            </TableCell>
+
+                            <TableCell
+                              className={classes.cell}
+                              align="right"
+                              style={{
+                                background:
+                                  appTheme === "dark" ? "#151718" : "#DBE6EC",
+                                borderBottom: `1px solid ${appTheme === "dark" ? "#2D3741" : "#CFE5F2"
+                                  }`,
+                                overflow: "hidden",
                               }}
-                              onChange={(e) => {
-                                onSliderChange(null, e.target.value, row)
+                            >
+                              {tableCellContent(
+                                formatCurrency(BigNumber(row?.reserve0)),
+                                formatCurrency(BigNumber(row?.reserve1)),
+                                row.token0.symbol,
+                                row.token1.symbol
+                              )}
+                            </TableCell>
+
+                            <TableCell
+                              className={classes.cell}
+                              align="right"
+                              style={{
+                                background:
+                                  appTheme === "dark" ? "#151718" : "#DBE6EC",
+                                borderBottom: `1px solid ${appTheme === "dark" ? "#2D3741" : "#CFE5F2"
+                                  }`,
+                                overflow: "hidden",
                               }}
-                            />
-                            {/* <CustomSlider
+                            >
+                              {tableCellContent(
+                                formatCurrency(row?.gauge?.weight),
+                                `${formatCurrency(row?.gauge?.weightPercent)} %`,
+                                null,
+                                null
+                              )}
+                            </TableCell>
+
+                            <TableCell
+                              className={classes.cell}
+                              align="right"
+                              style={{
+                                background:
+                                  appTheme === "dark" ? "#151718" : "#DBE6EC",
+                                borderBottom: `1px solid ${appTheme === "dark" ? "#2D3741" : "#CFE5F2"
+                                  }`,
+                                overflow: "hidden",
+                              }}
+                            >
+                              {row?.gaugebribes.bribeTokens.length
+                                ? row?.gaugebribes.bribeTokens
+                                  .filter(x => !BigNumber(x?.left).isZero())
+                                  .map((bribe, idx) => {
+                                    return (
+                                      <>
+                                        {tableCellContent(
+                                          formatCurrency(bribe.left),
+                                          null,
+                                          bribe.token.symbol + ` (${Number(bribe.apr).toFixed(1)}% APR)`,
+                                          null
+                                        )}
+                                      </>
+                                    );
+                                  })
+                                : null}
+                            </TableCell>
+
+                            <TableCell
+                              className={classes.cell}
+                              align="right"
+                              style={{
+                                background:
+                                  appTheme === "dark" ? "#151718" : "#DBE6EC",
+                                borderBottom: `1px solid ${appTheme === "dark" ? "#2D3741" : "#CFE5F2"
+                                  }`,
+                                overflow: "hidden",
+                              }}
+                            >
+                              {tableCellContent(
+                                formatCurrency(
+                                  BigNumber(sliderValue)
+                                    .div(100)
+                                    .times(token?.lockValue)
+                                ),
+                                `${formatCurrency(sliderValue)} %`,
+                                null,
+                                null
+                              )}
+                            </TableCell>
+
+                            <TableCell
+                              className={classes.cell}
+                              align="right"
+                              style={{
+                                background:
+                                  appTheme === "dark" ? "#151718" : "#DBE6EC",
+                                borderBottom: `1px solid ${appTheme === "dark" ? "#2D3741" : "#CFE5F2"
+                                  }`,
+                                overflow: "hidden",
+                              }}
+                            >
+                              <div
+                                style={{
+                                  paddingTop: 12,
+                                  paddingLeft: 12,
+                                  paddingRight: 12,
+                                }}
+                              >
+                                <TextField
+                                  autoComplete="false"
+                                  variant="standard"
+                                  className={classes.input}
+                                  label=""
+                                  value={sliderValue}
+                                  InputProps={{
+                                    style: {
+                                      padding: "0 2px",
+                                      border: "1px solid",
+                                      borderRadius: 3,
+                                      fontSize: 16,
+                                      fontWeight: 400,
+                                      color: appTheme === "dark" ? "#fff" : "#325569",
+                                      borderColor: appTheme === "dark" ? "#5F7285" : "#86B9D6",
+                                    },
+                                    endAdornment: (
+                                      <InputAdornment
+                                        position="end"
+                                      >
+                                        <span style={{
+                                          color: appTheme === "dark" ? "#C6CDD2" : "#325569",
+                                        }}>%</span>
+                                      </InputAdornment>
+                                    ),
+                                  }}
+                                  onChange={(e) => {
+                                    onSliderChange(null, e.target.value, row)
+                                  }}
+                                />
+                                {/* <CustomSlider
                               appTheme={appTheme}
                               valueLabelDisplay="auto"
                               value={sliderValue}
@@ -1336,13 +1340,17 @@ export default function EnhancedTable({
                               step={1}
                               disabled={noTokenSelected}
                             /> */}
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })}
-              </TableBody>
+                              </div>
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })}
+                  </TableBody>
+                )
+              }
+
             </Table>
+            {isEmptyTable && emptyMessage}
           </TableContainer>
 
           {/* <TablePagination
@@ -1386,6 +1394,7 @@ export default function EnhancedTable({
               marginTop: 100,
             }}
           >
+            {isEmptyTable && emptyMessage}
             {stableSort(gauges, getComparator(order, orderBy, sliderValues))
               .filter(g => BigNumber(g.tvl).gt(500))
               // .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
@@ -1412,14 +1421,13 @@ export default function EnhancedTable({
                     {/* <VoteModal index={index} sliderValue={sliderValue} /> */}
 
                     <Accordion
-                      key={labelId}
+                      key={row.id}
                       style={{
                         margin: 0,
                         marginBottom: 20,
                         background: appTheme === "dark" ? "#24292D" : "#DBE6EC",
-                        border: `1px solid ${
-                          appTheme === "dark" ? "#2D3741" : "#9BC9E4"
-                        }`,
+                        border: `1px solid ${appTheme === "dark" ? "#2D3741" : "#9BC9E4"
+                          }`,
                       }}
                       disableGutters={true}
                       expanded={expanded === labelId}
@@ -1521,12 +1529,10 @@ export default function EnhancedTable({
 
                           <div
                             style={{
-                              borderTop: `1px solid ${
-                                appTheme === "dark" ? "#2D3741" : "#9BC9E4"
-                              }`,
-                              borderBottom: `1px solid ${
-                                appTheme === "dark" ? "#2D3741" : "#9BC9E4"
-                              }`,
+                              borderTop: `1px solid ${appTheme === "dark" ? "#2D3741" : "#9BC9E4"
+                                }`,
+                              borderBottom: `1px solid ${appTheme === "dark" ? "#2D3741" : "#9BC9E4"
+                                }`,
                             }}
                             className={["g-flex", "g-flex--align-center"].join(
                               " "
@@ -1535,9 +1541,8 @@ export default function EnhancedTable({
                             <div
                               style={{
                                 width: "50%",
-                                borderRight: `1px solid ${
-                                  appTheme === "dark" ? "#2D3741" : "#9BC9E4"
-                                }`,
+                                borderRight: `1px solid ${appTheme === "dark" ? "#2D3741" : "#9BC9E4"
+                                  }`,
                               }}
                             >
                               <Typography
@@ -1548,9 +1553,8 @@ export default function EnhancedTable({
                                   fontWeight: 500,
                                   fontSize: 12,
                                   lineHeight: "120%",
-                                  borderBottom: `1px solid ${
-                                    appTheme === "dark" ? "#2D3741" : "#9BC9E4"
-                                  }`,
+                                  borderBottom: `1px solid ${appTheme === "dark" ? "#2D3741" : "#9BC9E4"
+                                    }`,
                                   color:
                                     appTheme === "dark" ? "#C6CDD2" : "#325569",
                                 }}
@@ -1565,19 +1569,18 @@ export default function EnhancedTable({
                                   color="primary"
                                   style={{
                                     padding: "7px 14px",
-                                    border: `1px solid ${
-                                      appTheme === "dark"
+                                    border: `1px solid ${appTheme === "dark"
                                         ? "#C6CDD2"
                                         : "#5688A5"
-                                    }`,
+                                      }`,
                                     borderColor:
                                       sliderValue > 0
                                         ? "green"
                                         : sliderValue < 0
-                                        ? "red"
-                                        : appTheme === "dark"
-                                        ? "#C6CDD2"
-                                        : "#5688A5",
+                                          ? "red"
+                                          : appTheme === "dark"
+                                            ? "#C6CDD2"
+                                            : "#5688A5",
                                     borderRadius: 100,
                                     fontWeight: 500,
                                     fontSize: 14,
@@ -1586,10 +1589,10 @@ export default function EnhancedTable({
                                       sliderValue > 0
                                         ? "green"
                                         : sliderValue < 0
-                                        ? "red"
-                                        : appTheme === "dark"
-                                        ? "#C6CDD2"
-                                        : "#5688A5",
+                                          ? "red"
+                                          : appTheme === "dark"
+                                            ? "#C6CDD2"
+                                            : "#5688A5",
                                   }}
                                   onClick={(event) => {
                                     event.stopPropagation();
@@ -1621,9 +1624,8 @@ export default function EnhancedTable({
                                   fontWeight: 500,
                                   fontSize: 12,
                                   lineHeight: "120%",
-                                  borderBottom: `1px solid ${
-                                    appTheme === "dark" ? "#2D3741" : "#9BC9E4"
-                                  }`,
+                                  borderBottom: `1px solid ${appTheme === "dark" ? "#2D3741" : "#9BC9E4"
+                                    }`,
                                   color:
                                     appTheme === "dark" ? "#C6CDD2" : "#325569",
                                   textAlign: "right",
@@ -1741,9 +1743,8 @@ export default function EnhancedTable({
                               <div
                                 style={{
                                   height: 56,
-                                  borderTop: `1px solid ${
-                                    appTheme === "dark" ? "#2D3741" : "#9BC9E4"
-                                  }`,
+                                  borderTop: `1px solid ${appTheme === "dark" ? "#2D3741" : "#9BC9E4"
+                                    }`,
                                 }}
                                 className={[
                                   "g-flex",
@@ -1764,11 +1765,10 @@ export default function EnhancedTable({
                                       appTheme === "dark"
                                         ? "#C6CDD2"
                                         : "#325569",
-                                    borderRight: `1px solid ${
-                                      appTheme === "dark"
+                                    borderRight: `1px solid ${appTheme === "dark"
                                         ? "#2D3741"
                                         : "#9BC9E4"
-                                    }`,
+                                      }`,
                                   }}
                                   noWrap
                                 >
@@ -1821,7 +1821,7 @@ export default function EnhancedTable({
                                           BigNumber(row?.reserve0)
                                         )}
                                       {headCell.id === "apy" &&
-                                      row?.gaugebribes.bribeTokens.length
+                                        row?.gaugebribes.bribeTokens.length
                                         ? row?.gaugebribes.bribeTokens
                                           .filter(x => !BigNumber(x?.left).isZero())
                                           .map((bribe, idx) => {
@@ -1901,7 +1901,7 @@ export default function EnhancedTable({
                                       {headCell.id === "liquidity" &&
                                         formatSymbol(row.token0.symbol)}
                                       {headCell.id === "apy" &&
-                                      row?.gaugebribes.bribeTokens.length
+                                        row?.gaugebribes.bribeTokens.length
                                         ? row?.gaugebribes.bribeTokens
                                           .filter(x => !BigNumber(x?.left).isZero())
                                           .map((bribe, idx) => {

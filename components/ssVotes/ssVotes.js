@@ -28,7 +28,7 @@ export default function ssVotes() {
   const [voteLoading, setVoteLoading] = useState(false);
   const [votes, setVotes] = useState([]);
   const [veToken, setVeToken] = useState(null);
-  const [token, setToken] = useState(null);
+  const [token, setToken] = useState('');
   const [vestNFTs, setVestNFTs] = useState([]);
   const [search, setSearch] = useState("");
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -44,6 +44,9 @@ export default function ssVotes() {
     const filteredAssets = as
       .filter((asset) => {
         return asset.gauge && asset.gauge.address;
+      })
+      .filter((asset) => {
+        return asset.tvl && BigNumber(asset.tvl).gt(500)
       })
     setGauges(filteredAssets);
 

@@ -1319,9 +1319,9 @@ class Store {
         return null;
       }
 
+      await this._getPairInfo(web3, account);
       this._getGovTokenInfo(web3, account);
       await this._getBaseAssetInfo(web3, account);
-      await this._getPairInfo(web3, account);
       await this._getSwapVoltAssets(web3, account);
     } catch (ex) {
       console.log(ex);
