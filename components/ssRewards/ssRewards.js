@@ -27,6 +27,7 @@ export default function ssRewards() {
   useEffect(() => {
     if (vestNFTs.length && !token) {
       setToken(vestNFTs[0]);
+      stores.dispatcher.dispatch({ type: ACTIONS.GET_REWARD_BALANCES, content: { tokenID: vestNFTs[0].id } });
     }
   }, [vestNFTs])
 
@@ -37,9 +38,6 @@ export default function ssRewards() {
     }
     setVeToken(stores.stableSwapStore.getStore('veToken'));
 
-    if (token) {
-      stores.dispatcher.dispatch({ type: ACTIONS.GET_REWARD_BALANCES, content: { tokenID: token.id } });
-    }
     // if (vestNFTs?.length > 0) {
     //   // vestNFTs.sort((a, b) => (+a.id) - (+b.id));
 
@@ -78,7 +76,6 @@ export default function ssRewards() {
   };
 
   useEffect(() => {
-    console.log('token', token)
     rewardBalancesReturned();
     stableSwapUpdated();
 
@@ -88,7 +85,7 @@ export default function ssRewards() {
       stores.emitter.removeListener(ACTIONS.VEST_NFTS_RETURNED, stableSwapUpdated);
       stores.emitter.removeListener(ACTIONS.REWARD_BALANCES_RETURNED, rewardBalancesReturned);
     };
-  }, [token]);
+  }, []);
 
   useEffect(() => {
 
