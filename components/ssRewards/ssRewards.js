@@ -33,10 +33,14 @@ export default function ssRewards() {
 
   const stableSwapUpdated = (rew) => {
     const nfts = stores.stableSwapStore.getStore('vestNFTs');
-    if (!vestNFTs.length) {
-      setVestNFTs(nfts);
-    }
     setVeToken(stores.stableSwapStore.getStore('veToken'));
+    if (nfts.length) {
+      if (!vestNFTs.length) {
+        setVestNFTs(nfts);
+      }
+    } else {
+      stores.dispatcher.dispatch({ type: ACTIONS.GET_REWARD_BALANCES, content: { tokenID: 0 } });
+    }
 
     // if (vestNFTs?.length > 0) {
     //   // vestNFTs.sort((a, b) => (+a.id) - (+b.id));
