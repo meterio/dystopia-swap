@@ -24,6 +24,7 @@ class Store {
       chainInvalid: false,
       supportChain: null,
       web3provider: null,
+      httpWeb3provider: null,
       web3modal: null,
       provider: null,
       tokens: [],
@@ -160,9 +161,10 @@ class Store {
     const parsedChainId = Number(chainId) + "";
     const isChainSupported = supportedChainIds.includes(parsedChainId);
     if (isChainSupported) {
-      this.setStore({
-        supportChain: supportChainList.find(c => c.id === parsedChainId)
-      })
+      const supportChain = supportChainList.find(c => c.id === parsedChainId)
+      const web3 = new Web3(new Web3.providers.HttpProvider(supportChain.privateRpc));
+      this.setStore({ httpWeb3provider: web3 })
+      this.setStore({ supportChain })
     } else {
       this.setStore({
         supportChain: null
@@ -207,7 +209,7 @@ class Store {
 
   _getGasPrices = async () => {
     try {
-      const web3 = await this.getWeb3Provider();
+      const web3 = await this.getHttpWeb3Provider();
       const gasPrice = await web3.eth.getGasPrice();
       const gasPriceInGwei = web3.utils.fromWei(gasPrice, "gwei");
       return {
@@ -228,7 +230,7 @@ class Store {
     }
 
     try {
-      const web3 = await this.getWeb3Provider();
+      const web3 = await this.getHttpWeb3Provider();
       const gasPrice = await web3.eth.getGasPrice();
       const gasPriceInGwei = web3.utils.fromWei(gasPrice, "gwei");
       return gasPriceInGwei;
@@ -237,6 +239,10 @@ class Store {
       return {};
     }
   };
+
+  getHttpWeb3Provider = () => {
+    return this.getStore("httpWeb3provider");
+  }
 
   getWeb3Provider = async () => {
     // let web3context = this.getStore('web3context');
@@ -284,7 +290,7 @@ class Store {
 
   getMulticall = async () => {
     const supportChain = this.getStore('supportChain')
-    const web3 = await this.getWeb3Provider();
+    const web3 = await this.getHttpWeb3Provider();
     const multicall = new Multicall({
       multicallAddress: supportChain.contracts.MULTICALL_ADDRESS,
       provider: web3,

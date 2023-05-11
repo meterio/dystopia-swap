@@ -69,19 +69,24 @@ export const WalletConnect = (props) => {
     // if (!provider) {
     //   return
     // }
-    console.log('instance', instance)
+    console.log('instance', instance.chainId, instance.selectedAddress)
     const web3 = new Web3(instance);
+    let httpWeb3 = null;
     
-    const chainId = await web3.eth.getChainId()
-    const account = await web3.eth.getAccounts()
-    console.log({chainId, account})
+    const { chainId, selectedAddress } = instance
+    // const chainId = await web3.eth.getChainId()
+    // const account = await web3.eth.getAccounts()
+    console.log({chainId, selectedAddress})
     
     const supportChainList = getSupportChainList()
     const supportedChainIds = supportChainList.map(c => c.id)
-    const isChainSupported = supportedChainIds.includes(String(chainId));
+    const isChainSupported = supportedChainIds.includes(String(Number(chainId)));
     stores.accountStore.setStore({ chainInvalid: !isChainSupported });
     if (isChainSupported) {
-      const supportChain = supportChainList.find(c => c.id === String(chainId))
+      const supportChain = supportChainList.find(c => c.id === String(Number(chainId)))
+
+      httpWeb3 = new Web3(new Web3.providers.HttpProvider(supportChain.privateRpc));
+
       stores.accountStore.setStore({
         supportChain
       })
@@ -93,8 +98,9 @@ export const WalletConnect = (props) => {
     
     stores.accountStore.setStore({
       chainId: String(chainId),
-      account: { address: account[0] },
+      account: { address: selectedAddress },
       web3provider: web3,
+      httpWeb3provider: httpWeb3,
       web3modal,
       provider: instance,
     });
@@ -110,7 +116,7 @@ export const WalletConnect = (props) => {
       });
     }, 100)
 
-    return { web3provider: web3, address: account[0] }
+    return { web3provider: web3, address: selectedAddress }
   }
 
   useEffect(() => {
