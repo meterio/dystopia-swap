@@ -41,13 +41,21 @@ export default function ssVotes() {
     setVeToken(stores.stableSwapStore.getStore("veToken"));
     const as = stores.stableSwapStore.getStore("pairs");
 
+    const supportChain = stores.accountStore.getStore('supportChain')
+    
     const filteredAssets = as
       .filter((asset) => {
         return asset.gauge && asset.gauge.address;
       })
       .filter((asset) => {
-        return asset.tvl && BigNumber(asset.tvl).gt(500)
+        if (supportChain && supportChain.id == '82') {
+          
+          return BigNumber(asset.tvl).gt(500)
+        } else {
+          return true
+        }
       })
+      console.log('filteredAssets', filteredAssets)
     setGauges(filteredAssets);
 
     // const tvldata = await stores.stableSwapStore.getStore("tvls");

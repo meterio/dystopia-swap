@@ -1396,7 +1396,7 @@ export default function EnhancedTable({
           >
             {isEmptyTable && emptyMessage}
             {stableSort(gauges, getComparator(order, orderBy, sliderValues))
-              .filter(g => BigNumber(g.tvl).gt(500))
+              // .filter(g => BigNumber(g.tvl).gt(500))
               // .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((row, index) => {
                 if (!row) {

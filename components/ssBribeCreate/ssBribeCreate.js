@@ -40,8 +40,16 @@ export default function ssBribeCreate() {
   const [gaugeOptions, setGaugeOptions] = useState([]);
 
   const ssUpdated = async () => {
+
+    const supportChain = stores.accountStore.getStore('supportChain');
     
-    const storePairs = stores.stableSwapStore.getStore('pairs').filter(p => BigNumber(p.tvl).gt(500));
+    const storePairs = stores.stableSwapStore.getStore('pairs').filter(p => {
+      if (supportChain && supportChain.id == '82') {
+        return BigNumber(p.tvl).gt(500)
+      } else {
+        return true
+      }
+    });
     
     setGaugeOptions(storePairs);
 
