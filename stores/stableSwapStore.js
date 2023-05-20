@@ -4285,7 +4285,7 @@ class Store {
 
       // some path logic. Have a base asset (FTM) swap from start asset to FTM, swap from FTM back to out asset. Don't know.
       const _routeAssets = this.getStore("routeAssets");
-      const pairs = this.getStore("pairs");
+      const pairs = this.getStore("pairs").filter(p => !BLACK_LIST_TOKENS.includes(p.id));
 
       const { fromAsset, toAsset, fromAmount } = payload.content;
 
