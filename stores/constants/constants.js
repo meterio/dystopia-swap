@@ -218,13 +218,10 @@ export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
 
 export const BLACK_LIST_TOKENS = [
   "0x3e8fafac6a39c560b500e9176410e98d01d078ce", // "StableV1 AMM - WMTR/VOLT"
-  "0x56e5140298c22c3959dcf2ddaebd89935b8aa9aa", // "VolatileV1 AMM - MTRG/TFUEL"
   "0x6cc1f67af0e7dd88e80b8d153dd1d1cad06b5f47", // "VolatileV1 AMM - FTB/VOLT"
   "0x75e4566d2a418e61ca1a2c7705aaaab2dcbf52f9", // "StableV1 AMM - MTRG/VOLT"
   "0x9599caed4188bd8858c3de2fa62c54e00fb58a67", // "VolatileV1 AMM - MTRG/TARA"
-  "0xade3bf255ea49079cc0d32ced219c0708b1369ee", // "VolatileV1 AMM - WMTR/MAE"
   "0xd4ebf4b6efb7c25c3c7066653d27a59654f9bea2", // "StableV1 AMM - MTRG/FTB"
-  "0xea8049fc07b079c91a974a02a0dbbe0c8a0e6205", // "VolatileV1 AMM - WMTR/TARA"
   "0xfd1ce3adf6668daacccbf30775f8791c2ab7003a", // "StableV1 AMM - TFUEL/VOLT"
 ]
 
