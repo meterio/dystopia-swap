@@ -7421,7 +7421,7 @@ class Store {
         console.log('gas amount', gasAmount)
         const context = this;
 
-        let sendGasAmount = BigNumber(gasAmount).times(2).toFixed(0);
+        let sendGasAmount = BigNumber(gasAmount).times(1.1).toFixed(0);
         let sendGasPrice = BigNumber(gasPrice).times(1).toFixed(0);
         // if (paddGasCost) {
         //   sendGasAmount = BigNumber(sendGasAmount).times(1.15).toFixed(0)
