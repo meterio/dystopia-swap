@@ -6,7 +6,7 @@ orbs:
 jobs:
   build_and_deploy_mainnet:
     docker:
-      - image: 'cimg/node:16.7'
+      - image: "cimg/node:16.7"
     steps:
       - checkout
       - run:
@@ -32,10 +32,10 @@ jobs:
           command: npm run build2
       - run:
           name: s3 sync
-          command: aws s3 sync ./out/ s3://voltswap-finance/ --delete --acl public-read
+          command: aws s3 sync ./out/ s3://voltswap.finance/ --delete
       - run:
           name: invalidation
-          command: aws cloudfront create-invalidation --distribution-id EBU88AFTIQMJV --paths "/*"
+          command: aws cloudfront create-invalidation --distribution-id E2MJ1Y5F1U1W57 --paths "/*"
       - slack/notify:
           event: fail
           template: basic_fail_1
@@ -48,7 +48,7 @@ workflows:
     jobs:
       - build_and_deploy_mainnet:
           context:
-            - aws-s3
+            - aws-2023
             - slack-secrets
             - swapv2-env
           filters:
