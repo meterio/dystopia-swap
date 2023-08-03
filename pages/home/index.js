@@ -10,14 +10,7 @@ import BtnEnterApp from '../../ui/BtnEnterApp'
 
 import classes from './home.module.css'
 import { useRouter } from "next/router";
-
-const socialLinks = {
-    twitter: 'https://twitter.com/Meter_IO',
-    discord: 'https://discord.gg/h9mdV5wCP7',
-    telegram: 'https://t.me/Meter_IO',
-    gitbook: 'https://docs.voltswap.finance/',
-    medium: 'https://medium.com/meter-io',
-}
+import { socialLinks } from '../../stores/constants/constants';
 
 const HomePage = () => {
     const {appTheme} = useAppThemeContext();

@@ -1434,20 +1434,23 @@ function Setup() {
               }}
             </WalletConnect>
         }
-        <div style={{
-          border: '1px solid rgb(76, 173, 230)',
-          marginTop: '10px'
-        }}>
-          <a style={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            width: '100%',
-            fontWeight: 'bold',
-            color: `${appTheme === 'light' ? '#000' : '#fff'}`,
-            textDecoration: 'none'
-          }} href="https://wallet.meter.io/swap" target="_blank">Gas Station</a>
-        </div>
+        {
+          supportChain && supportChain.id === '82' &&
+          <div style={{
+            border: '1px solid rgb(76, 173, 230)',
+            marginTop: '10px'
+          }}>
+            <a style={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              width: '100%',
+              fontWeight: 'bold',
+              color: `${appTheme === 'light' ? '#000' : '#fff'}`,
+              textDecoration: 'none'
+            }} href="https://wallet.meter.io/swap" target="_blank">Gas Station</a>
+          </div>
+        }
       </div>
   );
 }

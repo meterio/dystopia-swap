@@ -2,7 +2,16 @@ import BigNumber from 'bignumber.js'
 import * as contractsTestnet from './contractsTestnet'
 import * as contracts from './contracts'
 import * as contractsTheta from './contractsTheta'
+import * as contractsBase from './contractsBase'
 import * as actions from './actions'
+
+export const socialLinks = {
+  twitter: 'https://twitter.com/VoltSwapFinance',
+  discord: 'https://discord.gg/h9mdV5wCP7',
+  telegram: 'https://t.me/Meter_IO',
+  gitbook: 'https://docs.voltswap.finance/',
+  medium: 'https://medium.com/meter-io',
+}
 
 export const SUPPORT_CHAIN = [
   {
@@ -205,6 +214,54 @@ export const SUPPORT_CHAIN = [
         "chainId": 361,
         "logoURI": "https://raw.githubusercontent.com/meterio/token-list/master/data/WTHETA/logo.png"
       }
+    ]
+  },
+  {
+    id: '8453',
+    mainnet: true,
+    name: 'Base',
+    nativeSymbol: 'ETH',
+    nativeDecimals: 18,
+    rpc: 'https://mainnet.base.org',
+    privateRpc: 'https://mainnet.base.org',
+    contracts: contractsBase,
+    infoURL: 'https://charts.voltswap.finance',
+    explorerURL: 'https://basescan.org/',
+    govAddr: '0xa023E6f6B4862EA38cbe45e377abD908abAb2f82',
+    subgraphApi: 'https://api.studio.thegraph.com/query/50539/voltswap-finance/v0.0.1',
+    routeAssets: [
+      {
+        name: contractsBase.WFTM_NAME,
+        address: contractsBase.WFTM_ADDRESS,
+        symbol: contractsBase.WFTM_SYMBOL,
+        decimals: contractsBase.WFTM_DECIMALS,
+        chainId: 8453,
+        logoURI: contractsBase.WFTM_LOGO
+      },
+      {
+        "name": "Meter Governance mapped by Meter.io",
+        "address": "0xa023E6f6B4862EA38cbe45e377abD908abAb2f82",
+        "symbol": "MTRG",
+        "decimals": 18,
+        "chainId": 8453,
+        "logoURI": "https://raw.githubusercontent.com/meterio/token-list/master/data/MTRG/logo.png"
+      },
+      {
+        "name": "Axelar Wrapped USDC",
+        "address": "0xEB466342C4d449BC9f53A865D5Cb90586f405215",
+        "symbol": "USDC",
+        "decimals": 6,
+        "chainId": 8453,
+        "logoURI": "https://raw.githubusercontent.com/meterio/token-list/master/data/USDC/logo.png"
+      },
+      {
+        "name": "Bolt from Meter on Base",
+        "address": "0x863656e346d8A42EC7caAAd606611b6fD8916f32",
+        "symbol": "BOLT",
+        "decimals": 18,
+        "chainId": 8453,
+        "logoURI": "https://raw.githubusercontent.com/meterio/token-list/master/data/VOLT/logo.png"
+      },
     ]
   }
 ]

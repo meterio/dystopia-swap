@@ -7415,14 +7415,14 @@ class Store {
     //   estimateGasParams.value = sendValue
     // }
 
-    const gasCost = contract.methods[method](...params)
-      .estimateGas({from: account.address,value: sendValue})
-      .then((gasAmount) => {
-        console.log('gas amount', gasAmount)
+    // const gasCost = contract.methods[method](...params)
+    //   .estimateGas({from: account.address,value: sendValue})
+    //   .then((gasAmount) => {
+        // console.log('gas amount', gasAmount)
         const context = this;
 
-        let sendGasAmount = BigNumber(gasAmount).times(1.1).toFixed(0);
-        let sendGasPrice = BigNumber(gasPrice).times(1).toFixed(0);
+        // let sendGasAmount = BigNumber(gasAmount).times(1.1).toFixed(0);
+        // let sendGasPrice = BigNumber(gasPrice).times(1).toFixed(0);
         // if (paddGasCost) {
         //   sendGasAmount = BigNumber(sendGasAmount).times(1.15).toFixed(0)
         // }
@@ -7433,8 +7433,8 @@ class Store {
         contract.methods[method](...params)
           .send({
             from: account.address,
-            gasPrice: web3.utils.toWei(sendGasPrice, "gwei"),
-            gas: sendGasAmount,
+            // gasPrice: web3.utils.toWei(sendGasPrice, "gwei"),
+            // gas: sendGasAmount,
             value: sendValue,
             // maxFeePerGas: web3.utils.toWei(gasPrice, "gwei"),
             // maxPriorityFeePerGas: web3.utils.toWei("2", "gwei"),
@@ -7481,19 +7481,19 @@ class Store {
               callback(error);
             }
           });
-      })
-      .catch((ex) => {
-        console.log(ex);
-        if (ex.message) {
-          this.emitter.emit(ACTIONS.TX_REJECTED, { uuid, error: ex.message });
-          return callback(ex.message);
-        }
-        this.emitter.emit(ACTIONS.TX_REJECTED, {
-          uuid,
-          error: "Error estimating gas",
-        });
-        callback(ex);
-      });
+      // })
+      // .catch((ex) => {
+      //   console.log(ex);
+      //   if (ex.message) {
+      //     this.emitter.emit(ACTIONS.TX_REJECTED, { uuid, error: ex.message });
+      //     return callback(ex.message);
+      //   }
+      //   this.emitter.emit(ACTIONS.TX_REJECTED, {
+      //     uuid,
+      //     error: "Error estimating gas",
+      //   });
+      //   callback(ex);
+      // });
   };
 
   _makeBatchRequest = (web3, callFrom, calls) => {
