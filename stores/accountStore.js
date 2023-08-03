@@ -224,20 +224,20 @@ class Store {
   };
 
   getGasPrice = async (speed) => {
-    let gasSpeed = speed;
-    if (!speed) {
-      gasSpeed = this.getStore("gasSpeed");
-    }
+    // let gasSpeed = speed;
+    // if (!speed) {
+    //   gasSpeed = this.getStore("gasSpeed");
+    // }
 
-    try {
-      const web3 = await this.getHttpWeb3Provider();
-      const gasPrice = await web3.eth.getGasPrice();
-      const gasPriceInGwei = web3.utils.fromWei(gasPrice, "gwei");
-      return gasPriceInGwei;
-    } catch (e) {
-      console.log(e);
-      return {};
-    }
+    // try {
+    //   const web3 = await this.getHttpWeb3Provider();
+    //   const gasPrice = await web3.eth.getGasPrice();
+    //   const gasPriceInGwei = web3.utils.fromWei(gasPrice, "gwei");
+    //   return gasPriceInGwei;
+    // } catch (e) {
+    //   console.log(e);
+    //   return {};
+    // }
   };
 
   getHttpWeb3Provider = () => {
