@@ -162,7 +162,10 @@ function Navigation(props) {
         {renderSubNav("Rewards", "rewards")}
         {/* {renderSubNav("Migrate", "migrate")} */}
         {renderPopSubNav("Resources")}
-        {renderLinkSubNav("NFT")}
+        {renderLinkSubNav("NFT", "https://nft.voltswap.finance")}
+        {supportChain && supportChain.id === '8453' && renderLinkSubNav("Bridge", 
+          "https://passport.meter.io/#/82/8453/0x0000000000000000000000bd2949f67dcdc549c6ebe98696449fa79d988a9f01"
+        )}
       </ToggleButtonGroup>
     );
   };
@@ -255,7 +258,7 @@ function Navigation(props) {
     )
   }
 
-  const renderLinkSubNav = (title) => {
+  const renderLinkSubNav = (title, link) => {
     return (
       <ToggleButton
         className={[
@@ -264,7 +267,7 @@ function Navigation(props) {
         ].join(" ")}
         classes={{ selected: classes[`nav-button--active`] }}
         onClick={(e) => {
-          handleLinkClick(e, 'https://nft.voltswap.finance')
+          handleLinkClick(e, link)
         }}
       >
         <div
@@ -283,10 +286,10 @@ function Navigation(props) {
             <Typography variant="h2" className={classes.subtitleText}>
               <span>{title}</span>
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path
+                <path
                   d="M10.6694 6.276L4.93144 12.014L3.98877 11.0713L9.7261 5.33333H4.66944V4H12.0028V11.3333H10.6694V6.276Z"
-                  fill={appTheme === 'dark' ? '#5688A5' : '#5688A5'}/>
-            </svg>
+                  fill={appTheme === 'dark' ? '#5688A5' : '#5688A5'} />
+              </svg>
             </Typography>
           </div>
         </div>
@@ -386,8 +389,8 @@ function Navigation(props) {
 
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path
-                  d="M10.6694 6.276L4.93144 12.014L3.98877 11.0713L9.7261 5.33333H4.66944V4H12.0028V11.3333H10.6694V6.276Z"
-                  fill={appTheme === 'dark' ? '#5688A5' : '#5688A5'}/>
+                d="M10.6694 6.276L4.93144 12.014L3.98877 11.0713L9.7261 5.33333H4.66944V4H12.0028V11.3333H10.6694V6.276Z"
+                fill={appTheme === 'dark' ? '#5688A5' : '#5688A5'} />
             </svg>
           </div>
 
@@ -411,12 +414,12 @@ function Navigation(props) {
 
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path
-                  d="M10.6694 6.276L4.93144 12.014L3.98877 11.0713L9.7261 5.33333H4.66944V4H12.0028V11.3333H10.6694V6.276Z"
-                  fill={appTheme === 'dark' ? '#5688A5' : '#5688A5'}/>
+                d="M10.6694 6.276L4.93144 12.014L3.98877 11.0713L9.7261 5.33333H4.66944V4H12.0028V11.3333H10.6694V6.276Z"
+                fill={appTheme === 'dark' ? '#5688A5' : '#5688A5'} />
             </svg>
           </div>
-          { 
-            supportChain && supportChain.id === '82' && 
+          {
+            supportChain && supportChain.id === '82' &&
             <div
               className={[
                 classes.filterItem,
@@ -437,8 +440,8 @@ function Navigation(props) {
 
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path
-                    d="M10.6694 6.276L4.93144 12.014L3.98877 11.0713L9.7261 5.33333H4.66944V4H12.0028V11.3333H10.6694V6.276Z"
-                    fill={appTheme === 'dark' ? '#5688A5' : '#5688A5'}/>
+                  d="M10.6694 6.276L4.93144 12.014L3.98877 11.0713L9.7261 5.33333H4.66944V4H12.0028V11.3333H10.6694V6.276Z"
+                  fill={appTheme === 'dark' ? '#5688A5' : '#5688A5'} />
               </svg>
             </div>
           }
@@ -462,8 +465,8 @@ function Navigation(props) {
 
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path
-                  d="M10.6694 6.276L4.93144 12.014L3.98877 11.0713L9.7261 5.33333H4.66944V4H12.0028V11.3333H10.6694V6.276Z"
-                  fill={appTheme === 'dark' ? '#5688A5' : '#5688A5'}/>
+                d="M10.6694 6.276L4.93144 12.014L3.98877 11.0713L9.7261 5.33333H4.66944V4H12.0028V11.3333H10.6694V6.276Z"
+                fill={appTheme === 'dark' ? '#5688A5' : '#5688A5'} />
             </svg>
           </div>
           <div
@@ -486,8 +489,8 @@ function Navigation(props) {
 
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path
-                  d="M10.6694 6.276L4.93144 12.014L3.98877 11.0713L9.7261 5.33333H4.66944V4H12.0028V11.3333H10.6694V6.276Z"
-                  fill={appTheme === 'dark' ? '#5688A5' : '#5688A5'}/>
+                d="M10.6694 6.276L4.93144 12.014L3.98877 11.0713L9.7261 5.33333H4.66944V4H12.0028V11.3333H10.6694V6.276Z"
+                fill={appTheme === 'dark' ? '#5688A5' : '#5688A5'} />
             </svg>
           </div>
           <div
@@ -510,8 +513,8 @@ function Navigation(props) {
 
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path
-                  d="M10.6694 6.276L4.93144 12.014L3.98877 11.0713L9.7261 5.33333H4.66944V4H12.0028V11.3333H10.6694V6.276Z"
-                  fill={appTheme === 'dark' ? '#5688A5' : '#5688A5'}/>
+                d="M10.6694 6.276L4.93144 12.014L3.98877 11.0713L9.7261 5.33333H4.66944V4H12.0028V11.3333H10.6694V6.276Z"
+                fill={appTheme === 'dark' ? '#5688A5' : '#5688A5'} />
             </svg>
           </div>
           <div
@@ -534,8 +537,8 @@ function Navigation(props) {
 
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path
-                  d="M10.6694 6.276L4.93144 12.014L3.98877 11.0713L9.7261 5.33333H4.66944V4H12.0028V11.3333H10.6694V6.276Z"
-                  fill={appTheme === 'dark' ? '#5688A5' : '#5688A5'}/>
+                d="M10.6694 6.276L4.93144 12.014L3.98877 11.0713L9.7261 5.33333H4.66944V4H12.0028V11.3333H10.6694V6.276Z"
+                fill={appTheme === 'dark' ? '#5688A5' : '#5688A5'} />
             </svg>
           </div>
         </div>
