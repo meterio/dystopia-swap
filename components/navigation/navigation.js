@@ -84,6 +84,8 @@ function Navigation(props) {
       url = 'https://pay.c14.money/?targetAssetId=cce88109-9347-4f99-b28c-7592d741c46f'
     } else if (id === 'docs') {
       url = 'https://docs.voltswap.finance'
+    } else if (id === 'leetswap') {
+      url = 'https://base.leetswap.finance/#/swap'
     }
 
     if (url) {
@@ -107,7 +109,9 @@ function Navigation(props) {
 
   useEffect(() => {
     const activePath = router.asPath;
-    if (supportChain && activePath.includes("swapvolt") && supportChain.id !== '361') {
+    const condition1 = supportChain && activePath.includes("swapvolt") && supportChain.id !== '361'
+    const condition2 = supportChain && activePath.includes("airdrop") && supportChain.id !== '8453'
+    if (condition1 || condition2) {
       router.push("/swap");
     }
   }, [supportChain])
@@ -144,6 +148,9 @@ function Navigation(props) {
     if (activePath.includes("migrate")) {
       setActive("migrate");
     }
+    if (activePath.includes("airdrop")) {
+      setActive("airdrop");
+    }
   }, []);
 
   const renderNavs = () => {
@@ -160,12 +167,11 @@ function Navigation(props) {
         {renderSubNav("Vest", "vest")}
         {renderSubNav("Vote", "vote")}
         {renderSubNav("Rewards", "rewards")}
+        {supportChain && supportChain.id === '8453' &&  renderSubNav("Airdrop", "airdrop")}
         {/* {renderSubNav("Migrate", "migrate")} */}
-        {renderPopSubNav("Resources")}
-        {renderLinkSubNav("NFT", "https://nft.voltswap.finance")}
-        {supportChain && supportChain.id === '8453' && renderLinkSubNav("Bridge", 
-          "https://passport.meter.io/#/82/8453/0x0000000000000000000000bd2949f67dcdc549c6ebe98696449fa79d988a9f01"
-        )}
+        {renderPopSubNav("Resources", handleClick)}
+        {supportChain && supportChain.id === '82' && renderLinkSubNav("NFT", "https://nft.voltswap.finance")}
+        {supportChain && supportChain.id === '8453' && renderPopSubNav("Bridge", handleClick1)}
       </ToggleButtonGroup>
     );
   };
@@ -192,8 +198,19 @@ function Navigation(props) {
     window.open(link)
   }
 
+  const [anchorEl1, setAnchorEl1] = useState(null);
+  const open1 = Boolean(anchorEl1);
+
+  const handleClick1 = (event) => {
+    setAnchorEl1(anchorEl1 ? null : event.currentTarget);
+  };
+
   const handleClosePopover = () => {
     setAnchorEl(null);
+  };
+
+  const handleClosePopover1 = () => {
+    setAnchorEl1(null);
   };
 
   const renderSubNav = (title, link) => {
@@ -227,7 +244,7 @@ function Navigation(props) {
     );
   };
 
-  const renderPopSubNav = (title) => {
+  const renderPopSubNav = (title, action) => {
     return (
       <ToggleButton
         className={[
@@ -235,7 +252,7 @@ function Navigation(props) {
           classes[`nav-button--${appTheme}`],
         ].join(" ")}
         classes={{ selected: classes[`nav-button--active`] }}
-        onClick={handleClick}
+        onClick={action}
       >
         <div
           className={[
@@ -303,6 +320,7 @@ function Navigation(props) {
 
       {warningOpen && <SSWarning close={closeWarning} />}
 
+      {/* for Resources tab */}
       <Popover
         classes={{
           paper: [
@@ -533,6 +551,106 @@ function Navigation(props) {
               ].join(" ")}
             >
               <div id="docs" onClick={outerLink}>Documents</div>
+            </Typography>
+
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M10.6694 6.276L4.93144 12.014L3.98877 11.0713L9.7261 5.33333H4.66944V4H12.0028V11.3333H10.6694V6.276Z"
+                fill={appTheme === 'dark' ? '#5688A5' : '#5688A5'} />
+            </svg>
+          </div>
+        </div>
+      </Popover>
+      
+      {/* for Bridge tab */}
+      <Popover
+        classes={{
+          paper: [
+            classes.popoverPaper,
+            classes[`popoverPaper--${appTheme}`],
+          ].join(" "),
+        }}
+        open={open1}
+        anchorEl={anchorEl1}
+        onClose={handleClosePopover1}
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "left",
+        }}
+      >
+        <div
+          className={[
+            classes.filterContainer,
+            classes[`filterContainer--${appTheme}`],
+          ].join(" ")}
+        >
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              marginBottom: 10,
+            }}
+          >
+            <Typography
+              className={[
+                classes.filterListTitle,
+                classes[`filterListTitle--${appTheme}`],
+              ].join(" ")}
+            >
+              Bridge
+            </Typography>
+
+            <Close
+              style={{
+                cursor: "pointer",
+                color: appTheme === "dark" ? "#ffffff" : "#0A2C40",
+              }}
+              onClick={handleClick1}
+            />
+          </div>
+
+          <div
+            className={[
+              classes.filterItem,
+              classes[`filterItem--${appTheme}`],
+              "g-flex",
+              "g-flex--align-center",
+              "g-flex--space-between",
+            ].join(" ")}
+          >
+            <Typography
+              className={[
+                classes.filterLabel,
+                classes[`filterLabel--${appTheme}`],
+              ].join(" ")}
+            >
+              <div id="leetswap" onClick={outerLink}>Leetswap</div>
+            </Typography>
+
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M10.6694 6.276L4.93144 12.014L3.98877 11.0713L9.7261 5.33333H4.66944V4H12.0028V11.3333H10.6694V6.276Z"
+                fill={appTheme === 'dark' ? '#5688A5' : '#5688A5'} />
+            </svg>
+          </div>
+
+          <div
+            className={[
+              classes.filterItem,
+              classes[`filterItem--${appTheme}`],
+              "g-flex",
+              "g-flex--align-center",
+              "g-flex--space-between",
+            ].join(" ")}
+          >
+            <Typography
+              className={[
+                classes.filterLabel,
+                classes[`filterLabel--${appTheme}`],
+              ].join(" ")}
+            >
+              <div id="bridge" onClick={outerLink}>Bridge</div>
             </Typography>
 
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">

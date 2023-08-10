@@ -39,7 +39,7 @@ export const VE_DIST_ABI = abis.veDistABI
 export const VOTER_ADDRESS = '0x4c86Ff87A56573ddE5786A185857bC0c580b6EF7'
 export const VOTER_ABI = abis.voterABI
 
-export const LIBRARY_ADDRESS = '0xd5EEe630b58095A4655f0FC2B2600c88E9fD0e9e'
+export const LIBRARY_ADDRESS = '0xd1EdB2B521A9C1293eCAfdD724Af1875dd02d88b'//'0xd5EEe630b58095A4655f0FC2B2600c88E9fD0e9e'
 export const LIBRARY_ABI = abis.dystopiaLibraryABI
 
 export const ERC20_ABI = abis.erc20ABI
@@ -47,5 +47,8 @@ export const PAIR_ABI = abis.pairABI
 export const GAUGE_ABI = abis.gaugeABI
 export const BRIBE_ABI = abis.bribeABI
 export const TOKEN_ABI = abis.tokenABI
+
+export const AIRDROP_ABI = abis.airdropABI
+export const AIRDROP_ADDRESS = '0xacC69d0cACfB5af2c80a052bA5c53e6dc201a3Da'
 
 export const MULTICALL_ADDRESS = '0x96fFa1203e4479f6656A21E5f00eEc284daD7141'

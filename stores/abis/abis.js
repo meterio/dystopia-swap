@@ -12,6 +12,7 @@ import { minterABI } from './minterABI'
 import { wftmABI } from './wftmABI'
 import { dystopiaLibraryABI } from './dystopiaLib'
 import { swapTvoltABI } from './swapTvoltABI'
+import { airdropABI } from './airdrop'
 
 export default {
   erc20ABI,
@@ -27,5 +28,6 @@ export default {
   minterABI,
   wftmABI,
   dystopiaLibraryABI,
-  swapTvoltABI
+  swapTvoltABI,
+  airdropABI
 }

@@ -66,7 +66,14 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 40px;
+  margin-top: 10px;
+  margin-bottom: 110px;
+}
+.layoutPromoSocialsMobile {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 80px;
   margin-bottom: 110px;
 }
 

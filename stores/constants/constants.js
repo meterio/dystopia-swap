@@ -228,7 +228,7 @@ export const SUPPORT_CHAIN = [
     infoURL: 'https://charts.voltswap.finance',
     explorerURL: 'https://basescan.org/',
     govAddr: '0xa023E6f6B4862EA38cbe45e377abD908abAb2f82',
-    subgraphApi: 'https://api.studio.thegraph.com/query/50539/voltswap-finance/v0.0.2',
+    subgraphApi: 'https://api.studio.thegraph.com/query/50539/voltswap-finance/version/latest',
     routeAssets: [
       {
         name: contractsBase.WFTM_NAME,

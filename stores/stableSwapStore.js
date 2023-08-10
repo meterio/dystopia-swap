@@ -305,6 +305,11 @@ class Store {
           case ACTIONS.MIGRATE:
             this.migrate(payload);
             break;
+
+          // airdrop
+          case ACTIONS.CLAIM_AIRDROP:
+            this.claimAirdrop(payload)
+            break;
           default: {
           }
         }
@@ -7364,6 +7369,107 @@ class Store {
           }, 2);
 
           this.emitter.emit(ACTIONS.WHITELIST_TOKEN_RETURNED);
+        }
+      );
+    } catch (ex) {
+      console.error(ex);
+      this.emitter.emit(ACTIONS.ERROR, ex);
+    }
+  };
+
+  getAirdropClaimed = async (airdropArray) => {
+    try {
+
+      const web3 = await stores.accountStore.getHttpWeb3Provider();
+      if (!web3) {
+        console.warn("web3 not found");
+        return null;
+      }
+      const account = stores.accountStore.getStore("account");
+      if (!account || (account && !account.address)) {
+        console.warn("account not found");
+        return null;
+      }
+
+      const airdropContract = new web3.eth.Contract(
+        CONTRACTS.AIRDROP_ABI,
+        CONTRACTS.AIRDROP_ADDRESS
+      );
+
+      const data = await Promise.all(
+        airdropArray.map(async (item) => {
+          const claimed = await airdropContract.methods
+            .claimed(item.root, account.address)
+            .call();
+
+          return {
+            ...item,
+            claimed
+          };
+        })
+      );
+
+      this.emitter.emit(ACTIONS.IS_AIRDROP_CLAIMED, data);
+
+    } catch (ex) {
+      console.log(ex);
+    }
+  };
+  
+  claimAirdrop = async (payload) => {
+    try {
+      const account = stores.accountStore.getStore("account");
+      if (!account || (account && !account.address)) {
+        console.warn("account not found");
+        return null;
+      }
+
+      const web3 = await stores.accountStore.getWeb3Provider();
+      if (!web3) {
+        console.warn("web3 not found");
+        return null;
+      }
+
+      const { data } = payload.content;
+      
+      let claimTXID = this.getTXUUID();
+
+      this.emitter.emit(ACTIONS.TX_ADDED, {
+        title: `CLAIM ${new BigNumber(data.amount).div(1e18).toFixed(2)} BOLT`,
+        verb: "BOLT Claimed",
+        transactions: [
+          {
+            uuid: claimTXID,
+            description: `CLAIM ${new BigNumber(data.amount).div(1e18).toFixed(2)} BOLT`,
+            status: "WAITING",
+          },
+        ],
+      });
+
+      const gasPrice = ''//await stores.accountStore.getGasPrice();
+
+      // SUBMIT CLAIMBOLT TRANSACTION
+      const airdropContract = new web3.eth.Contract(
+        CONTRACTS.AIRDROP_ABI,
+        CONTRACTS.AIRDROP_ADDRESS
+      );
+
+      this._callContractWait(
+        web3,
+        airdropContract,
+        "claim",
+        [data.proof, data.root, data.amount],
+        account,
+        gasPrice,
+        null,
+        null,
+        claimTXID,
+        async (err) => {
+          if (err) {
+            return this.emitter.emit(ACTIONS.ERROR, err);
+          }
+
+          this.emitter.emit(ACTIONS.CLAIM_AIRDROP_RETURNED);
         }
       );
     } catch (ex) {

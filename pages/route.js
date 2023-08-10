@@ -8,6 +8,7 @@ import Rewards from "./rewards";
 import Whitelist from "./whitelist";
 import Bribe from "./bribe/create";
 import Swapvolt from "./swapvolt";
+import Airdrop from "./airdrop";
 
 import { useRouter } from "next/router";
 
@@ -33,6 +34,8 @@ function Route({ changeTheme, ...props }) {
     return <Vote props={props} changeTheme={changeTheme} />;
   } else if (activePath.includes("/rewards")) {
     return <Rewards props={props} changeTheme={changeTheme} />;
+  } else if (activePath.includes("/airdrop")) {
+    return <Airdrop props={props} changeTheme={changeTheme} />;
   } else if (activePath.includes("/whitelist")) {
     return <Whitelist props={props} changeTheme={changeTheme} />;
   } else if (activePath.includes("/bribe")) {

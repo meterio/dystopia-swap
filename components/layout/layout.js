@@ -4,6 +4,7 @@ import Header from "../header";
 import SnackbarController from "../snackbar";
 import { useAppThemeContext } from '../../ui/AppThemeProvider';
 import { socialLinks } from "../../stores/constants/constants";
+import { useState } from "react";
 
 
 export default function Layout({
@@ -14,6 +15,11 @@ export default function Layout({
   title
 }) {
   const { appTheme } = useAppThemeContext();
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
+  window.addEventListener("resize", () => {
+    setWindowWidth(window.innerWidth);
+  });
 
   const isHomePage = window.location.pathname === '/home'
 
@@ -53,7 +59,7 @@ export default function Layout({
           <div className={[classes.containerInner, 'g-flex-column'].join(' ')}>
             {children}
           </div>
-          <div className={classes.layoutPromoSocials}>
+          <div className={windowWidth > 470 ? classes.layoutPromoSocials : classes.layoutPromoSocialsMobile}>
             <div className={classes.layoutPromoSocialsLink}>
               <a href={socialLinks.twitter} target="_blank">
                 <svg style={{ marginRight: -1, marginBottom: -1 }} width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
