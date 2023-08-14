@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import Web3Modal from 'web3modal'
+import { SafeAppWeb3Modal } from '@safe-global/safe-apps-web3modal/dist'
 import CoinbaseWalletSDK from '@coinbase/wallet-sdk'
 import WalletConnectProvider from '@walletconnect/web3-provider'
 import stores from '../../stores'
@@ -17,9 +18,8 @@ const {
 
 export const WalletConnect = (props) => {
   const connect = async function web3Init() {
-    const web3modal = new Web3Modal({
+    const web3modal = new SafeAppWeb3Modal({
       cacheProvider: true,
-      network: "meter",
       providerOptions: {
         walletlink: {
           package: CoinbaseWalletSDK,
@@ -28,10 +28,10 @@ export const WalletConnect = (props) => {
             // infuraId: `${process.env.NEXT_PUBLIC_INFURA_KEY}`,
             rpc: {
               82: `https://rpc.meter.io`,
-              83: 'https://rpctest.meter.io'
+              83: 'https://rpctest.meter.io',
+              361: 'https://eth-rpc-api.thetatoken.org/rpc',
+              8453: 'https://mainnet.base.org'
             },
-            supportedChainIds: [82, 83],
-            network: 82,
           },
         },
         // walletconnect: {
@@ -49,7 +49,7 @@ export const WalletConnect = (props) => {
     })
 
 
-    const instance = await web3modal.connect()
+    const instance = await web3modal.requestProvider()
       .catch((err) => {
         console.log('ERR:', err.message)
         if (err.message === 'No Web3 Provider found') {

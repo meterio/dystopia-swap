@@ -225,7 +225,7 @@ export const SUPPORT_CHAIN = [
     rpc: 'https://mainnet.base.org',
     privateRpc: 'https://mainnet.base.org',
     contracts: contractsBase,
-    infoURL: 'https://charts.voltswap.finance',
+    infoURL: 'https://charts-base.voltswap.finance',
     explorerURL: 'https://basescan.org/',
     govAddr: '0xa023E6f6B4862EA38cbe45e377abD908abAb2f82',
     subgraphApi: 'https://api.studio.thegraph.com/query/50539/voltswap-finance/version/latest',

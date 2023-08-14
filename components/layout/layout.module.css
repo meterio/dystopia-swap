@@ -99,12 +99,12 @@
   display: inline-flex;
   justify-content: center;
   align-items: center;
-  background: #86B9D6;
+  /* background: #86B9D6; */
   border-radius: 40px;
 }
 
 .layoutPromoSocialsLink a:hover {
-  background: #6492ac;
+  /* background: #6492ac; */
 }
 
 @media screen and (max-width: 1024px) {

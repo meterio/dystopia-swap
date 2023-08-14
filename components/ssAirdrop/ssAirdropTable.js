@@ -26,6 +26,7 @@ import { useAppThemeContext } from "../../ui/AppThemeProvider";
 import { ArrowDropDown, ExpandLess, ExpandMore } from "@mui/icons-material";
 import TablePaginationActions from "../table-pagination/table-pagination";
 import { formatSymbol } from "../../utils";
+import css from "./ssAirdrop.module.css"
 
 function descendingComparator(a, b, orderBy) {
   if (!a || !b) {
@@ -657,6 +658,18 @@ export default function EnhancedTable({ airdrops }) {
     setWindowWidth(window.innerWidth);
   });
 
+  const isEmptyTable = airdrops.length === 0
+  console.log('isEmptyTable', isEmptyTable)
+  const emptyMessage = <div
+    style={{
+      background: appTheme === 'dark' ? '#151718' : '#DBE6EC',
+      border: '1px dashed #CFE5F2',
+      borderColor: appTheme === 'dark' ? '#2D3741' : '#CFE5F2',
+      color: appTheme === 'dark' ? '#C6CDD2' : '#325569'
+    }}
+    className={css.tableEmptyMessage}
+  >You have not any Airdrop yet</div>
+
   return (
     <>
       {windowWidth > 660 && (
@@ -667,7 +680,7 @@ export default function EnhancedTable({ airdrops }) {
             className={"g-flex-column__item-fixed"}
             style={{
               overflow: "auto",
-              maxHeight: tableHeight,
+              maxHeight: isEmptyTable ? 'auto' : tableHeight,
               height: "auto",
               background: appTheme === "dark" ? "#24292D" : "#dbe6ec",
             }}
@@ -685,8 +698,8 @@ export default function EnhancedTable({ airdrops }) {
                 orderBy={orderBy}
                 onRequestSort={handleRequestSort}
               />
-
-              <TableBody
+              { isEmptyTable ? null : (
+                <TableBody
                 classes={{
                   root: classes.tableBody,
                 }}
@@ -830,15 +843,19 @@ export default function EnhancedTable({ airdrops }) {
                         </TableRow>
                       );
                     })
-                  : null}
+                  : null }
               </TableBody>
+              )}
+              
             </Table>
+            {isEmptyTable && emptyMessage}
           </TableContainer>
         </div>
       )}
 
       {windowWidth <= 660 && (
         <>
+          {isEmptyTable && emptyMessage}
           <div style={{ overflow: "auto" }}>
             {Array.isArray(airdrops) > 0
               ? stableSort(airdrops, getComparator(order, orderBy))
@@ -1216,7 +1233,7 @@ export default function EnhancedTable({ airdrops }) {
                     </Accordion>
                   );
                 })
-              : null}
+              : null }
           </div>
           {/* <TablePagination
             className={"g-flex-column__item-fixed"}

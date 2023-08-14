@@ -86,6 +86,8 @@ function Navigation(props) {
       url = 'https://docs.voltswap.finance'
     } else if (id === 'leetswap') {
       url = 'https://base.leetswap.finance/#/swap'
+    } else if (id === 'squid') {
+      url = 'https://app.squidrouter.com/'
     }
 
     if (url) {
@@ -625,6 +627,31 @@ function Navigation(props) {
                 classes[`filterLabel--${appTheme}`],
               ].join(" ")}
             >
+              <div id="bridge" onClick={outerLink}>Passport</div>
+            </Typography>
+
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M10.6694 6.276L4.93144 12.014L3.98877 11.0713L9.7261 5.33333H4.66944V4H12.0028V11.3333H10.6694V6.276Z"
+                fill={appTheme === 'dark' ? '#5688A5' : '#5688A5'} />
+            </svg>
+          </div>
+
+          <div
+            className={[
+              classes.filterItem,
+              classes[`filterItem--${appTheme}`],
+              "g-flex",
+              "g-flex--align-center",
+              "g-flex--space-between",
+            ].join(" ")}
+          >
+            <Typography
+              className={[
+                classes.filterLabel,
+                classes[`filterLabel--${appTheme}`],
+              ].join(" ")}
+            >
               <div id="leetswap" onClick={outerLink}>Leetswap</div>
             </Typography>
 
@@ -650,7 +677,7 @@ function Navigation(props) {
                 classes[`filterLabel--${appTheme}`],
               ].join(" ")}
             >
-              <div id="bridge" onClick={outerLink}>Bridge</div>
+              <div id="squid" onClick={outerLink}>Squid</div>
             </Typography>
 
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">

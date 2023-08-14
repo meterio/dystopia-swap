@@ -49,6 +49,6 @@ export const BRIBE_ABI = abis.bribeABI
 export const TOKEN_ABI = abis.tokenABI
 
 export const AIRDROP_ABI = abis.airdropABI
-export const AIRDROP_ADDRESS = '0xacC69d0cACfB5af2c80a052bA5c53e6dc201a3Da'
+export const AIRDROP_ADDRESS = '0x71E60281614222354C6078625C73Cec13A0DCcaB'
 
 export const MULTICALL_ADDRESS = '0x96fFa1203e4479f6656A21E5f00eEc284daD7141'

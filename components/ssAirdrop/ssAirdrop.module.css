@@ -10,6 +10,14 @@
   padding: 20px 0 10px 0px;
 }
 
+.tableEmptyMessage {
+  color: #325569;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 24px;
+  padding: 30px;
+}
+
 .title {
   font-size: 20px !important;
   margin-bottom: 24px !important;
