@@ -1130,20 +1130,12 @@ class Store {
       let baseAssets = baseAssetsCall.data.tokens;
       const res =
           await axios.get(
-              `https://raw.githubusercontent.com/meterio/token-list/master/generated/voltswapv2-tokens.json`
+              `https://raw.githubusercontent.com/meterio/token-list/master/voltswap-tokens/voltswapv2-tokens.json`
             )
-      const res1 =
-          await axios.get(
-              `https://raw.githubusercontent.com/meterio/token-list/master/voltswap-tokens/tokens.json`
-            )
+            
       const defaultTokenList = []
       const supportChain = stores.accountStore.getStore('supportChain');
       for (let token of res.data.tokens) {
-        if (token.chainId == supportChain.id) {
-          defaultTokenList.push(token)
-        }
-      }
-      for (let token of res1.data.tokens) {
         if (token.chainId == supportChain.id) {
           defaultTokenList.push(token)
         }
