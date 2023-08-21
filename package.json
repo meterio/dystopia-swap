@@ -27,6 +27,8 @@
     "@trustwallet/wallet-core": "^2.9.5",
     "@usedapp/core": "^1.0.15",
     "@walletconnect/web3-provider": "^1.7.8",
+    "@web3modal/ethereum": "^2.7.1",
+    "@web3modal/react": "^2.7.1",
     "async": "^3.2.1",
     "axios": "^0.26.1",
     "bignumber.js": "^9.0.1",
@@ -47,7 +49,7 @@
     "smooth-scroll": "^16.1.3",
     "urql": "^2.2.0",
     "uuid": "^8.3.2",
-    "wagmi": "^0.5.4",
+    "wagmi": "^1.3.10",
     "web3": "^1.7.3",
     "web3modal": "^1.9.12"
   }

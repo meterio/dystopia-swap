@@ -54,7 +54,7 @@ const {
   FIXED_FOREX_VECLAIM_CLAIMED,
   FIXED_FOREX_UPDATED,
   ERROR,
-  CONNECTION_CONNECTED
+  CONNECTION_CONNECTED,
 } = ACTIONS;
 
 function WrongNetworkIcon(props) {
@@ -143,7 +143,9 @@ function Header(props) {
   const router = useRouter();
 
   const [account, setAccount] = useState(accountStore);
-  const [supportChain, setSupportChain] = useState(stores.accountStore.getStore("supportChain"));
+  const [supportChain, setSupportChain] = useState(
+    stores.accountStore.getStore("supportChain")
+  );
   const [maticBalance, setMaticBalance] = useState();
   const [darkMode, setDarkMode] = useState(
     props.theme.palette.mode === "dark" ? true : false
@@ -154,7 +156,7 @@ function Header(props) {
   const [transactionQueueLength, setTransactionQueueLength] = useState(0);
   const [warningOpen, setWarningOpen] = useState(false);
   const { deactivate } = useEthers();
-  const [isMetaMask, setIsMetaMask] = useState(true)
+  const [isMetaMask, setIsMetaMask] = useState(true);
 
   const web = async (add) => {
     const web3provider = await stores.accountStore.getWeb3Provider();
@@ -173,10 +175,13 @@ function Header(props) {
 
   useEffect(() => {
     const accountConfigure = () => {
+      console.log("account configure");
       const accountStore = stores.accountStore.getStore("account");
+      console.log("accountstore:", accountStore);
       const supportChain = stores.accountStore.getStore("supportChain");
-      const provider = stores.accountStore.getStore("provider")
-      setIsMetaMask(provider ? provider.isMetaMask : true)
+      console.log("supportChain:", supportChain);
+      const provider = stores.accountStore.getStore("provider");
+      setIsMetaMask(provider ? provider.isMetaMask : true);
       if (accountStore) {
         web(accountStore.address);
       }
@@ -251,7 +256,7 @@ function Header(props) {
     window.localStorage.removeItem("WEB3_CONNECT_CACHED_PROVIDER");
 
     stores.accountStore.emitter.emit(ACTIONS.DISCONNECT_WALLET);
-    setWarningOpen(false)
+    setWarningOpen(false);
   };
 
   const handleClickAway = () => {
@@ -286,14 +291,14 @@ function Header(props) {
   };
 
   const switchChain = async (network) => {
-    console.log('network', network)
+    console.log("network", network);
     let hexChain = "0x" + Number(network.chainId).toString(16);
-    const provider = await stores.accountStore.getProvider()
+    const provider = await stores.accountStore.getProvider();
     if (!provider) {
-      console.log('no provider')
-      return
+      console.log("no provider");
+      return;
     }
-    console.log('switch network', hexChain)
+    console.log("switch network", hexChain);
     try {
       await provider.request({
         method: "wallet_switchEthereumChain",
@@ -323,8 +328,8 @@ function Header(props) {
   };
 
   const cancleSwitch = () => {
-    setSwitchNetwork(false)
-  }
+    setSwitchNetwork(false);
+  };
 
   const setQueueLength = (length) => {
     setTransactionQueueLength(length);
@@ -338,8 +343,8 @@ function Header(props) {
   };
 
   const supportChainClick = () => {
-    setSwitchNetwork(true)
-  }
+    setSwitchNetwork(true);
+  };
 
   const { appTheme } = useAppThemeContext();
 
@@ -376,8 +381,7 @@ function Header(props) {
               >
                 <div
                   style={{
-                    color:
-                      appTheme === "dark" ? "#ffffff" : "#0B5E8E",
+                    color: appTheme === "dark" ? "#ffffff" : "#0B5E8E",
                   }}
                 >
                   {supportChain.name}
@@ -396,99 +400,102 @@ function Header(props) {
             // </div>
           )}
           <div>
-            {account && account.address && <div className={classes.accountButtonContainer}>
-              <Button
-                disableElevation
-                className={[
-                  classes.accountButton,
-                  classes[`accountButton--${appTheme}`],
-                ].join(" ")}
-                variant="contained"
-                aria-controls="simple-menu"
-                aria-haspopup="true"
-                onClick={handleClick}
-              >
-                <div
+            {account && account.address && (
+              <div className={classes.accountButtonContainer}>
+                <Button
+                  disableElevation
                   className={[
-                    classes.accountButtonAddress,
-                    classes[`accountButtonAddress--${appTheme}`],
-                    "g-flex",
-                    "g-flex--align-center",
+                    classes.accountButton,
+                    classes[`accountButton--${appTheme}`],
                   ].join(" ")}
+                  variant="contained"
+                  aria-controls="simple-menu"
+                  aria-haspopup="true"
+                  onClick={handleClick}
                 >
-                  {account && account.address && (
-                    <>
-                      {
-                        !isMetaMask ? <div
-                          className={`${classes.accountIcon} ${classes.coinbase}`}
-                        ></div> : <div
-                          className={`${classes.accountIcon} ${classes.metamask}`}
-                        ></div>
-                      }
-
-
-                      <div
-                        style={{
-                          marginLeft: 5,
-                          marginRight: 5,
-                          color:
-                            appTheme === "dark" ? "#ffffff" : "#0B5E8E",
-                        }}
-                      >
-                        •
-                      </div>
-                    </>
-                  )}
-                  <Typography className={classes.headBtnTxt}>
-                    {account && account.address
-                      ? formatAddress(account.address)
-                      : "Connect Wallet 1"}
-                  </Typography>
-                </div>
-
-                <Typography
-                  className={[
-                    classes.headBalanceTxt,
-                    classes[`headBalanceTxt--${appTheme}`],
-                    "g-flex",
-                    "g-flex--align-center",
-                  ].join(" ")}
-                >
-                  {maticBalance ? maticBalance : 0} {supportChain ? supportChain.contracts.FTM_SYMBOL : ''}
-                </Typography>
-              </Button>
-
-              {anchorEl && (
-                <div
-                  className={[
-                    classes.headSwitchBtn,
-                    classes[`headSwitchBtn--${appTheme}`],
-                    "g-flex",
-                    "g-flex--align-center",
-                  ].join(" ")}
-                  onClick={onAddressClicked}
-                >
-                  <img
-                    src="/images/ui/icon-wallet.svg"
-                    className={classes.walletIcon}
-                  />
-
                   <div
-                    style={{
-                      marginLeft: 5,
-                      marginRight: 5,
-                      color: "#ffffff",
-                    }}
+                    className={[
+                      classes.accountButtonAddress,
+                      classes[`accountButtonAddress--${appTheme}`],
+                      "g-flex",
+                      "g-flex--align-center",
+                    ].join(" ")}
                   >
-                    •
+                    {account && account.address && (
+                      <>
+                        {!isMetaMask ? (
+                          <div
+                            className={`${classes.accountIcon} ${classes.coinbase}`}
+                          ></div>
+                        ) : (
+                          <div
+                            className={`${classes.accountIcon} ${classes.metamask}`}
+                          ></div>
+                        )}
+
+                        <div
+                          style={{
+                            marginLeft: 5,
+                            marginRight: 5,
+                            color: appTheme === "dark" ? "#ffffff" : "#0B5E8E",
+                          }}
+                        >
+                          •
+                        </div>
+                      </>
+                    )}
+                    <Typography className={classes.headBtnTxt}>
+                      {account && account.address
+                        ? formatAddress(account.address)
+                        : "Connect Wallet 1"}
+                    </Typography>
                   </div>
 
-                  <div className={classes.headSwitchBtnText}>
-                    Disconnect Wallet
+                  <Typography
+                    className={[
+                      classes.headBalanceTxt,
+                      classes[`headBalanceTxt--${appTheme}`],
+                      "g-flex",
+                      "g-flex--align-center",
+                    ].join(" ")}
+                  >
+                    {maticBalance ? maticBalance : 0}{" "}
+                    {supportChain ? supportChain.contracts.FTM_SYMBOL : ""}
+                  </Typography>
+                </Button>
+
+                {anchorEl && (
+                  <div
+                    className={[
+                      classes.headSwitchBtn,
+                      classes[`headSwitchBtn--${appTheme}`],
+                      "g-flex",
+                      "g-flex--align-center",
+                    ].join(" ")}
+                    onClick={onAddressClicked}
+                  >
+                    <img
+                      src="/images/ui/icon-wallet.svg"
+                      className={classes.walletIcon}
+                    />
+
+                    <div
+                      style={{
+                        marginLeft: 5,
+                        marginRight: 5,
+                        color: "#ffffff",
+                      }}
+                    >
+                      •
+                    </div>
+
+                    <div className={classes.headSwitchBtnText}>
+                      Disconnect Wallet
+                    </div>
                   </div>
-                </div>
-              )}
-            </div>}
+                )}
+              </div>
+            )}
           </div>
           {/* <WalletConnect>
             {({ connect }) => {
@@ -640,24 +647,44 @@ function Header(props) {
           </WalletConnect> */}
 
           <div
-            className={[classes.statButton, classes[`statButton--${appTheme}`], 'g-flex', 'g-flex--align-center'].join(' ')}
+            className={[
+              classes.statButton,
+              classes[`statButton--${appTheme}`],
+              "g-flex",
+              "g-flex--align-center",
+            ].join(" ")}
             onClick={() => {
-              const supportChain = stores.accountStore.getStore('supportChain')
+              const supportChain = stores.accountStore.getStore("supportChain");
               if (supportChain) {
-                window.open(supportChain.infoURL, "_blank")
+                window.open(supportChain.infoURL, "_blank");
               }
-            }}>
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+            }}
+          >
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 16 16"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
               <path
                 style={{ marginRight: 5 }}
                 d="M1.3335 8.66667H5.3335V14H1.3335V8.66667ZM6.00016 2H10.0002V14H6.00016V2ZM10.6668 5.33333H14.6668V14H10.6668V5.33333Z"
-                fill={appTheme === 'dark' ? '#4CADE6' : '#0B5E8E'} />
+                fill={appTheme === "dark" ? "#4CADE6" : "#0B5E8E"}
+              />
             </svg>
 
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 16 16"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
               <path
                 d="M10.6694 6.276L4.93144 12.014L3.98877 11.0713L9.7261 5.33333H4.66944V4H12.0028V11.3333H10.6694V6.276Z"
-                fill={appTheme === 'dark' ? '#5688A5' : '#5688A5'} />
+                fill={appTheme === "dark" ? "#5688A5" : "#5688A5"}
+              />
             </svg>
           </div>
 
@@ -705,26 +732,24 @@ function Header(props) {
           description={
             "Please check that your wallet is connected to right network, only after you can proceed."
           }
-          btnLabelList={
-            getSupportChainList().map(c => {
-              return {
-                ...c,
-                label: `Switch to ${c.name}`,
-                chainId: c.id
-              }
-            })
-          }
+          btnLabelList={getSupportChainList().map((c) => {
+            return {
+              ...c,
+              label: `Switch to ${c.name}`,
+              chainId: c.id,
+            };
+          })}
           btnLabel2={"Switch Wallet Provider"}
           action2={onAddressClicked}
           links={[
             {
-              name: 'The original Voltswap',
-              url: 'https://v1.voltswap.finance/'
+              name: "The original Voltswap",
+              url: "https://v1.voltswap.finance/",
             },
             {
-              name: 'Bridge Assets to Meter Mainnet',
-              url: 'https://passport.meter.io/'
-            }
+              name: "Bridge Assets to Meter Mainnet",
+              url: "https://passport.meter.io/",
+            },
           ]}
         />
       )}
@@ -736,17 +761,17 @@ function Header(props) {
           description={
             "Click the button below and the network is about to change."
           }
-          btnLabelList={
-            getSupportChainList().filter(c => {
-              return supportChain ? c.id !== supportChain.id : true
-            }).map(c => {
+          btnLabelList={getSupportChainList()
+            .filter((c) => {
+              return supportChain ? c.id !== supportChain.id : true;
+            })
+            .map((c) => {
               return {
                 ...c,
                 label: `Switch to ${c.name}`,
-                chainId: c.id
-              }
-            })
-          }
+                chainId: c.id,
+              };
+            })}
           btnLabel2={"Cancel"}
           action2={cancleSwitch}
         />
