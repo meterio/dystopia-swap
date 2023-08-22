@@ -28,12 +28,6 @@ class Store {
       web3modal: null,
       provider: null,
       tokens: [],
-      // connectorsByName: {
-      //   MetaMask: injected,
-      //   TrustWallet: injected,
-      //   WalletLink: walletlink,
-      //   WalletConnect: walletconnect,
-      // },
       gasPrices: {
         standard: 90,
         fast: 100,
@@ -245,47 +239,14 @@ class Store {
   }
 
   getWeb3Provider = async () => {
-    // let web3context = this.getStore('web3context');
-    // let provider = null;
 
-    // if (!web3context) {
-    //   provider = network.providers['1'];
-    // } else {
-    //   provider = web3context.library.provider;
-    // }
-
-    // if (!provider) {
-    //   return null;
-    // }
     let web3provider = this.getStore("web3provider");
-
-    // if (web3provider === null) {
-    //   // return new Web3(window.ethereum || (await detectProvider()));
-    //   return new Web3(await this.getProvider())
-    // }
 
     return web3provider;
   };
 
   getProvider = async () => {
     return this.getStore('provider')
-    // const provider = window.ethereum || (await detectProvider());
-    // if (provider.providers) {
-    //   if (provider.selectedProvider) {
-    //     const isCoinbaseWallet = provider.selectedProvider.isCoinbaseWallet
-    //     if (isCoinbaseWallet) {
-    //       localStorage.setItem('isCoinbaseWallet', true)
-    //     }
-    //     return provider.selectedProvider
-    //   }
-    //   // if (provider.providerMap.has('MetaMask')) {
-    //   //   return provider.providerMap.get('MetaMask')
-    //   // }
-
-    //   return provider.providers[0]
-    // } else {
-    //   return provider
-    // }
   };
 
   getMulticall = async () => {

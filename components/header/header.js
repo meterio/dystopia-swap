@@ -43,6 +43,7 @@ import { WalletConnect } from "../WalletConnect/WalletConnect";
 import { ethers } from "ethers";
 import Web3 from "web3";
 import { useEthers } from "@usedapp/core";
+import { useNetwork, useSwitchNetwork, useDisconnect, useAccount } from "wagmi"
 
 const {
   CONNECT_WALLET,
@@ -158,6 +159,11 @@ function Header(props) {
   const { deactivate } = useEthers();
   const [isMetaMask, setIsMetaMask] = useState(true);
 
+  const { chain } = useNetwork()
+  const { chains, error, isLoading, pendingChainId, switchNetwork } = useSwitchNetwork()
+  const { isConnected } = useAccount();
+  const { disconnect } = useDisconnect();
+
   const web = async (add) => {
     const web3provider = await stores.accountStore.getWeb3Provider();
     if (!web3provider || !add) {
@@ -189,7 +195,7 @@ function Header(props) {
       setSupportChain(supportChain);
       closeUnlock();
       setAnchorEl(false);
-      setSwitchNetwork(false);
+      setShowSwitchNetworkModal(false);
     };
 
     const connectWallet = () => {
@@ -235,9 +241,13 @@ function Header(props) {
   };
 
   const onAddressClicked = async () => {
-    await stores.accountStore.getStore("web3modal").clearCachedProvider();
+    // await stores.accountStore.getStore("web3modal").clearCachedProvider();
 
-    deactivate();
+    // deactivate();
+
+    if (isConnected) {
+      disconnect();
+    }
 
     setAccount(null);
 
@@ -256,6 +266,7 @@ function Header(props) {
     window.localStorage.removeItem("WEB3_CONNECT_CACHED_PROVIDER");
 
     stores.accountStore.emitter.emit(ACTIONS.DISCONNECT_WALLET);
+    stores.accountStore.emitter.emit(ACTIONS.ACCOUNT_CONFIGURED);
     setWarningOpen(false);
   };
 
@@ -292,43 +303,11 @@ function Header(props) {
 
   const switchChain = async (network) => {
     console.log("network", network);
-    let hexChain = "0x" + Number(network.chainId).toString(16);
-    const provider = await stores.accountStore.getProvider();
-    if (!provider) {
-      console.log("no provider");
-      return;
-    }
-    console.log("switch network", hexChain);
-    try {
-      await provider.request({
-        method: "wallet_switchEthereumChain",
-        params: [{ chainId: hexChain }],
-      });
-    } catch (switchError) {
-      console.log("switch error", switchError);
-      if (switchError.code === 4902) {
-        provider.request({
-          method: "wallet_addEthereumChain",
-          params: [
-            {
-              chainId: hexChain,
-              chainName: network.name,
-              nativeCurrency: {
-                name: network.nativeSymbol,
-                symbol: network.nativeSymbol,
-                decimals: network.nativeDecimals,
-              },
-              rpcUrls: [network.rpc],
-              blockExplorerUrls: [network.explorerURL],
-            },
-          ],
-        });
-      }
-    }
+    switchNetwork(Number(network.chainId))
   };
 
   const cancleSwitch = () => {
-    setSwitchNetwork(false);
+    setShowSwitchNetworkModal(false);
   };
 
   const setQueueLength = (length) => {
@@ -336,14 +315,14 @@ function Header(props) {
   };
 
   const [anchorEl, setAnchorEl] = React.useState(false);
-  const [switchNetwork, setSwitchNetwork] = useState(false);
+  const [showSwitchNetworkModal, setShowSwitchNetworkModal] = useState(false);
 
   const handleClick = () => {
     setAnchorEl(!anchorEl);
   };
 
   const supportChainClick = () => {
-    setSwitchNetwork(true);
+    setShowSwitchNetworkModal(true);
   };
 
   const { appTheme } = useAppThemeContext();
@@ -753,7 +732,7 @@ function Header(props) {
           ]}
         />
       )}
-      {switchNetwork && (
+      {showSwitchNetworkModal && (
         <SSWarning
           close={switchChain}
           title={"Switch Network:"}

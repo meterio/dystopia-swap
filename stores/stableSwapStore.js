@@ -4615,6 +4615,7 @@ class Store {
         console.warn("web3 not found");
         return null;
       }
+      const httpWeb3provider = stores.accountStore.getHttpWeb3Provider();
 
       const { fromAsset, toAsset, fromAmount, toAmount, quote, slippage } =
         payload.content;
@@ -4646,7 +4647,7 @@ class Store {
 
       // CHECK ALLOWANCES AND SET TX DISPLAY
       if (fromAsset.address !== CONTRACTS.FTM_ADDRESS) {
-        allowance = await this._getSwapAllowance(web3, fromAsset, account);
+        allowance = await this._getSwapAllowance(httpWeb3provider, fromAsset, account);
 
         if (BigNumber(allowance).lt(fromAmount)) {
           this.emitter.emit(ACTIONS.TX_STATUS, {
