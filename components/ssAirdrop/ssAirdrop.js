@@ -28,7 +28,7 @@ export default function ssAirdrop() {
   const initAirdropData = () => {
     const account = stores.accountStore.getStore("account")
     if (account) {
-      const fetchUrl = `https://raw.githubusercontent.com/meterio/dystopia-contracts/base/scripts/setting/proofs/${"0x4a179A005DCBE770C6970EE390a43d2284f67527".toLowerCase()}.json`
+      const fetchUrl = `https://raw.githubusercontent.com/meterio/dystopia-contracts/base/scripts/setting/proofs/${account.address.toLowerCase()}.json`
       axios.get(fetchUrl).then(res => {
         console.log(res)
         const addrInfo = [{...res.data, root}]
