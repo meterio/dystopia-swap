@@ -35,6 +35,7 @@ const projectId = "4a9daa7479cd37c1545d5dbb98040c30"; // process.env.NEXT_PUBLIC
 
 // 2. Configure wagmi client
 import { Chain } from "@wagmi/core";
+import { SafeConnector } from "wagmi/connectors/safe";
 
 const meter = {
   id: 82,
@@ -108,10 +109,20 @@ const theta = {
 
 const chains = [meter, meterTestnet, theta, base];
 
+const safeConnector = new SafeConnector({
+  chains,
+  options: {
+    allowedDomains: [/safe.meter.io$/, /gnosis-safe.io$/, /app.safe.global$/],
+    debug: false,
+  },
+});
+
+const web3modalConnecter = w3mConnectors({ chains, projectId });
+
 const { publicClient } = configureChains(chains, [w3mProvider({ projectId })]);
 const wagmiConfig = createConfig({
   autoConnect: true,
-  connectors: w3mConnectors({ chains, projectId }),
+  connectors: [...web3modalConnecter, safeConnector],
   publicClient,
 });
 
@@ -200,7 +211,10 @@ export default function MyApp({ Component, pageProps }) {
         <WagmiConfig config={wagmiConfig}>
           <Head>
             <title>Voltswap</title>
-            <meta name="viewport" content="width=device-width, initial-scale=1" />
+            <meta
+              name="viewport"
+              content="width=device-width, initial-scale=1"
+            />
           </Head>
           <AppThemeProvider value={{ appTheme, setAppTheme }}>
             {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
@@ -208,9 +222,7 @@ export default function MyApp({ Component, pageProps }) {
             {validateConfigured() && (
               <Layout>
                 {ready ? (
-                  
-                    <Component {...pageProps} changeTheme={changeTheme} />
-                  
+                  <Component {...pageProps} changeTheme={changeTheme} />
                 ) : null}
                 {/* <Component {...pageProps} changeTheme={changeTheme} /> */}
                 <Web3Modal
