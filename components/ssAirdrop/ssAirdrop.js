@@ -31,7 +31,7 @@ export default function ssAirdrop() {
       const fetchUrl = `https://raw.githubusercontent.com/meterio/dystopia-contracts/base/scripts/setting/proofs/${account.address.toLowerCase()}.json`
       axios.get(fetchUrl).then(res => {
         console.log(res)
-        const addrInfo = [...res.data, root]
+        const addrInfo = [{...res.data, root}]
         
         setAirdrops(addrInfo)
 
