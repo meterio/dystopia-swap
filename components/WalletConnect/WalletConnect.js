@@ -22,12 +22,15 @@ const { ERROR, CONNECTION_DISCONNECTED, CONNECTION_CONNECTED, CONFIGURE_SS } =
   ACTIONS;
 
 import { useWeb3Modal, useWeb3ModalEvents } from "@web3modal/react";
-import { useAccount, useDisconnect } from "wagmi";
+import { useAccount, useDisconnect, useNetwork } from "wagmi";
 import { getEthersSigner, getWeb3Signer } from "./convertUtils";
 
 export const WalletConnect = (props) => {
   const [loading, setLoading] = useState(false);
   const { isOpen, open } = useWeb3Modal();
+  const { isConnected, address } = useAccount();
+  const { chain } = useNetwork();
+
   useWeb3ModalEvents((evt) => {
     console.log("web3modal event: ", evt);
     if (evt?.data?.name === "ACCOUNT_CONNECTED") {
@@ -91,9 +94,9 @@ export const WalletConnect = (props) => {
   }
 
   // const { isConnected, account, rpcUrls } = useAccount();
-  const { isConnected } = useAccount();
-  const { disconnect } = useDisconnect();
-  const label = isConnected ? "Disconnect" : "Connect Custom";
+  // const { isConnected } = useAccount();
+  // const { disconnect } = useDisconnect();
+  // const label = isConnected ? "Disconnect" : "Connect Custom";
 
   async function onOpen() {
     setLoading(true);

@@ -44,6 +44,7 @@ import { ethers } from "ethers";
 import Web3 from "web3";
 import { useEthers } from "@usedapp/core";
 import { useNetwork, useSwitchNetwork, useDisconnect, useAccount } from "wagmi"
+import { getWeb3Signer } from "../WalletConnect/convertUtils";
 
 const {
   CONNECT_WALLET,
@@ -160,9 +161,57 @@ function Header(props) {
   const [isMetaMask, setIsMetaMask] = useState(true);
 
   const { chain } = useNetwork()
-  const { chains, error, isLoading, pendingChainId, switchNetwork } = useSwitchNetwork()
-  const { isConnected } = useAccount();
+  const { switchNetwork } = useSwitchNetwork()
+  const { isConnected, address } = useAccount();
   const { disconnect } = useDisconnect();
+
+  useEffect(async () => {
+    console.log('network, account', chain, address)
+    if (chain && address) {
+      const chainId = chain.id
+      const signer = await getWeb3Signer({chainId})
+
+      let httpWeb3 = null;
+
+      const supportChainList = getSupportChainList();
+      const supportedChainIds = supportChainList.map((c) => c.id);
+      const isChainSupported = supportedChainIds.includes(
+        String(chainId)
+      );
+      stores.accountStore.setStore({ chainInvalid: !isChainSupported });
+      if (isChainSupported) {
+        const supportChain = supportChainList.find(
+          (c) => c.id === String(chainId)
+        );
+
+        httpWeb3 = new Web3(
+          new Web3.providers.HttpProvider(supportChain.privateRpc)
+        );
+
+        stores.accountStore.setStore({
+          supportChain,
+        });
+      } else {
+        stores.accountStore.setStore({
+          supportChain: null,
+        });
+      }
+      console.log({chainId, account})
+      stores.accountStore.setStore({
+        chainId: String(chainId),
+        account: { address },
+        web3provider: signer,
+        httpWeb3provider: httpWeb3,
+      });
+
+      stores.emitter.emit(CONNECTION_CONNECTED);
+      stores.emitter.emit(ACTIONS.ACCOUNT_CONFIGURED);
+      stores.dispatcher.dispatch({
+        type: ACTIONS.CONFIGURE_SS,
+        content: { connected: true },
+      });
+    }
+  }, [chain, address])
 
   const web = async (add) => {
     const web3provider = await stores.accountStore.getWeb3Provider();
