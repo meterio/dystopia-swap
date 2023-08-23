@@ -169,7 +169,12 @@ function Header(props) {
     console.log('network, account', chain, address)
     if (chain && address) {
       const chainId = chain.id
-      const signer = await getWeb3Signer({chainId})
+      let signer = null
+      try {
+        signer = await getWeb3Signer({chainId})
+      } catch(e) {
+        console.log('get web3 signer error', e)
+      }
 
       let httpWeb3 = null;
 
