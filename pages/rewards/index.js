@@ -99,7 +99,7 @@ function Rewards({ changeTheme }) {
               </Typography>
             </div>
             <WalletConnect>
-              {({ connect }) => {
+              {({ connect, loading }) => {
                 return (
                  <div
                    className={[classes.buttonConnect, classes[`buttonConnect--${appTheme}`]].join(' ')}
@@ -109,7 +109,7 @@ function Rewards({ changeTheme }) {
                    onClick={connect}>
                      <BtnEnterApp
                        labelClassName={classes.buttonEnterLabel}
-                       label={`Connect wallet\nto continue`}
+                       label={loading ? 'Waiting' : `Connect wallet\nto continue`}
                        btnColor={getBtnColor}
                       />
                   </div>

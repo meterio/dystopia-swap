@@ -36,6 +36,7 @@ class Store {
       gasSpeed: "fast",
       currentBlock: 12906197,
       subscribed: false,
+      isOpenWeb3modal: false,
     };
 
     dispatcher.register(

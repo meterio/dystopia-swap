@@ -17,7 +17,6 @@ const { ERROR, CONNECTION_DISCONNECTED, CONNECTION_CONNECTED, CONFIGURE_SS } =
 
 import { useWeb3Modal, useWeb3ModalEvents } from "@web3modal/react";
 import { useAccount, useDisconnect, useNetwork } from "wagmi";
-import { getEthersSigner, getWeb3Signer } from "./convertUtils";
 
 export const WalletConnect = (props) => {
   const [loading, setLoading] = useState(false);
@@ -28,17 +27,17 @@ export const WalletConnect = (props) => {
   useWeb3ModalEvents((evt) => {
     console.log("web3modal event: ", evt);
     if (evt?.data?.name === "ACCOUNT_CONNECTED") {
-      const network = getNetwork()
-      const account = getAccount()
+      // const network = getNetwork()
+      // const account = getAccount()
 
-      console.log("network: ", network);
-      console.log("account: ", account);
+      // console.log("network: ", network);
+      // console.log("account: ", account);
       // console.log("balance: ", fetchBalance());
       // console.log("config: ", getConfig());
 
-      if (network.chain && account.address) {
-        updateAccountStore({chainId: network.chain.id, account: account.address})
-      }
+      // if (network.chain && account.address) {
+      //   updateAccountStore({chainId: network.chain.id, account: account.address})
+      // }
     }
   });
 
@@ -99,6 +98,10 @@ export const WalletConnect = (props) => {
   }
 
   const connect = async function web3Init() {
+    if (loading) {
+      console.log('waiting web3modal was opened')
+      return
+    }
 
     console.log("isOpen", isOpen);
     console.log("isconnected: ", isConnected);
@@ -108,15 +111,15 @@ export const WalletConnect = (props) => {
       // disconnect();
     }
 
-    const network = getNetwork()
-    const account = getAccount()
+    // const network = getNetwork()
+    // const account = getAccount()
 
     // console.log("network: ", network);
     // console.log("account: ", account);
 
-    if (network.chain && account.address) {
-      updateAccountStore({chainId: network.chain.id, account: account.address})
-    }
+    // if (network.chain && account.address) {
+    //   updateAccountStore({chainId: network.chain.id, account: account.address})
+    // }
   };
 
   useEffect(() => {
@@ -126,5 +129,5 @@ export const WalletConnect = (props) => {
     }
   }, []);
 
-  return props.children({ connect });
+  return props.children({ connect, loading });
 };
