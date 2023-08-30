@@ -171,6 +171,9 @@ function Header(props) {
       const chainId = chain.id
       let signer = null
       try {
+        await new Promise((resolve) => {
+          setTimeout(resolve, 1000);
+        });
         signer = await getWeb3Signer({chainId})
       } catch(e) {
         console.log('get web3 signer error', e)
