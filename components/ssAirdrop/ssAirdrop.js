@@ -28,8 +28,8 @@ export default function ssAirdrop() {
   const initAirdropData = async () => {
     const account = stores.accountStore.getStore("account")
     if (account) {
-      const fetchUrl = `https://raw.githubusercontent.com/meterio/dystopia-contracts/base/scripts/setting/proofs/0x00000000005ef87f8ca7014309ece7260bbcdaeb.json`
-      const fetchUrl2 = `https://raw.githubusercontent.com/meterio/dystopia-contracts/base/scripts/setting/proofs2/0x00a37e03dc9123fe119f116ae907b335c5b7c5f5.json`
+      const fetchUrl = `https://raw.githubusercontent.com/meterio/dystopia-contracts/base/scripts/setting/proofs/${account.address.toLowerCase()}.json`
+      const fetchUrl2 = `https://raw.githubusercontent.com/meterio/dystopia-contracts/base/scripts/setting/proofs2/${account.address.toLowerCase()}.json`
       
       const addrInfo = []
 
