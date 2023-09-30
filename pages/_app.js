@@ -208,47 +208,47 @@ export default function MyApp({ Component, pageProps }) {
   return (
     <ThemeProvider theme={theme}>
       <React.Fragment>
-        <WagmiConfig config={wagmiConfig}>
-          <Head>
-            <title>Voltswap</title>
-            <meta
-              name="viewport"
-              content="width=device-width, initial-scale=1"
-            />
-          </Head>
-          <AppThemeProvider value={{ appTheme, setAppTheme }}>
-            {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
-            <CssBaseline />
-            {validateConfigured() && (
+        <Head>
+          <title>Voltswap</title>
+          <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1"
+          />
+        </Head>
+        <AppThemeProvider value={{ appTheme, setAppTheme }}>
+          {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
+          <CssBaseline />
+          {validateConfigured() && (
+            <WagmiConfig config={wagmiConfig}>
               <Layout>
-                {ready ? (
+                {/* {ready ? (
                   <Component {...pageProps} changeTheme={changeTheme} />
-                ) : null}
-                {/* <Component {...pageProps} changeTheme={changeTheme} /> */}
+                ) : null} */}
+                <Component {...pageProps} changeTheme={changeTheme} />
                 <Web3Modal
                   projectId={projectId}
                   ethereumClient={ethereumClient}
                 />
               </Layout>
-            )}
+            </WagmiConfig>
+          )}
 
-            {!validateConfigured() && (
-              <div>
-                <img
-                  src={appTheme === "dark" ? "/favicon.png" : "/favicon.png"}
-                  style={{
-                    position: "absolute",
-                    width: "30px",
-                    height: "30px",
-                    top: "50%",
-                    left: "50%",
-                    transform: "translate(-50%, -50%)",
-                  }}
-                />
-              </div>
-            )}
-          </AppThemeProvider>
-        </WagmiConfig>
+          {!validateConfigured() && (
+            <div>
+              <img
+                src={appTheme === "dark" ? "/favicon.png" : "/favicon.png"}
+                style={{
+                  position: "absolute",
+                  width: "30px",
+                  height: "30px",
+                  top: "50%",
+                  left: "50%",
+                  transform: "translate(-50%, -50%)",
+                }}
+              />
+            </div>
+          )}
+        </AppThemeProvider>
       </React.Fragment>
     </ThemeProvider>
   );
