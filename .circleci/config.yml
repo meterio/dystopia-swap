@@ -16,12 +16,12 @@ jobs:
           name: install awscli v2
           command: sudo ./aws/install
       - restore_cache:
-          key: voltswapv2-deps-{{ checksum "package.json" }}
+          key: dystopia-deps-{{ checksum "package.json" }}
       - run:
           name: install npm dependencies
           command: npm install
       - save_cache:
-          key: voltswapv2-deps-{{ checksum "package.json" }}
+          key: dystopia-deps-{{ checksum "package.json" }}
           paths:
             - node_modules
       - run:
