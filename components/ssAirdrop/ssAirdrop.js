@@ -6,7 +6,7 @@ import { Add, AttachMoney } from '@mui/icons-material';
 import stores from '../../stores';
 import { ACTIONS } from '../../stores/constants';
 import { useAppThemeContext } from '../../ui/AppThemeProvider';
-import { root } from '../../stores/configurations/airdrop';
+import { root, root2 } from '../../stores/configurations/airdrop';
 import axios from 'axios'
 
 export default function ssAirdrop() {
@@ -25,25 +25,40 @@ export default function ssAirdrop() {
     }
   };
 
-  const initAirdropData = () => {
+  const initAirdropData = async () => {
     const account = stores.accountStore.getStore("account")
-    if (account) {
+    if (account && account.address) {
       const fetchUrl = `https://raw.githubusercontent.com/meterio/dystopia-contracts/base/scripts/setting/proofs/${account.address.toLowerCase()}.json`
-      axios.get(fetchUrl).then(res => {
-        console.log(res)
-        const addrInfo = [{...res.data, root}]
-        
+      const fetchUrl2 = `https://raw.githubusercontent.com/meterio/dystopia-contracts/base/scripts/setting/proofs2/${account.address.toLowerCase()}.json`
+
+      const addrInfo = []
+
+      try {
+        const res = await axios.get(fetchUrl)
+        console.log('res', res)
+        addrInfo.push({ ...res.data, root })
+      } catch (e) {
+        console.log('fetch 1 airdrop addr info', e)
+      }
+
+      try {
+        const res2 = await axios.get(fetchUrl2)
+        console.log('res2', res2)
+        addrInfo.push({ ...res2.data, root: root2 })
+      } catch (e) {
+        console.log('fetch 2 airdrop addr info', e)
+      }
+
+      if (addrInfo.length) {
         setAirdrops(addrInfo)
 
         stores.stableSwapStore.getAirdropClaimed(addrInfo)
-      }).catch(err => {
-        console.log('fetch airdrop addr info', err)
-      })
+      }
     }
   }
 
   useEffect(() => {
-    
+
     initAirdropData()
 
     stores.emitter.on(ACTIONS.IS_AIRDROP_CLAIMED, newAirdrops);

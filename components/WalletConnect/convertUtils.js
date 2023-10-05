@@ -27,6 +27,9 @@ export function getEthersProvider({ chainId } = {}) {
 
 export function walletClientToSigner(walletClient) {
   const { account, chain, transport } = walletClient
+  
+  if (!chain) return undefined
+  
   const network = {
     chainId: chain.id,
     name: chain.name,
@@ -48,6 +51,10 @@ export async function getWeb3Signer({ chainId } = {}) {
   const walletClient = await getWalletClient({ chainId });
 
   if (!walletClient) return undefined
-  return new Web3(walletClientToSigner(walletClient).provider.provider)
+
+  const provider = walletClientToSigner(walletClient).provider.provider
+  
+  if (!provider) return undefined
+  return new Web3(provider)
 }
 
