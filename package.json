@@ -10,11 +10,9 @@
     "start": "next start"
   },
   "dependencies": {
-    "@coinbase/wallet-sdk": "^3.3.0",
     "@dopex-io/web3-multicall": "^0.1.7",
     "@emotion/react": "^11.8.2",
     "@emotion/styled": "^11.8.1",
-    "@ethersproject/providers": "^5.6.8",
     "@material-ui/core": "^4.12.3",
     "@material-ui/icons": "^4.11.2",
     "@metamask/detect-provider": "1.2.0",
@@ -22,11 +20,7 @@
     "@mui/lab": "^5.0.0-alpha.72",
     "@mui/material": "^5.5.0",
     "@mui/styles": "^5.5.0",
-    "@safe-global/safe-apps-sdk": "^8.1.0",
-    "@safe-global/safe-apps-web3modal": "^21.0.0",
-    "@trustwallet/wallet-core": "^2.9.5",
     "@usedapp/core": "^1.0.15",
-    "@walletconnect/web3-provider": "^1.7.8",
     "@web3modal/ethereum": "^2.7.1",
     "@web3modal/react": "^2.7.1",
     "async": "^3.2.1",

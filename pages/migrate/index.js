@@ -97,7 +97,7 @@ export default function Migrate() {
               </Typography>
             </div>
             <WalletConnect>
-              {({ connect }) => {
+              {({ connect, loading }) => {
                 return (
                   <div
                     className={[classes.buttonConnect, classes[`buttonConnect--${appTheme}`]].join(' ')}
@@ -107,7 +107,7 @@ export default function Migrate() {
                     onClick={connect}>
                       <BtnEnterApp
                         labelClassName={classes.buttonEnterLabel}
-                        label={`Connect wallet\nto continue`}
+                        label={loading ? 'Waiting' : `Connect wallet\nto continue`}
                         btnColor={getBtnColor}
                       />
                   </div>

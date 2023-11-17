@@ -1488,13 +1488,14 @@ function Setup() {
         ></BtnSwap>
       ) : (
         <WalletConnect>
-          {({ connect }) => {
+          {({ connect, loading }) => {
             return (
               <BtnSwap
                 onClick={connect}
                 className={classes.btnSwap}
                 labelClassName={classes.actionButtonText}
-                label={"Connect wallet"}
+                label={loading ? "Waiting" : "Connect wallet"}
+                isDisabled={loading}
               ></BtnSwap>
             );
           }}

@@ -4457,6 +4457,7 @@ class Store {
       //     })
       //   }
       // })
+      amountOuts = amountOuts.filter((el) => el !== null);
       console.log('amountOuts', amountOuts)
       if (!amountOuts.length) {
         return this.emitter.emit(
@@ -4481,7 +4482,7 @@ class Store {
           e.message
         );
       }
-
+      console.log('receiveAmounts', receiveAmounts)
       if (!receiveAmounts.length) {
         const account = stores.accountStore.getStore("account");
         if (!account) {
@@ -4525,8 +4526,6 @@ class Store {
       // const receiveAmounts = await retryCall();
       // console.log('receiveAmounts', receiveAmounts)
 
-      amountOuts = amountOuts.filter((el) => el !== null);
-
       for (let i = 0; i < receiveAmounts.length; i++) {
         amountOuts[i].receiveAmounts = receiveAmounts[i];
         amountOuts[i].finalValue = BigNumber(
@@ -4548,7 +4547,7 @@ class Store {
             ? best
             : current;
         }, 0);
-      
+      console.log('bestAmountOut', bestAmountOut)
       if (!bestAmountOut) {
         this.emitter.emit(
           ACTIONS.ERROR,
@@ -4575,6 +4574,7 @@ class Store {
             bestAmountOut.routes[i].stable
           )
           .call();
+        console.log('res', res)
         const ratio = BigNumber(res.b).div(res.a);
         totalRatio = BigNumber(totalRatio).times(ratio).toFixed(18);
       }
@@ -4596,7 +4596,7 @@ class Store {
       console.error(ex);
 
       this.emitter.emit(ACTIONS.QUOTE_SWAP_RETURNED, null);
-      this.emitter.emit(ACTIONS.ERROR, ex);
+      this.emitter.emit(ACTIONS.ERROR, ex.message);
     }
   };
 
