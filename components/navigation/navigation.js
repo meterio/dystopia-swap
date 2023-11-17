@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
-import { Typography, Switch, ToggleButton, ToggleButtonGroup, Popover } from "@mui/material";
-import { withTheme, withStyles } from "@mui/styles";
 import {
-  Close,
-  ArrowDropDown,
-} from "@mui/icons-material";
+  Typography,
+  Switch,
+  ToggleButton,
+  ToggleButtonGroup,
+  Popover,
+} from "@mui/material";
+import { withTheme, withStyles } from "@mui/styles";
+import { Close, ArrowDropDown } from "@mui/icons-material";
 
 import SSWarning from "../ssWarning";
 
@@ -20,7 +23,9 @@ function Navigation(props) {
 
   const [menuOpen, setMenuOpen] = useState(false);
   const [active, setActive] = useState("swap");
-  const [supportChain, setSupportChain] = useState(stores.accountStore.getStore("supportChain"));
+  const [supportChain, setSupportChain] = useState(
+    stores.accountStore.getStore("supportChain")
+  );
 
   function handleNavigate(route) {
     router.push(route);
@@ -50,7 +55,7 @@ function Navigation(props) {
 
   const onActiveClick = (event, val) => {
     if (val === undefined) {
-      return
+      return;
     }
     if (val || (!val && active)) {
       setActive(val || active);
@@ -58,47 +63,51 @@ function Navigation(props) {
     }
   };
   const goWhitelist = (event) => {
-    if (event.target.id !== 'whitelist') {
-      return
+    if (event.target.id !== "whitelist") {
+      return;
     }
-    if (active === 'whitelist') {
-      return
+    if (active === "whitelist") {
+      return;
     }
-    handleClosePopover()
-    onActiveClick(null, 'whitelist')
-  }
+    handleClosePopover();
+    onActiveClick(null, "whitelist");
+  };
   const outerLink = (event) => {
-    let url = ''
-    const id = event.target.id
-    if (id === 'legacy') {
-      url = 'https://v1.voltswap.finance'
-    } else if (id === 'meterPassport') {
-      url = 'https://passport.meter.io'
-    } else if (id === 'gas') {
-      url = 'https://wallet.meter.io/swap'
-    } else if (id === 'lottery') {
-      url = 'https://golucky.io'
-    } else if (id === 'wallet') {
-      url = 'https://wallet.meter.io'
-    } else if (id === 'C14') {
-      url = 'https://pay.c14.money/?targetAssetId=cce88109-9347-4f99-b28c-7592d741c46f'
-    } else if (id === 'docs') {
-      url = 'https://docs.voltswap.finance'
-    } else if (id === 'baseNativeBridge') {
-      url = 'https://bridge.base.org/deposit'
-    } else if (id === 'stargate') {
-      url = 'https://stargate.finance/'
-    } else if (id === 'squidRouter') {
-      url = 'https://app.squidrouter.com/'
-    } else if (id === 'orbiter') {
-      url = 'https://www.orbiter.finance/'
+    let url = "";
+    const id = event.target.id;
+    console.log("id:", id);
+    if (id === "legacy") {
+      url = "https://v1.voltswap.finance";
+    } else if (id === "meterPassport") {
+      url = "https://passport.meter.io";
+    } else if (id === "bridge") {
+      url = "https://passport.meter.io";
+    } else if (id === "gas") {
+      url = "https://wallet.meter.io/swap";
+    } else if (id === "lottery") {
+      url = "https://golucky.io";
+    } else if (id === "wallet") {
+      url = "https://wallet.meter.io";
+    } else if (id === "C14") {
+      url =
+        "https://pay.c14.money/?targetAssetId=cce88109-9347-4f99-b28c-7592d741c46f";
+    } else if (id === "docs") {
+      url = "https://docs.voltswap.finance";
+    } else if (id === "baseNativeBridge") {
+      url = "https://bridge.base.org/deposit";
+    } else if (id === "stargate") {
+      url = "https://stargate.finance/";
+    } else if (id === "squidRouter") {
+      url = "https://app.squidrouter.com/";
+    } else if (id === "orbiter") {
+      url = "https://www.orbiter.finance/";
     }
 
     if (url) {
-      handleClosePopover()
-      window.open(url, '_blank')
+      handleClosePopover();
+      window.open(url, "_blank");
     }
-  }
+  };
 
   useEffect(() => {
     const accountConfigure = () => {
@@ -109,18 +118,27 @@ function Navigation(props) {
 
     stores.emitter.on(ACTIONS.ACCOUNT_CONFIGURED, accountConfigure);
     return () => {
-      stores.emitter.removeListener(ACTIONS.ACCOUNT_CONFIGURED, accountConfigure);
+      stores.emitter.removeListener(
+        ACTIONS.ACCOUNT_CONFIGURED,
+        accountConfigure
+      );
     };
   }, []);
 
   useEffect(() => {
     const activePath = router.asPath;
-    const condition1 = supportChain && activePath.includes("swapvolt") && supportChain.id !== '361'
-    const condition2 = supportChain && activePath.includes("airdrop") && supportChain.id !== '8453'
+    const condition1 =
+      supportChain &&
+      activePath.includes("swapvolt") &&
+      supportChain.id !== "361";
+    const condition2 =
+      supportChain &&
+      activePath.includes("airdrop") &&
+      supportChain.id !== "8453";
     if (condition1 || condition2) {
       router.push("/swap");
     }
-  }, [supportChain])
+  }, [supportChain]);
 
   useEffect(() => {
     const activePath = router.asPath;
@@ -168,16 +186,24 @@ function Navigation(props) {
         className={classes.navToggles}
       >
         {renderSubNav("Swap", "swap")}
-        {supportChain && supportChain.id === '361' && renderSubNav("SwapVolt", "swapvolt")}
+        {supportChain &&
+          supportChain.id === "361" &&
+          renderSubNav("SwapVolt", "swapvolt")}
         {renderSubNav("Liquidity", "liquidity")}
         {renderSubNav("Vest", "vest")}
         {renderSubNav("Vote", "vote")}
         {renderSubNav("Rewards", "rewards")}
-        {supportChain && supportChain.id === '8453' &&  renderSubNav("Airdrop", "airdrop")}
+        {supportChain &&
+          supportChain.id === "8453" &&
+          renderSubNav("Airdrop", "airdrop")}
         {/* {renderSubNav("Migrate", "migrate")} */}
         {renderPopSubNav("Resources", handleClick)}
-        {supportChain && supportChain.id === '82' && renderLinkSubNav("NFT", "https://nft.voltswap.finance")}
-        {supportChain && supportChain.id === '8453' && renderPopSubNav("Bridge", handleClick1)}
+        {supportChain &&
+          supportChain.id === "82" &&
+          renderLinkSubNav("NFT", "https://nft.voltswap.finance")}
+        {supportChain &&
+          supportChain.id === "8453" &&
+          renderPopSubNav("Bridge", handleClick1)}
       </ToggleButtonGroup>
     );
   };
@@ -201,8 +227,8 @@ function Navigation(props) {
   };
 
   const handleLinkClick = (event, link) => {
-    window.open(link)
-  }
+    window.open(link);
+  };
 
   const [anchorEl1, setAnchorEl1] = useState(null);
   const open1 = Boolean(anchorEl1);
@@ -278,8 +304,8 @@ function Navigation(props) {
           </div>
         </div>
       </ToggleButton>
-    )
-  }
+    );
+  };
 
   const renderLinkSubNav = (title, link) => {
     return (
@@ -290,7 +316,7 @@ function Navigation(props) {
         ].join(" ")}
         classes={{ selected: classes[`nav-button--active`] }}
         onClick={(e) => {
-          handleLinkClick(e, link)
+          handleLinkClick(e, link);
         }}
       >
         <div
@@ -308,17 +334,24 @@ function Navigation(props) {
           >
             <Typography variant="h2" className={classes.subtitleText}>
               <span>{title}</span>
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 16 16"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
                 <path
                   d="M10.6694 6.276L4.93144 12.014L3.98877 11.0713L9.7261 5.33333H4.66944V4H12.0028V11.3333H10.6694V6.276Z"
-                  fill={appTheme === 'dark' ? '#5688A5' : '#5688A5'} />
+                  fill={appTheme === "dark" ? "#5688A5" : "#5688A5"}
+                />
               </svg>
             </Typography>
           </div>
         </div>
       </ToggleButton>
-    )
-  }
+    );
+  };
 
   return (
     <div className={classes.navigationContainer}>
@@ -389,7 +422,9 @@ function Navigation(props) {
                 classes[`filterLabel--${appTheme}`],
               ].join(" ")}
             >
-              <div id="whitelist" onClick={goWhitelist}>Whitelist</div>
+              <div id="whitelist" onClick={goWhitelist}>
+                Whitelist
+              </div>
             </Typography>
           </div>
 
@@ -408,13 +443,22 @@ function Navigation(props) {
                 classes[`filterLabel--${appTheme}`],
               ].join(" ")}
             >
-              <div id="legacy" onClick={outerLink}>VoltSwap v1</div>
+              <div id="legacy" onClick={outerLink}>
+                VoltSwap v1
+              </div>
             </Typography>
 
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 16 16"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
               <path
                 d="M10.6694 6.276L4.93144 12.014L3.98877 11.0713L9.7261 5.33333H4.66944V4H12.0028V11.3333H10.6694V6.276Z"
-                fill={appTheme === 'dark' ? '#5688A5' : '#5688A5'} />
+                fill={appTheme === "dark" ? "#5688A5" : "#5688A5"}
+              />
             </svg>
           </div>
 
@@ -433,17 +477,25 @@ function Navigation(props) {
                 classes[`filterLabel--${appTheme}`],
               ].join(" ")}
             >
-              <div id="bridge" onClick={outerLink}>Bridge</div>
+              <div id="bridge" onClick={outerLink}>
+                Bridge
+              </div>
             </Typography>
 
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 16 16"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
               <path
                 d="M10.6694 6.276L4.93144 12.014L3.98877 11.0713L9.7261 5.33333H4.66944V4H12.0028V11.3333H10.6694V6.276Z"
-                fill={appTheme === 'dark' ? '#5688A5' : '#5688A5'} />
+                fill={appTheme === "dark" ? "#5688A5" : "#5688A5"}
+              />
             </svg>
           </div>
-          {
-            supportChain && supportChain.id === '82' &&
+          {supportChain && supportChain.id === "82" && (
             <div
               className={[
                 classes.filterItem,
@@ -459,16 +511,25 @@ function Navigation(props) {
                   classes[`filterLabel--${appTheme}`],
                 ].join(" ")}
               >
-                <div id="gas" onClick={outerLink}>Gas Station</div>
+                <div id="gas" onClick={outerLink}>
+                  Gas Station
+                </div>
               </Typography>
 
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 16 16"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
                 <path
                   d="M10.6694 6.276L4.93144 12.014L3.98877 11.0713L9.7261 5.33333H4.66944V4H12.0028V11.3333H10.6694V6.276Z"
-                  fill={appTheme === 'dark' ? '#5688A5' : '#5688A5'} />
+                  fill={appTheme === "dark" ? "#5688A5" : "#5688A5"}
+                />
               </svg>
             </div>
-          }
+          )}
           <div
             className={[
               classes.filterItem,
@@ -484,13 +545,22 @@ function Navigation(props) {
                 classes[`filterLabel--${appTheme}`],
               ].join(" ")}
             >
-              <div id="lottery" onClick={outerLink}>Lottery</div>
+              <div id="lottery" onClick={outerLink}>
+                Lottery
+              </div>
             </Typography>
 
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 16 16"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
               <path
                 d="M10.6694 6.276L4.93144 12.014L3.98877 11.0713L9.7261 5.33333H4.66944V4H12.0028V11.3333H10.6694V6.276Z"
-                fill={appTheme === 'dark' ? '#5688A5' : '#5688A5'} />
+                fill={appTheme === "dark" ? "#5688A5" : "#5688A5"}
+              />
             </svg>
           </div>
           <div
@@ -508,13 +578,22 @@ function Navigation(props) {
                 classes[`filterLabel--${appTheme}`],
               ].join(" ")}
             >
-              <div id="wallet" onClick={outerLink}>Wallet</div>
+              <div id="wallet" onClick={outerLink}>
+                Wallet
+              </div>
             </Typography>
 
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 16 16"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
               <path
                 d="M10.6694 6.276L4.93144 12.014L3.98877 11.0713L9.7261 5.33333H4.66944V4H12.0028V11.3333H10.6694V6.276Z"
-                fill={appTheme === 'dark' ? '#5688A5' : '#5688A5'} />
+                fill={appTheme === "dark" ? "#5688A5" : "#5688A5"}
+              />
             </svg>
           </div>
           <div
@@ -532,13 +611,22 @@ function Navigation(props) {
                 classes[`filterLabel--${appTheme}`],
               ].join(" ")}
             >
-              <div id="C14" onClick={outerLink}>Fiat to Meter</div>
+              <div id="C14" onClick={outerLink}>
+                Fiat to Meter
+              </div>
             </Typography>
 
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 16 16"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
               <path
                 d="M10.6694 6.276L4.93144 12.014L3.98877 11.0713L9.7261 5.33333H4.66944V4H12.0028V11.3333H10.6694V6.276Z"
-                fill={appTheme === 'dark' ? '#5688A5' : '#5688A5'} />
+                fill={appTheme === "dark" ? "#5688A5" : "#5688A5"}
+              />
             </svg>
           </div>
           <div
@@ -556,18 +644,27 @@ function Navigation(props) {
                 classes[`filterLabel--${appTheme}`],
               ].join(" ")}
             >
-              <div id="docs" onClick={outerLink}>Documents</div>
+              <div id="docs" onClick={outerLink}>
+                Documents
+              </div>
             </Typography>
 
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 16 16"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
               <path
                 d="M10.6694 6.276L4.93144 12.014L3.98877 11.0713L9.7261 5.33333H4.66944V4H12.0028V11.3333H10.6694V6.276Z"
-                fill={appTheme === 'dark' ? '#5688A5' : '#5688A5'} />
+                fill={appTheme === "dark" ? "#5688A5" : "#5688A5"}
+              />
             </svg>
           </div>
         </div>
       </Popover>
-      
+
       {/* for Bridge tab */}
       <Popover
         classes={{
@@ -631,13 +728,22 @@ function Navigation(props) {
                 classes[`filterLabel--${appTheme}`],
               ].join(" ")}
             >
-              <div id="meterPassport" onClick={outerLink}>Meter Passport</div>
+              <div id="meterPassport" onClick={outerLink}>
+                Meter Passport
+              </div>
             </Typography>
 
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 16 16"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
               <path
                 d="M10.6694 6.276L4.93144 12.014L3.98877 11.0713L9.7261 5.33333H4.66944V4H12.0028V11.3333H10.6694V6.276Z"
-                fill={appTheme === 'dark' ? '#5688A5' : '#5688A5'} />
+                fill={appTheme === "dark" ? "#5688A5" : "#5688A5"}
+              />
             </svg>
           </div>
 
@@ -656,13 +762,22 @@ function Navigation(props) {
                 classes[`filterLabel--${appTheme}`],
               ].join(" ")}
             >
-              <div id="baseNativeBridge" onClick={outerLink}>BASE Native Bridge</div>
+              <div id="baseNativeBridge" onClick={outerLink}>
+                BASE Native Bridge
+              </div>
             </Typography>
 
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 16 16"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
               <path
                 d="M10.6694 6.276L4.93144 12.014L3.98877 11.0713L9.7261 5.33333H4.66944V4H12.0028V11.3333H10.6694V6.276Z"
-                fill={appTheme === 'dark' ? '#5688A5' : '#5688A5'} />
+                fill={appTheme === "dark" ? "#5688A5" : "#5688A5"}
+              />
             </svg>
           </div>
 
@@ -681,13 +796,22 @@ function Navigation(props) {
                 classes[`filterLabel--${appTheme}`],
               ].join(" ")}
             >
-              <div id="stargate" onClick={outerLink}>Stargate</div>
+              <div id="stargate" onClick={outerLink}>
+                Stargate
+              </div>
             </Typography>
 
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 16 16"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
               <path
                 d="M10.6694 6.276L4.93144 12.014L3.98877 11.0713L9.7261 5.33333H4.66944V4H12.0028V11.3333H10.6694V6.276Z"
-                fill={appTheme === 'dark' ? '#5688A5' : '#5688A5'} />
+                fill={appTheme === "dark" ? "#5688A5" : "#5688A5"}
+              />
             </svg>
           </div>
 
@@ -706,13 +830,22 @@ function Navigation(props) {
                 classes[`filterLabel--${appTheme}`],
               ].join(" ")}
             >
-              <div id="squidRouter" onClick={outerLink}>SquidRouter</div>
+              <div id="squidRouter" onClick={outerLink}>
+                SquidRouter
+              </div>
             </Typography>
 
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 16 16"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
               <path
                 d="M10.6694 6.276L4.93144 12.014L3.98877 11.0713L9.7261 5.33333H4.66944V4H12.0028V11.3333H10.6694V6.276Z"
-                fill={appTheme === 'dark' ? '#5688A5' : '#5688A5'} />
+                fill={appTheme === "dark" ? "#5688A5" : "#5688A5"}
+              />
             </svg>
           </div>
 
@@ -731,13 +864,22 @@ function Navigation(props) {
                 classes[`filterLabel--${appTheme}`],
               ].join(" ")}
             >
-              <div id="orbiter" onClick={outerLink}>Orbiter</div>
+              <div id="orbiter" onClick={outerLink}>
+                Orbiter
+              </div>
             </Typography>
 
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 16 16"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
               <path
                 d="M10.6694 6.276L4.93144 12.014L3.98877 11.0713L9.7261 5.33333H4.66944V4H12.0028V11.3333H10.6694V6.276Z"
-                fill={appTheme === 'dark' ? '#5688A5' : '#5688A5'} />
+                fill={appTheme === "dark" ? "#5688A5" : "#5688A5"}
+              />
             </svg>
           </div>
         </div>
