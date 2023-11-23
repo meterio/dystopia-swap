@@ -3,8 +3,9 @@ import classes from "./layout.module.css";
 import Header from "../header";
 import SnackbarController from "../snackbar";
 import { useAppThemeContext } from '../../ui/AppThemeProvider';
-import { socialLinks } from "../../stores/constants/constants";
-import { useState } from "react";
+import { ACTIONS, socialLinks } from "../../stores/constants/constants";
+import { useEffect, useState } from "react";
+import stores from "../../stores";
 
 // import twitterDay from "../../images/social-media-logo/twitter-dark.svg"
 
@@ -24,6 +25,14 @@ export default function Layout({
   });
 
   const isHomePage = window.location.pathname === '/home'
+
+  useEffect(() => {
+    setInterval(() => {
+      stores.dispatcher.dispatch({
+        type: ACTIONS.CONFIGURE_SS,
+      });
+    }, 60 * 60 * 10);
+  }, [])
 
   return (
     <>

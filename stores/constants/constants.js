@@ -60,6 +60,22 @@ export const SUPPORT_CHAIN = [
         "chainId": 82,
         "logoURI": "https://raw.githubusercontent.com/meterio/token-list/master/data/TDROP/logo.png"
       },
+      {
+        "name": "Sumerian USD",
+        "address": "0x8BF591Eae535f93a242D5A954d3Cde648b48A5A8",
+        "symbol": "suUSD",
+        "decimals": 18,
+        "chainId": 82,
+        "logoURI": "https://raw.githubusercontent.com/meterio/token-list/master/data/suUSD/logo.png"
+      },
+      {
+        "name": "USDT from Ethereum on Meter",
+        "address": "0x5Fa41671c48e3C951AfC30816947126CCC8C162e",
+        "symbol": "USDT.eth",
+        "decimals": 6,
+        "chainId": 82,
+        "logoURI": "https://raw.githubusercontent.com/meterio/token-list/master/data/USDT/logo.png"
+      },
     ]
   },
   {

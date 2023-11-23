@@ -2151,9 +2151,11 @@ class Store {
                   return this.emitter.emit(ACTIONS.ERROR, err);
                 }
 
-                await context.updatePairsCall(web3, account);
+                setTimeout(async () => {
+                  await context.updatePairsCall(web3, account);
 
-                this.emitter.emit(ACTIONS.PAIR_CREATED, pairFor);
+                  this.emitter.emit(ACTIONS.PAIR_CREATED, pairFor);
+                }, 2000);
               }
             );
           };
@@ -2659,9 +2661,11 @@ class Store {
                 return this.emitter.emit(ACTIONS.ERROR, err);
               }
 
-              context.updatePairsCall(web3, account);
+              setTimeout(async () => {
+                await context.updatePairsCall(web3, account);
 
-              this.emitter.emit(ACTIONS.PAIR_CREATED, pairFor);
+                this.emitter.emit(ACTIONS.PAIR_CREATED, pairFor);
+              }, 2000);
             }
           );
         },
@@ -3827,20 +3831,52 @@ class Store {
       const sendAmount1Min = BigNumber(quoteRemove.amountB)
         .times(sendSlippage)
         .toFixed(0);
-      this._callContractWait(
-        web3,
-        routerContract,
-        "removeLiquidity",
-        [
-          tok0,
+
+      let func = "removeLiquidity";
+      let params = [
+        tok0,
+        tok1,
+        pair.isStable,
+        sendAmount,
+        sendAmount0Min,
+        sendAmount1Min,
+        account.address,
+        deadline,
+      ];
+      // let sendValue = null;
+
+      if (tok0 === CONTRACTS.FTM_ADDRESS) {
+        func = "removeLiquidityMTR";
+        params = [
           tok1,
+          pair.isStable,
+          sendAmount,
+          sendAmount1Min,
+          sendAmount0Min,
+          account.address,
+          deadline,
+        ];
+        // sendValue = sendAmount0;
+      }
+      if (tok1 === CONTRACTS.FTM_ADDRESS) {
+        func = "removeLiquidityMTR";
+        params = [
+          tok0,
           pair.isStable,
           sendAmount,
           sendAmount0Min,
           sendAmount1Min,
           account.address,
           deadline,
-        ],
+        ];
+        // sendValue = sendAmount1;
+      }
+      
+      this._callContractWait(
+        web3,
+        routerContract,
+        func,
+        params,
         account,
         gasPrice,
         null,
