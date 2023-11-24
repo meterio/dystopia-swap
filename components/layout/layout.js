@@ -31,7 +31,7 @@ export default function Layout({
       stores.dispatcher.dispatch({
         type: ACTIONS.CONFIGURE_SS,
       });
-    }, 60 * 60 * 10);
+    }, 30 * 1000);
   }, [])
 
   return (
