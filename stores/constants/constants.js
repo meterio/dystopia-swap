@@ -296,6 +296,7 @@ export const BLACK_LIST_TOKENS = [
   "0x9599caed4188bd8858c3de2fa62c54e00fb58a67", // "VolatileV1 AMM - MTRG/TARA"
   "0xd4ebf4b6efb7c25c3c7066653d27a59654f9bea2", // "StableV1 AMM - MTRG/FTB"
   "0xfd1ce3adf6668daacccbf30775f8791c2ab7003a", // "StableV1 AMM - TFUEL/VOLT"
+  "0x5da6ceb9dea34bfe6611bec4982506fdeb54a5a2", // "StableV1 AMM - MTRG/BSUD.bsc"
 ]
 
 export const BASE_ASSETS_WHITELIST = []
