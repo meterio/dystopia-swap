@@ -3844,8 +3844,8 @@ class Store {
         deadline,
       ];
       // let sendValue = null;
-
-      if (tok0 === CONTRACTS.FTM_ADDRESS) {
+      
+      if (tok0 === CONTRACTS.WFTM_ADDRESS) {
         func = "removeLiquidityMTR";
         params = [
           tok1,
@@ -3858,7 +3858,7 @@ class Store {
         ];
         // sendValue = sendAmount0;
       }
-      if (tok1 === CONTRACTS.FTM_ADDRESS) {
+      if (tok1 === CONTRACTS.WFTM_ADDRESS) {
         func = "removeLiquidityMTR";
         params = [
           tok0,
@@ -4047,20 +4047,52 @@ class Store {
             .balanceOf(account.address)
             .call();
 
+          const tok0 = token0.address;
+          const tok1 = token1.address;
+
+          let func = 'removeLiquidity';
+          let params = [
+            tok0,
+            tok1,
+            pair.isStable,
+            balanceOf,
+            sendAmount0Min,
+            sendAmount1Min,
+            account.address,
+            deadline,
+          ]
+          if (tok0 === CONTRACTS.WFTM_ADDRESS) {
+              func = "removeLiquidityMTR";
+              params = [
+                tok1,
+                pair.isStable,
+                balanceOf,
+                sendAmount1Min,
+                sendAmount0Min,
+                account.address,
+                deadline,
+              ];
+              // sendValue = sendAmount0;
+            }
+            if (tok1 === CONTRACTS.WFTM_ADDRESS) {
+              func = "removeLiquidityMTR";
+              params = [
+                tok0,
+                pair.isStable,
+                balanceOf,
+                sendAmount0Min,
+                sendAmount1Min,
+                account.address,
+                deadline,
+              ];
+              // sendValue = sendAmount1;
+            }
+
           this._callContractWait(
             web3,
             routerContract,
-            "removeLiquidity",
-            [
-              token0.address,
-              token1.address,
-              pair.isStable,
-              balanceOf,
-              sendAmount0Min,
-              sendAmount1Min,
-              account.address,
-              deadline,
-            ],
+            func,
+            params,
             account,
             gasPrice,
             null,

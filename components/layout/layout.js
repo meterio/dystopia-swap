@@ -26,13 +26,13 @@ export default function Layout({
 
   const isHomePage = window.location.pathname === '/home'
 
-  useEffect(() => {
-    setInterval(() => {
-      stores.dispatcher.dispatch({
-        type: ACTIONS.CONFIGURE_SS,
-      });
-    }, 30 * 1000);
-  }, [])
+  // useEffect(() => {
+  //   setInterval(() => {
+  //     stores.dispatcher.dispatch({
+  //       type: ACTIONS.CONFIGURE_SS,
+  //     });
+  //   }, 30 * 1000);
+  // }, [])
 
   return (
     <>

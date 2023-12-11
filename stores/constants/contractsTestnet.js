@@ -14,7 +14,7 @@ export const VE_TOKEN_DECIMALS = 18
 export const VE_TOKEN_LOGO = ''
 export const VE_TOKEN_ABI = abis.veTokenABI
 
-export const WFTM_ADDRESS = '0xfAC315d105E5A7fe2174B3EB1f95C257A9A5e271'
+export const WFTM_ADDRESS = '0xfac315d105e5a7fe2174b3eb1f95c257a9a5e271'
 export const WFTM_NAME = 'Wrapped MTR'
 export const WFTM_SYMBOL = 'WMTR'
 export const WFTM_DECIMALS = 18
