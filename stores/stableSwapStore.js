@@ -4388,6 +4388,8 @@ class Store {
       // console.log({fromAsset, toAsset})
       // console.log('pairs', pairs)
 
+      const minReserveUSD = 100
+
       let amountOuts = [];
       for (let i = 0; i < routeAssets.length; i++) {
         const routeAddr = routeAssets[i].address.toLowerCase()
@@ -4399,14 +4401,14 @@ class Store {
             (item.token0.id === addy0 && item.token1.id === routeAddr)
             ||
             (item.token0.id === routeAddr && item.token1.id === addy0)
-          ) && Number(item.reserveUSD).toFixed(0) !== '0'
+          ) && Number(item.reserveUSD) > minReserveUSD
         });
         const toPairs = pairs.filter(item => {
           return (
             (item.token0.id === addy1 && item.token1.id === routeAddr)
             ||
             (item.token0.id === routeAddr && item.token1.id === addy1)
-          ) && Number(item.reserveUSD).toFixed(0) !== '0'
+          ) && Number(item.reserveUSD) > minReserveUSD
         })
 
         if (fromPairs.length && toPairs.length) {
@@ -4445,7 +4447,7 @@ class Store {
               (item.token0.id === addy0 && item.token1.id === route0Addr)
               ||
               (item.token0.id === route0Addr && item.token1.id === addy0)
-            ) && Number(item.reserveUSD).toFixed(0) !== '0'
+            ) && Number(item.reserveUSD) > minReserveUSD
           });
 
           const middlePairs = pairs.filter(item => {
@@ -4453,7 +4455,7 @@ class Store {
               (item.token0.id === route0Addr && item.token1.id === route1Addr)
               ||
               (item.token0.id === route1Addr && item.token1.id === route0Addr)
-            ) && Number(item.reserveUSD).toFixed(0) !== '0'
+            ) && Number(item.reserveUSD) > minReserveUSD
           });
 
           const toPairs = pairs.filter(item => {
@@ -4461,7 +4463,7 @@ class Store {
               (item.token0.id === route1Addr && item.token1.id === addy1)
               ||
               (item.token0.id === addy1 && item.token1.id === route1Addr)
-            ) && Number(item.reserveUSD).toFixed(0) !== '0'
+            ) && Number(item.reserveUSD) > minReserveUSD
           });
           
           if (fromPairs.length && middlePairs.length && toPairs.length) {
