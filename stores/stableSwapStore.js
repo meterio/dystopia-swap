@@ -358,7 +358,7 @@ class Store {
         return theNFT[0];
       }
 
-      const web3 = await stores.accountStore.getHttpWeb3Provider();
+      const web3 = await stores.accountStore.getWeb3Provider();
       if (!web3) {
         console.warn("web3 not found");
         return null;
@@ -435,7 +435,7 @@ class Store {
         return null;
       }
 
-      const web3 = await stores.accountStore.getHttpWeb3Provider();
+      const web3 = await stores.accountStore.getWeb3Provider();
       if (!web3) {
         console.warn("web3 not found");
         return null;
@@ -485,7 +485,7 @@ class Store {
 
   getPairByAddress = async (pairAddress) => {
     try {
-      const web3 = await stores.accountStore.getHttpWeb3Provider();
+      const web3 = await stores.accountStore.getWeb3Provider();
       if (!web3) {
         console.warn("web3 not found");
         return null;
@@ -711,7 +711,7 @@ class Store {
 
   getPair = async (addressA, addressB, stab) => {
 
-    const web3 = await stores.accountStore.getHttpWeb3Provider();
+    const web3 = await stores.accountStore.getWeb3Provider();
     if (!web3) {
       console.warn("web3 not found");
       return null;
@@ -1027,7 +1027,7 @@ class Store {
       }
 
       // not found, so we search the blockchain for it.
-      const web3 = await stores.accountStore.getHttpWeb3Provider();
+      const web3 = await stores.accountStore.getWeb3Provider();
       if (!web3) {
         console.warn("web3 not found");
         return null;
@@ -1318,7 +1318,7 @@ class Store {
         return null;
       }
 
-      const web3 = await stores.accountStore.getHttpWeb3Provider();
+      const web3 = await stores.accountStore.getWeb3Provider();
       if (!web3) {
         console.warn("web3 not found");
         return null;
@@ -1581,7 +1581,7 @@ class Store {
         return null;
       }
 
-      const web3 = await stores.accountStore.getHttpWeb3Provider();
+      const web3 = await stores.accountStore.getWeb3Provider();
       if (!web3) {
         console.warn("web3 not found");
         return null;
@@ -3550,7 +3550,7 @@ class Store {
         return null;
       }
 
-      const web3 = await stores.accountStore.getHttpWeb3Provider();
+      const web3 = await stores.accountStore.getWeb3Provider();
       if (!web3) {
         console.warn("web3 not found");
         return null;
@@ -3621,7 +3621,7 @@ class Store {
         return null;
       }
 
-      const web3 = await stores.accountStore.getHttpWeb3Provider();
+      const web3 = await stores.accountStore.getWeb3Provider();
       if (!web3) {
         console.warn("web3 not found");
         return null;
@@ -4220,7 +4220,7 @@ class Store {
         return null;
       }
 
-      const web3 = await stores.accountStore.getHttpWeb3Provider();
+      const web3 = await stores.accountStore.getWeb3Provider();
       if (!web3) {
         console.warn("web3 not found");
         return null;
@@ -4350,7 +4350,7 @@ class Store {
 
   quoteSwap = async (payload) => {
     try {
-      const web3 = await stores.accountStore.getHttpWeb3Provider();
+      const web3 = await stores.accountStore.getWeb3Provider();
       if (!web3) {
         console.warn("web3 not found");
         return null;
@@ -4685,7 +4685,7 @@ class Store {
         console.warn("web3 not found");
         return null;
       }
-      const httpWeb3provider = stores.accountStore.getHttpWeb3Provider();
+      const httpWeb3provider = stores.accountStore.getWeb3Provider();
 
       const { fromAsset, toAsset, fromAmount, toAmount, quote, slippage } =
         payload.content;
@@ -5257,7 +5257,7 @@ class Store {
         return null;
       }
       
-      const web3 = await stores.accountStore.getHttpWeb3Provider();
+      const web3 = await stores.accountStore.getWeb3Provider();
       if (!web3) {
         console.warn("web3 not found");
         return null;
@@ -6216,7 +6216,7 @@ class Store {
         return null;
       }
       
-      const web3 = await stores.accountStore.getHttpWeb3Provider();
+      const web3 = await stores.accountStore.getWeb3Provider();
       if (!web3) {
         console.warn("web3 not found");
         return null;
@@ -6439,7 +6439,7 @@ class Store {
         return null;
       }
 
-      const web3 = await stores.accountStore.getHttpWeb3Provider();
+      const web3 = await stores.accountStore.getWeb3Provider();
       if (!web3) {
         console.warn("web3 not found");
         return null;
@@ -6538,7 +6538,7 @@ class Store {
         return null;
       }
 
-      const web3 = await stores.accountStore.getHttpWeb3Provider();
+      const web3 = await stores.accountStore.getWeb3Provider();
       if (!web3) {
         console.warn("web3 not found");
         return null;
@@ -7346,7 +7346,7 @@ class Store {
         return null;
       }
 
-      const web3 = await stores.accountStore.getHttpWeb3Provider();
+      const web3 = await stores.accountStore.getWeb3Provider();
       if (!web3) {
         console.warn("web3 not found");
         return null;
@@ -7451,7 +7451,7 @@ class Store {
   getAirdropClaimed = async (airdropArray) => {
     try {
 
-      const web3 = await stores.accountStore.getHttpWeb3Provider();
+      const web3 = await stores.accountStore.getWeb3Provider();
       if (!web3) {
         console.warn("web3 not found");
         return null;

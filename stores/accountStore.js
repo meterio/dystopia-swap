@@ -28,12 +28,12 @@ class Store {
       web3modal: null,
       provider: null,
       tokens: [],
-      gasPrices: {
-        standard: 90,
-        fast: 100,
-        instant: 130,
-      },
-      gasSpeed: "fast",
+      // gasPrices: {
+      //   standard: 90,
+      //   fast: 100,
+      //   instant: 130,
+      // },
+      // gasSpeed: "fast",
       currentBlock: 12906197,
       subscribed: false,
       isOpenWeb3modal: false,
@@ -189,34 +189,34 @@ class Store {
     });
   }
 
-  getGasPrices = async (payload) => {
-    const gasPrices = await this._getGasPrices();
-    let gasSpeed = localStorage.getItem("dystopia.finance-gas-speed");
+  // getGasPrices = async (payload) => {
+  //   const gasPrices = await this._getGasPrices();
+  //   let gasSpeed = localStorage.getItem("dystopia.finance-gas-speed");
 
-    if (!gasSpeed) {
-      gasSpeed = "fast";
-      localStorage.getItem("dystopia.finance-gas-speed", "fast");
-    }
+  //   if (!gasSpeed) {
+  //     gasSpeed = "fast";
+  //     localStorage.getItem("dystopia.finance-gas-speed", "fast");
+  //   }
 
-    this.setStore({ gasPrices: gasPrices, gasSpeed: gasSpeed });
-    this.emitter.emit(ACTIONS.GAS_PRICES_RETURNED);
-  };
+  //   this.setStore({ gasPrices: gasPrices, gasSpeed: gasSpeed });
+  //   this.emitter.emit(ACTIONS.GAS_PRICES_RETURNED);
+  // };
 
-  _getGasPrices = async () => {
-    try {
-      const web3 = await this.getHttpWeb3Provider();
-      const gasPrice = await web3.eth.getGasPrice();
-      const gasPriceInGwei = web3.utils.fromWei(gasPrice, "gwei");
-      return {
-        standard: gasPriceInGwei,
-        fast: gasPriceInGwei,
-        instant: gasPriceInGwei,
-      };
-    } catch (e) {
-      console.log(e);
-      return {};
-    }
-  };
+  // _getGasPrices = async () => {
+  //   try {
+  //     const web3 = await this.getHttpWeb3Provider();
+  //     const gasPrice = await web3.eth.getGasPrice();
+  //     const gasPriceInGwei = web3.utils.fromWei(gasPrice, "gwei");
+  //     return {
+  //       standard: gasPriceInGwei,
+  //       fast: gasPriceInGwei,
+  //       instant: gasPriceInGwei,
+  //     };
+  //   } catch (e) {
+  //     console.log(e);
+  //     return {};
+  //   }
+  // };
 
   getGasPrice = async (speed) => {
     // let gasSpeed = speed;
@@ -252,7 +252,7 @@ class Store {
 
   getMulticall = async () => {
     const supportChain = this.getStore('supportChain')
-    const web3 = await this.getHttpWeb3Provider();
+    const web3 = await this.getWeb3Provider();
     const multicall = new Multicall({
       multicallAddress: supportChain.contracts.MULTICALL_ADDRESS,
       provider: web3,

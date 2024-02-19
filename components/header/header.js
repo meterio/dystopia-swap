@@ -44,7 +44,7 @@ import { ethers } from "ethers";
 import Web3 from "web3";
 import { useEthers } from "@usedapp/core";
 import { useNetwork, useSwitchNetwork, useDisconnect, useAccount } from "wagmi"
-import { getWeb3Signer } from "../WalletConnect/convertUtils";
+import { getEthersProvider, getWeb3Signer } from "../WalletConnect/convertUtils";
 
 const {
   CONNECT_WALLET,
@@ -170,11 +170,13 @@ function Header(props) {
     if (chain && address) {
       const chainId = chain.id
       let signer = null
+      let provider = null
       try {
         await new Promise((resolve) => {
           setTimeout(resolve, 1000);
         });
         signer = await getWeb3Signer({chainId})
+        provider = await getEthersProvider({chainId})
       } catch(e) {
         console.log('get web3 signer error', e)
       }
@@ -209,6 +211,7 @@ function Header(props) {
         chainId: String(chainId),
         account: { address },
         web3provider: signer,
+        provider,
         httpWeb3provider: httpWeb3,
       });
 
