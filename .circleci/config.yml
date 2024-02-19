@@ -19,7 +19,7 @@ jobs:
           key: dystopia-deps-{{ checksum "package.json" }}
       - run:
           name: install npm dependencies
-          command: npm install
+          command: yarn
       - save_cache:
           key: dystopia-deps-{{ checksum "package.json" }}
           paths:
@@ -29,7 +29,7 @@ jobs:
           command: rm -rf .next
       - run:
           name: production build
-          command: npm run build2
+          command: yarn build2
       - run:
           name: s3 sync
           command: aws s3 sync ./out/ s3://voltswap.finance/ --delete
