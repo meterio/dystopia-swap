@@ -7599,7 +7599,7 @@ class Store {
         const context = this;
 
         // let sendGasAmount = BigNumber(gasAmount).times(1.1).toFixed(0);
-        // let sendGasPrice = BigNumber(gasPrice).times(1).toFixed(0);
+        let sendGasPrice = BigNumber(String(gasPrice)).times(1.1).toFixed(0);
         // if (paddGasCost) {
         //   sendGasAmount = BigNumber(sendGasAmount).times(1.15).toFixed(0)
         // }
@@ -7607,10 +7607,11 @@ class Store {
         // const sendGasAmount = '3000000'
         // const context = this
         //
+        // console.log('web3.utils.toWei(sendGasPrice, "gwei")', web3.utils.toWei(sendGasPrice, "gwei"))
         contract.methods[method](...params)
           .send({
             from: account.address,
-            // gasPrice: web3.utils.toWei(sendGasPrice, "gwei"),
+            gasPrice: sendGasPrice, //web3.utils.toWei(sendGasPrice, "gwei"),
             // gas: sendGasAmount,
             value: sendValue,
             // maxFeePerGas: web3.utils.toWei(gasPrice, "gwei"),
