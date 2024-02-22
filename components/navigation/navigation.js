@@ -596,7 +596,7 @@ function Navigation(props) {
               />
             </svg>
           </div>
-          <div
+          {/* <div
             className={[
               classes.filterItem,
               classes[`filterItem--${appTheme}`],
@@ -628,7 +628,7 @@ function Navigation(props) {
                 fill={appTheme === "dark" ? "#5688A5" : "#5688A5"}
               />
             </svg>
-          </div>
+          </div> */}
           <div
             className={[
               classes.filterItem,
