@@ -194,13 +194,17 @@ export default function ssLiquidityManage() {
         setToken(nfts[0]);
       }
     }
-    
-    if (router.query.address && router.query.address !== "create") {
+    const pathName = window.location.pathname
+    // console.log('pathName', pathName)
+    let lpAddress = ''
+    if (pathName.includes('/liquidity/0x')) {
+      lpAddress = pathName.split('/')[2]
+    }
+    // if (router.query.address && router.query.address !== "create") {
+    if (lpAddress) {
       setPairReadOnly(true);
 
-      const pp = await stores.stableSwapStore.getPairByAddress(
-        router.query.address
-      );
+      const pp = await stores.stableSwapStore.getPairByAddress(lpAddress);
       setPair(pp);
 
       if (pp) {

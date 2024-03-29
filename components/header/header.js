@@ -165,6 +165,16 @@ function Header(props) {
   const { isConnected, address } = useAccount();
   const { disconnect } = useDisconnect();
 
+  useEffect(() => {
+    if (router.query.chain && chain.id) {
+      if (router.query.chain != chain.id) {
+        if (switchNetwork) {
+          switchNetwork(Number(router.query.chain))
+        }
+      }
+    }
+  }, [router.query, chain, switchNetwork])
+
   useEffect(async () => {
     console.log('network, account', chain, address)
     if (chain && address) {
