@@ -32,10 +32,10 @@ jobs:
           command: yarn build2
       - run:
           name: s3 sync
-          command: aws s3 sync ./out/ s3://voltswap.finance/ --delete
+          command: aws s3 sync ./out/ s3://voltswap-finance/ --delete
       - run:
           name: invalidation
-          command: aws cloudfront create-invalidation --distribution-id E2MJ1Y5F1U1W57 --paths "/*"
+          command: aws cloudfront create-invalidation --distribution-id EAQGS7CE81QY3 --paths "/*"
       - slack/notify:
           event: fail
           template: basic_fail_1
