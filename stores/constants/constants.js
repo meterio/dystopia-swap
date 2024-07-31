@@ -26,7 +26,7 @@ export const SUPPORT_CHAIN = [
     infoURL: 'https://charts.voltswap.finance',
     explorerURL: 'https://scan.meter.io/',
     govAddr: '0x228ebbee999c6a7ad74a6130e81b12f9fe237ba3',
-    subgraphApi: 'https://graph-meter.voltswap.finance/subgraphs/name/meterio/voltswapv2-subgraph',
+    subgraphApi: 'https://graph.meter.io/subgraphs/name/meterio/voltswapv2-subgraph',
     routeAssets: [
       {
         "name": "BUSD from BSC on Meter",
