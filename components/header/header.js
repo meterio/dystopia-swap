@@ -45,6 +45,7 @@ import Web3 from "web3";
 import { useEthers } from "@usedapp/core";
 import { useNetwork, useSwitchNetwork, useDisconnect, useAccount } from "wagmi"
 import { getEthersProvider, getWeb3Signer } from "../WalletConnect/convertUtils";
+import { useWeb3Modal } from "@web3modal/react";
 
 const {
   CONNECT_WALLET,
@@ -164,9 +165,18 @@ function Header(props) {
   const { switchNetwork } = useSwitchNetwork()
   const { isConnected, address } = useAccount();
   const { disconnect } = useDisconnect();
+  const { open } = useWeb3Modal()
 
   useEffect(() => {
-    if (router.query.chain && chain.id) {
+    if (router.query.chain && !chain) {
+      
+      open()
+    }
+  }, [router.query, chain])
+
+  useEffect(() => {
+    if (router.query.chain && chain?.id) {
+      
       if (router.query.chain != chain.id) {
         if (switchNetwork) {
           switchNetwork(Number(router.query.chain))
