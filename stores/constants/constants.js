@@ -29,12 +29,12 @@ export const SUPPORT_CHAIN = [
     subgraphApi: 'https://graph.meter.io/subgraphs/name/meterio/voltswapv2-subgraph',
     routeAssets: [
       {
-        "name": "BUSD from BSC on Meter",
-        "address": "0x24aA189DfAa76c671c279262F94434770F557c35",
-        "symbol": "BUSD.bsc",
-        "decimals": 18,
+        "name": "USDC from Ethereum on Meter",
+        "address": "0xd86e243fc0007e6226b07c9a50c9d70d78299eb5",
+        "symbol": "USDC.eth",
+        "decimals": 6,
         "chainId": 82,
-        "logoURI": "https://raw.githubusercontent.com/meterio/token-list/master/data/BUSD/logo.png"
+        "logoURI": "https://raw.githubusercontent.com/meterio/token-list/master/data/USDC/logo.png"
       },
       {
         "name": "Meter Governance",
