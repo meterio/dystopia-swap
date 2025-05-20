@@ -39,6 +39,7 @@ import AssetSelect from "../../ui/AssetSelect";
 import Borders from "../../ui/Borders";
 import Loader from "../../ui/Loader";
 import SwitchCustom from "../../ui/Switch";
+import { ethers } from "ethers";
 
 export default function ssLiquidityManage() {
   const router = useRouter();
@@ -118,14 +119,15 @@ export default function ssLiquidityManage() {
     }
     setNeedAddToWhiteList("");
 
-    const web3 = await stores.accountStore.getWeb3Provider();
+    const web3 = await stores.accountStore.getMultiProvider();
 
     if (!supportChain) return 
 
-    const voterContract = new web3.eth.Contract(
+    const voterContract = new ethers.Contract(
+      supportChain.contracts.VOTER_ADDRESS,
       supportChain.contracts.VOTER_ABI,
-      supportChain.contracts.VOTER_ADDRESS
-    );
+      web3
+    )
 
     let address0 = pair.token0.address
     let address1 = pair.token1.address
@@ -137,8 +139,8 @@ export default function ssLiquidityManage() {
     }
 
     const [token0, token1] = await Promise.all([
-      voterContract.methods.isWhitelisted(address0).call(),
-      voterContract.methods.isWhitelisted(address1).call(),
+      voterContract.isWhitelisted(address0),
+      voterContract.isWhitelisted(address1),
     ]);
 
     const symbols = [];
@@ -375,8 +377,10 @@ export default function ssLiquidityManage() {
     };
   }, []);
 
-  useEffect(async () => {
+  useEffect(() => {
     ssUpdated();
+
+    return () => {}
   }, [router.query.address]);
 
   const onBack = () => {

@@ -50,10 +50,6 @@ const HomePage = () => {
         layoutRef.current.scrollIntoView({ behavior: 'smooth' })
     }
 
-    useEffect(() => {
-      // 
-    }, [])
-
     return (
         <div
             className={[classes.homePage, classes[`homePage--${appTheme}`]].join(' ')}

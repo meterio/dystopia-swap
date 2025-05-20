@@ -1,11 +1,11 @@
-import { useWeb3Modal } from "@web3modal/react";
+import { useAppKit, useAppKitAccount, useDisconnect } from "@reown/appkit/react";
 import { useState } from "react";
-import { useAccount, useDisconnect, useNetwork } from "wagmi";
+
 
 export default function CustomButton() {
   const [loading, setLoading] = useState(false);
-  const { open } = useWeb3Modal();
-  const { isConnected } = useAccount();
+  const { open } = useAppKit()
+  const { isConnected } = useAppKitAccount
   const { disconnect } = useDisconnect();
   const label = isConnected ? "Disconnect" : "Connect Custom";
 

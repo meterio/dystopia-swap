@@ -43,22 +43,26 @@ const AssetSelect = (
     setOpen(true);
   };
 
-  useEffect(async function () {
-    let ao = assetOptions.filter((asset) => {
-      if (search && search !== '') {
-        return asset.address.toLowerCase().includes(search.toLowerCase()) ||
-          asset.symbol.toLowerCase().includes(search.toLowerCase()) ||
-          asset.name.toLowerCase().includes(search.toLowerCase());
-      } else {
-        return true;
-      }
-    });
-    setFilteredAssetOptions(ao);
+  useEffect(function () {
+    const fun = async () => {
+      let ao = assetOptions.filter((asset) => {
+        if (search && search !== '') {
+          return asset.address.toLowerCase().includes(search.toLowerCase()) ||
+            asset.symbol.toLowerCase().includes(search.toLowerCase()) ||
+            asset.name.toLowerCase().includes(search.toLowerCase());
+        } else {
+          return true;
+        }
+      });
+      setFilteredAssetOptions(ao);
 
-    //no options in our default list and its an address we search for the address
-    if (ao.length === 0 && search && search.length === 42) {
-      const baseAsset = await stores.stableSwapStore.getBaseAsset(event.target.value, true, true);
+      //no options in our default list and its an address we search for the address
+      if (ao.length === 0 && search && search.length === 42) {
+        const baseAsset = await stores.stableSwapStore.getBaseAsset(event.target.value, true, true);
+      }
     }
+
+    fun()
 
     return () => {
     };

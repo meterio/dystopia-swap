@@ -37,8 +37,12 @@ export default function ssVest() {
     };
   }, []);
 
-  useEffect(async () => {
+  useEffect(() => {
     ssUpdated();
+
+    return () => {
+
+    }
   }, [router.query.id]);
 
   return (

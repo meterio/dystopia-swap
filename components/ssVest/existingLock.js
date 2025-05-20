@@ -49,6 +49,8 @@ export default function existingLock({nft, govToken, veToken}) {
       setSelectedDate(moment.unix(nft.lockEnds).format('YYYY-MM-DD'));
       setSelectedValue(null);
     }
+
+    return () => {}
   }, [nft]);
 
   const onBack = () => {

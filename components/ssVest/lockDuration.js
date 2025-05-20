@@ -54,6 +54,8 @@ export default function ffLockDuration({nft, updateLockDuration}) {
       setSelectedDate(moment.unix(nft.lockEnds).format('YYYY-MM-DD'));
       setSelectedValue(null);
     }
+
+    return () => {}
   }, [nft]);
 
   const handleDateChange = (event) => {

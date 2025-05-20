@@ -39,13 +39,6 @@ import Logo from "../../ui/Logo";
 import ThemeSwitcher from "../../ui/ThemeSwitcher";
 import { useAppThemeContext } from "../../ui/AppThemeProvider";
 import SSWarning from "../ssWarning";
-import { WalletConnect } from "../WalletConnect/WalletConnect";
-import { ethers } from "ethers";
-import Web3 from "web3";
-import { useEthers } from "@usedapp/core";
-import { useNetwork, useSwitchNetwork, useDisconnect, useAccount } from "wagmi"
-import { getEthersProvider, getWeb3Signer } from "../WalletConnect/convertUtils";
-import { useWeb3Modal } from "@web3modal/react";
 
 const {
   CONNECT_WALLET,
@@ -60,75 +53,10 @@ const {
   CONNECTION_CONNECTED,
 } = ACTIONS;
 
-function WrongNetworkIcon(props) {
-  const { color, className } = props;
-  return (
-    <SvgIcon viewBox="0 0 64 64" strokeWidth="1" className={className}>
-      <g strokeWidth="2" transform="translate(0, 0)">
-        <path
-          fill="none"
-          stroke="#ffffff"
-          strokeWidth="2"
-          strokeLinecap="square"
-          strokeMiterlimit="10"
-          d="M33.994,42.339 C36.327,43.161,38,45.385,38,48c0,3.314-2.686,6-6,6c-2.615,0-4.839-1.673-5.661-4.006"
-          strokeLinejoin="miter"
-        ></path>{" "}
-        <path
-          fill="none"
-          stroke="#ffffff"
-          strokeWidth="2"
-          strokeLinecap="square"
-          strokeMiterlimit="10"
-          d="M47.556,32.444 C43.575,28.462,38.075,26,32,26c-6.075,0-11.575,2.462-15.556,6.444"
-          strokeLinejoin="miter"
-        ></path>{" "}
-        <path
-          fill="none"
-          stroke="#ffffff"
-          strokeWidth="2"
-          strokeLinecap="square"
-          strokeMiterlimit="10"
-          d="M59.224,21.276 C52.256,14.309,42.632,10,32,10c-10.631,0-20.256,4.309-27.224,11.276"
-          strokeLinejoin="miter"
-        ></path>{" "}
-        <line
-          data-color="color-2"
-          fill="none"
-          stroke="#ffffff"
-          strokeWidth="2"
-          strokeLinecap="square"
-          strokeMiterlimit="10"
-          x1="10"
-          y1="54"
-          x2="58"
-          y2="6"
-          strokeLinejoin="miter"
-        ></line>
-      </g>
-    </SvgIcon>
-  );
-}
+import { useDisconnect, useAppKit, useAppKitNetwork, useAppKitAccount, useAppKitProvider, useAppKitNetworkCore } from '@reown/appkit/react'
+import { BrowserProvider, JsonRpcSigner, parseUnits, formatEther } from 'ethers'
+import { MulticallWrapper } from "ethers-multicall-provider";
 
-const StyledMenu = styled(Menu)(({ theme, appTheme }) => ({
-  paper: {
-    border: "1px solid rgba(126,153,176,0.2)",
-    marginTop: "10px",
-    minWidth: "230px",
-    background: appTheme === "dark" ? "#4CADE6" : "#0B5E8E",
-  },
-}));
-
-const StyledMenuItem = withStyles((theme) => ({
-  root: {
-    "&:focus": {
-      backgroundColor: "none",
-      "& .MuiListItemIcon-root, & .MuiListItemText-primary": {
-        color: "#FFF",
-      },
-    },
-  },
-}))(MenuItem);
 
 const StyledBadge = withStyles((theme) => ({
   badge: {
@@ -158,99 +86,102 @@ function Header(props) {
   const [loading, setLoading] = useState(false);
   const [transactionQueueLength, setTransactionQueueLength] = useState(0);
   const [warningOpen, setWarningOpen] = useState(false);
-  const { deactivate } = useEthers();
+
   const [isMetaMask, setIsMetaMask] = useState(true);
 
-  const { chain } = useNetwork()
-  const { switchNetwork } = useSwitchNetwork()
-  const { isConnected, address } = useAccount();
+  const { chainId } = useAppKitNetworkCore();
+  const { switchNetwork } = useAppKitNetwork();
+  const { isConnected, address } = useAppKitAccount();
+  const { open } = useAppKit();
   const { disconnect } = useDisconnect();
-  const { open } = useWeb3Modal()
+  const { walletProvider } = useAppKitProvider('eip155')
 
   useEffect(() => {
-    if (router.query.chain && !chain) {
-      
+    if (router.query.chain && !chainId) {
+
       open()
     }
-  }, [router.query, chain])
+    return () => {
+
+    }
+  }, [router.query, chainId])
 
   useEffect(() => {
-    if (router.query.chain && chain?.id) {
-      
-      if (router.query.chain != chain.id) {
+    if (router.query.chain && chainId) {
+
+      if (router.query.chain != chainId) {
         if (switchNetwork) {
-          switchNetwork(Number(router.query.chain))
+          switchNetwork({ id: Number(router.query.chain) })
         }
       }
     }
-  }, [router.query, chain, switchNetwork])
 
-  useEffect(async () => {
-    console.log('network, account', chain, address)
-    if (chain && address) {
-      const chainId = chain.id
-      let signer = null
-      let provider = null
-      try {
-        await new Promise((resolve) => {
-          setTimeout(resolve, 1000);
-        });
-        signer = await getWeb3Signer({chainId})
-        provider = await getEthersProvider({chainId})
-      } catch(e) {
-        console.log('get web3 signer error', e)
-      }
+    return () => {
 
-      let httpWeb3 = null;
-
-      const supportChainList = getSupportChainList();
-      const supportedChainIds = supportChainList.map((c) => c.id);
-      const isChainSupported = supportedChainIds.includes(
-        String(chainId)
-      );
-      stores.accountStore.setStore({ chainInvalid: !isChainSupported });
-      if (isChainSupported) {
-        const supportChain = supportChainList.find(
-          (c) => c.id === String(chainId)
-        );
-
-        httpWeb3 = new Web3(
-          new Web3.providers.HttpProvider(supportChain.privateRpc)
-        );
-
-        stores.accountStore.setStore({
-          supportChain,
-        });
-      } else {
-        stores.accountStore.setStore({
-          supportChain: null,
-        });
-      }
-      console.log({chainId, account})
-      stores.accountStore.setStore({
-        chainId: String(chainId),
-        account: { address },
-        web3provider: signer,
-        provider,
-        httpWeb3provider: httpWeb3,
-      });
-
-      stores.emitter.emit(CONNECTION_CONNECTED);
-      stores.emitter.emit(ACTIONS.ACCOUNT_CONFIGURED);
-      stores.dispatcher.dispatch({
-        type: ACTIONS.CONFIGURE_SS,
-        content: { connected: true },
-      });
     }
-  }, [chain, address])
+  }, [router.query, chainId, switchNetwork])
+
+  useEffect(() => {
+    console.log('network, account', chainId, address)
+
+    const fun = async () => {
+      if (walletProvider && chainId && address) {
+
+        const supportChainList = getSupportChainList();
+        const supportedChainIds = supportChainList.map((c) => c.id);
+        const isChainSupported = supportedChainIds.includes(
+          String(chainId)
+        );
+        stores.accountStore.setStore({ chainInvalid: !isChainSupported });
+        console.log('isChainSupported', isChainSupported)
+        if (isChainSupported) {
+          const supportChain = supportChainList.find(
+            (c) => c.id === String(chainId)
+          );
+
+          const web3Provider = new BrowserProvider(walletProvider)
+          const signer = await web3Provider.getSigner()
+          const multiProvider = MulticallWrapper.wrap(web3Provider)
+
+          stores.accountStore.setStore({
+            chainId: String(chainId),
+            account: { address },
+            provider: walletProvider,
+            web3Provider,
+            multiProvider,
+            signer,
+
+            supportChain
+          });
+
+          stores.emitter.emit(CONNECTION_CONNECTED);
+          stores.emitter.emit(ACTIONS.ACCOUNT_CONFIGURED);
+          stores.dispatcher.dispatch({
+            type: ACTIONS.CONFIGURE_SS,
+            content: { connected: true },
+          });
+        } else {
+          stores.accountStore.setStore({
+            supportChain: null,
+          });
+        }
+      }
+    }
+
+    fun()
+
+    return () => {
+
+    }
+  }, [walletProvider, chainId, address])
 
   const web = async (add) => {
-    const web3provider = await stores.accountStore.getWeb3Provider();
-    if (!web3provider || !add) {
+    const web3Provider = await stores.accountStore.getWeb3Provider();
+    if (!web3Provider || !add) {
       return;
     }
 
-    let bal = await web3provider.eth.getBalance(add);
+    let bal = await web3Provider.getBalance(add);
 
     setMaticBalance(
       BigNumber(bal)
@@ -333,7 +264,7 @@ function Header(props) {
 
     stores.accountStore.setStore({
       account: { address: null },
-      web3provider: null,
+      web3Provider: null,
       provider: null,
     });
 
@@ -367,6 +298,10 @@ function Header(props) {
       "dystopia.finance-dark-mode"
     );
     setDarkMode(localStorageDarkMode ? localStorageDarkMode === "dark" : true);
+
+    return () => {
+
+    }
   }, []);
 
   const navigate = (url) => {
@@ -556,154 +491,6 @@ function Header(props) {
               </div>
             )}
           </div>
-          {/* <WalletConnect>
-            {({ connect }) => {
-              return (
-                <>
-                  {account && account.address ? (
-                    <div className={classes.accountButtonContainer}>
-                      <Button
-                        disableElevation
-                        className={[
-                          classes.accountButton,
-                          classes[`accountButton--${appTheme}`],
-                        ].join(" ")}
-                        variant="contained"
-                        aria-controls="simple-menu"
-                        aria-haspopup="true"
-                        onClick={handleClick}
-                      >
-                        <div
-                          className={[
-                            classes.accountButtonAddress,
-                            classes[`accountButtonAddress--${appTheme}`],
-                            "g-flex",
-                            "g-flex--align-center",
-                          ].join(" ")}
-                        >
-                          {account && account.address && (
-                            <>
-                              {
-                                !isMetaMask ? <div
-                                  className={`${classes.accountIcon} ${classes.coinbase}`}
-                                ></div> : <div
-                                className={`${classes.accountIcon} ${classes.metamask}`}
-                              ></div>
-                              }
-                              
-
-                              <div
-                                style={{
-                                  marginLeft: 5,
-                                  marginRight: 5,
-                                  color:
-                                    appTheme === "dark" ? "#ffffff" : "#0B5E8E",
-                                }}
-                              >
-                                •
-                              </div>
-                            </>
-                          )}
-                          <Typography className={classes.headBtnTxt}>
-                            {account && account.address
-                              ? formatAddress(account.address)
-                              : "Connect Wallet 1"}
-                          </Typography>
-                        </div>
-
-                        <Typography
-                          className={[
-                            classes.headBalanceTxt,
-                            classes[`headBalanceTxt--${appTheme}`],
-                            "g-flex",
-                            "g-flex--align-center",
-                          ].join(" ")}
-                        >
-                          {maticBalance ? maticBalance : 0} {supportChain ? supportChain.contracts.FTM_SYMBOL : ''}
-                        </Typography>
-                      </Button>
-
-                      {anchorEl && (
-                        <div
-                          className={[
-                            classes.headSwitchBtn,
-                            classes[`headSwitchBtn--${appTheme}`],
-                            "g-flex",
-                            "g-flex--align-center",
-                          ].join(" ")}
-                          onClick={onAddressClicked}
-                        >
-                          <img
-                            src="/images/ui/icon-wallet.svg"
-                            className={classes.walletIcon}
-                          />
-
-                          <div
-                            style={{
-                              marginLeft: 5,
-                              marginRight: 5,
-                              color: "#ffffff",
-                            }}
-                          >
-                            •
-                          </div>
-
-                          <div className={classes.headSwitchBtnText}>
-                            Disconnect Wallet
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  ) : (
-                    <Button
-                      style={{
-                        marginLeft: !account?.address ? 14 : 0,
-                      }}
-                      disableElevation
-                      className={[
-                        classes.accountButton,
-                        classes[`accountButton--${appTheme}`],
-                        !account?.address
-                          ? classes[`accountButtonConnect--${appTheme}`]
-                          : "",
-                      ].join(" ")}
-                      variant="contained"
-                      // onClick={onAddressClicked}
-                      onClick={connect}
-                    >
-                      {account && account.address && (
-                        <div
-                          className={`${classes.accountIcon} ${classes.metamask}`}
-                        ></div>
-                      )}
-
-                      {!account?.address && (
-                        <img
-                          src="/images/ui/icon-wallet.svg"
-                          className={classes.walletIcon}
-                        />
-                      )}
-
-                      <div className={classes.walletPointContainer}>
-                        <div
-                          className={[
-                            classes.walletPoint,
-                            classes[`walletPoint--${appTheme}`],
-                          ].join(" ")}
-                        ></div>
-                      </div>
-
-                      <Typography className={classes.headBtnTxt}>
-                        {account && account.address
-                          ? formatAddress(account.address)
-                          : "Connect Wallet"}
-                      </Typography>
-                    </Button>
-                  )}
-                </>
-              );
-            }}
-          </WalletConnect> */}
 
           <div
             className={[

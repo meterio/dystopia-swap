@@ -42,6 +42,8 @@ function Navigation(props) {
         ? localStorageWarningAccepted !== "accepted"
         : true
     );
+
+    return () => {  }
   }, []);
 
   const openWarning = () => {
@@ -138,6 +140,10 @@ function Navigation(props) {
     if (condition1 || condition2) {
       router.push("/swap");
     }
+
+    return () => {
+
+    }
   }, [supportChain]);
 
   useEffect(() => {
@@ -175,6 +181,8 @@ function Navigation(props) {
     if (activePath.includes("airdrop")) {
       setActive("airdrop");
     }
+
+    return () => {}
   }, []);
 
   const renderNavs = () => {

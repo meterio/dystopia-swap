@@ -29,6 +29,8 @@ export default function ssRewards() {
       setToken(vestNFTs[0]);
       stores.dispatcher.dispatch({ type: ACTIONS.GET_REWARD_BALANCES, content: { tokenID: vestNFTs[0].id } });
     }
+
+    return () => {}
   }, [vestNFTs])
 
   const stableSwapUpdated = (rew) => {

@@ -19,10 +19,10 @@ import classes from "./ssMigrate.module.css";
 import { useAppThemeContext } from "../../ui/AppThemeProvider";
 import stores from "../../stores";
 import { ACTIONS } from "../../stores/constants";
-import { parseUnits } from "ethers/lib/utils";
 import Borders from "../../ui/Borders";
 import AssetSelect from "../../ui/AssetSelect";
 import Loader from "../../ui/Loader";
+import { ethers } from "ethers";
 
 export default function Setup() {
   const [fromAssetValue, setFromAssetValue] = useState(null);
@@ -92,7 +92,7 @@ export default function Setup() {
   }
 
   const getPairDetails = async (token0, token1) => {
-    const multicall = await stores.accountStore.getMulticall();
+    const multicall = await stores.accountStore.getMultiProvider();
     if (!supportChain) return;
 
     if (token0 == supportChain.contracts.FTM_ADDRESS) {
@@ -103,7 +103,7 @@ export default function Setup() {
     }
 
     try {
-      const web3 = await stores.accountStore.getWeb3Provider();
+      const web3 = await stores.accountStore.getMultiProvider();
       if (!web3) {
         console.warn("web3 not found");
       } else {
@@ -111,18 +111,19 @@ export default function Setup() {
         if (!account) {
           console.warn("account not found");
         } else {
-          const factoryContract = new web3.eth.Contract(
+          const factoryContract = new ethers.Contract(
+            platform.value,
             FactoryAbi,
-            platform.value
-          );
-          const pairAddress = await factoryContract.methods
-            .getPair(token0, token1)
-            .call();
+            web3
+          )
+          const pairAddress = await factoryContract
+            .getPair(token0, token1);
           if (pairAddress !== "0x0000000000000000000000000000000000000000") {
-            const pairContract = new web3.eth.Contract(
+            const pairContract = new ethers.Contract(
+              pairAddress,
               pairContractAbi,
-              pairAddress
-            );
+              web3
+            )
 
             const migrator = migrate.find(
               (eachMigrate) => eachMigrate == platform
@@ -135,40 +136,39 @@ export default function Setup() {
               lpBalance,
               token0Add,
               token1Add,
-            ] = await multicall.aggregate([
-              pairContract.methods.getReserves(),
-              pairContract.methods.symbol(),
-              pairContract.methods.allowance(
+            ] = await Promise.all([
+              pairContract.getReserves(),
+              pairContract.symbol(),
+              pairContract.allowance(
                 account.address,
                 migrator.migratorAddress[process.env.NEXT_PUBLIC_CHAINID]
               ),
-              pairContract.methods.totalSupply(),
-              pairContract.methods.balanceOf(account.address),
-              pairContract.methods.token0(),
-              pairContract.methods.token1(),
+              pairContract.totalSupply(),
+              pairContract.balanceOf(account.address),
+              pairContract.token0(),
+              pairContract.token1(),
             ]);
 
-            const token0Contract = new web3.eth.Contract(
+            const token0Contract = new ethers.Contract(
+              token0Add,
               pairContractAbi,
-              token0Add
-            );
-            const token1Contract = new web3.eth.Contract(
+              web3
+            )
+            const token1Contract = new ethers.Contract(
+              token1Add,
               pairContractAbi,
-              token1Add
-            );
+              web3
+            )
             let [token0symbol, token1symbol, decimal0, decimal1] =
-              await multicall.aggregate([
-                token0Contract.methods.symbol(),
-                token1Contract.methods.symbol(),
-                token0Contract.methods.decimals(),
-                token1Contract.methods.decimals(),
+              await Promise.all([
+                token0Contract.symbol(),
+                token1Contract.symbol(),
+                token0Contract.decimals(),
+                token1Contract.decimals(),
               ]);
 
-            let totalSupply = web3.utils.fromWei(
-              getTotalSupply.toString(),
-              "ether"
-            );
-            lpBalance = web3.utils.fromWei(lpBalance.toString(), "ether");
+            let totalSupply = ethers.formatEther(getTotalSupply);
+            lpBalance = ethers.formatEther(lpBalance);
 
             const weiReserve1 = getReserves[0] / 10 ** decimal0;
 
@@ -429,12 +429,13 @@ export default function Setup() {
   ) => {
     if (!supportChain) return;
     const web3 = await stores.accountStore.getWeb3Provider();
-    const routerContract = new web3.eth.Contract(
+    const routerContract = new ethers.Contract(
+      supportChain.contracts.ROUTER_ADDRESS,
       supportChain.contracts.ROUTER_ABI,
-      supportChain.contracts.ROUTER_ADDRESS
-    );
-    const sendAmount0 = parseUnits(amount0.toString(), token0.decimals);
-    const sendAmount1 = parseUnits(amount1.toString(), token0.decimals);
+      web3
+    )
+    const sendAmount0 = ethers.parseUnits(amount0.toString(), token0.decimals);
+    const sendAmount1 = ethers.parseUnits(amount1.toString(), token0.decimals);
 
     let addy0 = token0.address;
     let addy1 = token1.address;
@@ -446,9 +447,8 @@ export default function Setup() {
       addy1 = supportChain.contracts.WFTM_ADDRESS;
     }
 
-    let res = await routerContract.methods
-      .quoteAddLiquidity(addy0, addy1, isStable, sendAmount0, sendAmount1)
-      .call();
+    let res = await routerContract
+      .quoteAddLiquidity(addy0, addy1, isStable, sendAmount0, sendAmount1);
     res = { res, token0: token0, token1: token1 };
     setQuote(res);
   };
@@ -537,8 +537,8 @@ export default function Setup() {
       setOpen(true);
     };
 
-    useEffect(
-      async function () {
+    useEffect(() => {
+      const fun = async () => {
         let ao = migrate.filter((eachPlatform) => {
           if (search && search !== "") {
             return eachPlatform.label
@@ -558,11 +558,12 @@ export default function Setup() {
             true
           );
         }
+      }
 
-        return () => {};
-      },
-      [search]
-    );
+      fun()
+
+      return () => { };
+    }, [search]);
 
     const onSearchChanged = async (event) => {
       setSearch(event.target.value);
@@ -728,46 +729,46 @@ export default function Setup() {
             >
               {filteredPlatform.length === 0
                 ? migrate.map((eachPlatform, index) => (
-                    <div
-                      key={index}
-                      className={[
-                        classes.pairDetails,
-                        classes[`pairDetails--${appTheme}`],
-                        "g-flex",
-                        "g-flex--align-center",
-                      ].join(" ")}
-                    >
-                      <Borders
-                        offsetLeft={-1}
-                        offsetRight={-1}
-                        offsetTop={-1}
-                        offsetBottom={-1}
-                      />
+                  <div
+                    key={index}
+                    className={[
+                      classes.pairDetails,
+                      classes[`pairDetails--${appTheme}`],
+                      "g-flex",
+                      "g-flex--align-center",
+                    ].join(" ")}
+                  >
+                    <Borders
+                      offsetLeft={-1}
+                      offsetRight={-1}
+                      offsetTop={-1}
+                      offsetBottom={-1}
+                    />
 
-                      {eachPlatform.label}
-                    </div>
-                  ))
+                    {eachPlatform.label}
+                  </div>
+                ))
                 : filteredPlatform.map((eachPlatform, index) => (
-                    <div
-                      key={index}
-                      className={[
-                        classes.pairDetails,
-                        classes[`pairDetails--${appTheme}`],
-                        "g-flex",
-                        "g-flex--align-center",
-                      ].join(" ")}
-                      onClick={() => handleCloseSelect(eachPlatform)}
-                    >
-                      <Borders
-                        offsetLeft={-1}
-                        offsetRight={-1}
-                        offsetTop={-1}
-                        offsetBottom={-1}
-                      />
+                  <div
+                    key={index}
+                    className={[
+                      classes.pairDetails,
+                      classes[`pairDetails--${appTheme}`],
+                      "g-flex",
+                      "g-flex--align-center",
+                    ].join(" ")}
+                    onClick={() => handleCloseSelect(eachPlatform)}
+                  >
+                    <Borders
+                      offsetLeft={-1}
+                      offsetRight={-1}
+                      offsetTop={-1}
+                      offsetBottom={-1}
+                    />
 
-                      {eachPlatform.label}
-                    </div>
-                  ))}
+                    {eachPlatform.label}
+                  </div>
+                ))}
             </DialogContent>
           </div>
         </Dialog>
@@ -1467,7 +1468,7 @@ export default function Setup() {
                               ~
                               {Number(
                                 quote?.res?.amountA /
-                                  10 ** quote?.token0?.decimals
+                                10 ** quote?.token0?.decimals
                               ).toFixed(2)}
                             </div>
                           </div>
@@ -1500,7 +1501,7 @@ export default function Setup() {
                               ~
                               {Number(
                                 quote?.res?.amountB /
-                                  10 ** quote?.token1?.decimals
+                                10 ** quote?.token1?.decimals
                               ).toFixed(2)}
                             </div>
                           </div>
@@ -1651,7 +1652,7 @@ export default function Setup() {
                             Number(pairDetails.token0Bal) -
                             Number(
                               quote?.res?.amountA /
-                                10 ** quote?.token0?.decimals
+                              10 ** quote?.token0?.decimals
                             )
                           ).toFixed(2)}
                           {quote?.token0?.symbol} and ~
@@ -1659,7 +1660,7 @@ export default function Setup() {
                             Number(pairDetails.token1Bal) -
                             Number(
                               quote?.res?.amountB /
-                                10 ** quote?.token1?.decimals
+                              10 ** quote?.token1?.decimals
                             )
                           ).toFixed(2)}
                           {quote?.token1?.symbol} will be refunded to your

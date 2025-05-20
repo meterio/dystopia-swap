@@ -18,116 +18,22 @@ import "../styles/grid.css";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import classes from "./home/home.module.css";
 
-import {
-  EthereumClient,
-  w3mConnectors,
-  w3mProvider,
-} from "@web3modal/ethereum";
-import { Web3Modal } from "@web3modal/react";
-import { configureChains, createConfig, WagmiConfig } from "wagmi";
-import { mainnet, optimism, polygon, base } from "wagmi/chains";
+import { createAppKit } from '@reown/appkit/react';
+import { networks, projectId, metadata, ethersAdapter } from './walletConfig';
 
-// 1. Get projectID at https://cloud.walletconnect.com
-// if (!process.env.NEXT_PUBLIC_PROJECT_ID) {
-// throw new Error("You need to provide NEXT_PUBLIC_PROJECT_ID env variable");
-// }
-const projectId = "4a9daa7479cd37c1545d5dbb98040c30"; // process.env.NEXT_PUBLIC_PROJECT_ID;
-
-// 2. Configure wagmi client
-import { Chain } from "@wagmi/core";
-import { SafeConnector } from "wagmi/connectors/safe";
-
-const meter = {
-  id: 82,
-  name: "Meter",
-  network: "meter",
-  nativeCurrency: {
-    decimals: 18,
-    name: "Meter Stable",
-    symbol: "MTR",
+createAppKit({
+  adapters: [ethersAdapter],
+  networks,
+  metadata,
+  projectId,
+  themeMode: 'light',
+  features: {
+    analytics: true // Optional - defaults to your Cloud configuration
   },
-  rpcUrls: {
-    default: { http: ["https://rpc.meter.io"] },
-    public: { http: ["https://rpc.meter.io"] },
-  },
-  blockExplorers: {
-    etherscan: { name: "MeterScan", url: "https://scan.meter.io" },
-    default: { name: "MeterScan", url: "https://scan.meter.io" },
-  },
-  contracts: {},
-};
-
-const meterTestnet = {
-  id: 83,
-  name: "Meter Testnet",
-  network: "meterTestnet",
-  nativeCurrency: {
-    decimals: 18,
-    name: "Meter Stable",
-    symbol: "MTR",
-  },
-  rpcUrls: {
-    default: { http: ["https://rpctest.meter.io"] },
-    public: { http: ["https://rpctest.meter.io"] },
-  },
-  blockExplorers: {
-    etherscan: {
-      name: "MeterScan",
-      url: "https://scan-warringstakes.meter.io",
-    },
-    default: { name: "MeterScan", url: "https://scan-warringstakes.meter.io" },
-  },
-  contracts: {},
-  testnet: true,
-};
-
-const theta = {
-  id: 361,
-  name: "Theta",
-  network: "theta",
-  nativeCurrency: {
-    decimals: 18,
-    name: "TFUEL",
-    symbol: "TFUEL",
-  },
-  rpcUrls: {
-    default: { http: ["https://eth-rpc-api.thetatoken.org/rpc	"] },
-    public: { http: ["https://eth-rpc-api.thetatoken.org/rpc	"] },
-  },
-  blockExplorers: {
-    etherscan: {
-      name: "Theta Explorer",
-      url: "https://explorer.thetatoken.org/",
-    },
-    default: {
-      name: "Theta Explorer",
-      url: "https://explorer.thetatoken.org/",
-    },
-  },
-  contracts: {},
-};
-
-const chains = [meter, meterTestnet, theta, base];
-
-const safeConnector = new SafeConnector({
-  chains,
-  options: {
-    allowedDomains: [/safe.meter.io$/, /gnosis-safe.io$/, /app.safe.global$/],
-    debug: false,
-  },
-});
-
-const web3modalConnecter = w3mConnectors({ chains, projectId });
-
-const { publicClient } = configureChains(chains, [w3mProvider({ projectId })]);
-const wagmiConfig = createConfig({
-  autoConnect: true,
-  connectors: [...web3modalConnecter, safeConnector],
-  publicClient,
-});
-
-// 3. Configure modal ethereum client
-const ethereumClient = new EthereumClient(wagmiConfig, chains);
+  themeVariables: {
+    '--w3m-accent': '#000000',
+  }
+})
 
 export default function MyApp({ Component, pageProps }) {
   const [ready, setReady] = useState(false);
@@ -139,6 +45,8 @@ export default function MyApp({ Component, pageProps }) {
 
   useEffect(() => {
     setReady(true);
+
+    return () => {}
   }, []);
 
   useEffect(() => {
@@ -147,6 +55,8 @@ export default function MyApp({ Component, pageProps }) {
     if (jssStyles) {
       jssStyles.parentElement.removeChild(jssStyles);
     }
+
+    return () => {}
   }, []);
 
   const changeTheme = (dark) => {
@@ -168,6 +78,8 @@ export default function MyApp({ Component, pageProps }) {
       "dystopia.finance-dark-mode"
     );
     changeTheme(localStorageDarkMode ? localStorageDarkMode === "dark" : true);
+
+    return () => {}
   }, []);
 
   useEffect(function () {
@@ -208,7 +120,6 @@ export default function MyApp({ Component, pageProps }) {
   return (
     <ThemeProvider theme={theme}>
       <React.Fragment>
-        <WagmiConfig config={wagmiConfig}>
           <Head>
             <title>Voltswap</title>
             <meta
@@ -225,10 +136,6 @@ export default function MyApp({ Component, pageProps }) {
                   <Component {...pageProps} changeTheme={changeTheme} />
                 ) : null}
                 {/* <Component {...pageProps} changeTheme={changeTheme} /> */}
-                <Web3Modal
-                  projectId={projectId}
-                  ethereumClient={ethereumClient}
-                />
               </Layout>
             )}
 
@@ -248,7 +155,6 @@ export default function MyApp({ Component, pageProps }) {
               </div>
             )}
           </AppThemeProvider>
-        </WagmiConfig>
       </React.Fragment>
     </ThemeProvider>
   );

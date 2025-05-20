@@ -69,36 +69,33 @@ function Setup() {
     };
   }, []);
 
-  useEffect(
-      function () {
-        const errorReturned = (msg) => {
-          setLoading(false);
-        };
+  useEffect(() => {
+    const errorReturned = (msg) => {
+      setLoading(false);
+    };
 
-        const ssUpdated = () => {
-          setLoading(false);
-          const swapTvoltAssets = stores.stableSwapStore.getStore("swapTvoltAssets");
-          if (swapTvoltAssets) {
-            setFromAssetValue(swapTvoltAssets[0])
+    const ssUpdated = () => {
+      setLoading(false);
+      const swapTvoltAssets = stores.stableSwapStore.getStore("swapTvoltAssets");
+      if (swapTvoltAssets) {
+        setFromAssetValue(swapTvoltAssets[0])
 
-            setToAssetValue(swapTvoltAssets[1])
-          }
-        };
+        setToAssetValue(swapTvoltAssets[1])
+      }
+    };
 
-        stores.emitter.on(ACTIONS.ERROR, errorReturned);
-        stores.emitter.on(ACTIONS.UPDATED, ssUpdated);
+    stores.emitter.on(ACTIONS.ERROR, errorReturned);
+    stores.emitter.on(ACTIONS.UPDATED, ssUpdated);
 
-        ssUpdated();
+    ssUpdated();
 
-        return () => {
-          stores.emitter.removeListener(ACTIONS.ERROR, errorReturned);
-          stores.emitter.removeListener(ACTIONS.UPDATED, ssUpdated);
-        };
-      },
-      [fromAmountValue, fromAssetValue, toAssetValue]
-  );
+    return () => {
+      stores.emitter.removeListener(ACTIONS.ERROR, errorReturned);
+      stores.emitter.removeListener(ACTIONS.UPDATED, ssUpdated);
+    };
+  },[fromAmountValue, fromAssetValue, toAssetValue]);
 
-  const onAssetSelect = (type, value) => {};
+  const onAssetSelect = (type, value) => { };
 
   const fromAmountChanged = (event) => {
     const value = formatInputAmount(event.target.value.replace(",", "."));
@@ -116,9 +113,9 @@ function Setup() {
 
   const onSwap = () => {
     if (
-        !fromAmountValue ||
-        fromAmountValue > Number(fromAssetValue.balance) ||
-        Number(fromAmountValue) <= 0
+      !fromAmountValue ||
+      fromAmountValue > Number(fromAssetValue.balance) ||
+      Number(fromAmountValue) <= 0
     ) {
       return;
     }
@@ -134,9 +131,9 @@ function Setup() {
       error = true;
     } else {
       if (
-          !fromAssetValue.balance ||
-          isNaN(fromAssetValue.balance) ||
-          BigNumber(fromAssetValue.balance).lte(0)
+        !fromAssetValue.balance ||
+        isNaN(fromAssetValue.balance) ||
+        BigNumber(fromAssetValue.balance).lte(0)
       ) {
         setFromAmountError("Invalid balance");
         error = true;
@@ -144,8 +141,8 @@ function Setup() {
         setFromAmountError("Invalid amount");
         error = true;
       } else if (
-          fromAssetValue &&
-          BigNumber(fromAmountValue).gt(fromAssetValue.balance)
+        fromAssetValue &&
+        BigNumber(fromAmountValue).gt(fromAssetValue.balance)
       ) {
         setFromAmountError(`Greater than your available balance`);
         error = true;
@@ -186,112 +183,112 @@ function Setup() {
     }
   };
 
-  const swapAssets = () => {};
+  const swapAssets = () => { };
 
   const renderMassiveInput = (
-      type,
-      amountValue,
-      amountError,
-      amountChanged,
-      assetValue,
-      assetError,
-      assetOptions,
-      onAssetSelect,
-      disabledSelect
+    type,
+    amountValue,
+    amountError,
+    amountChanged,
+    assetValue,
+    assetError,
+    assetOptions,
+    onAssetSelect,
+    disabledSelect
   ) => {
     return (
+      <div
+        className={[
+          classes.textField,
+          classes[`textField--${type}-${appTheme}`],
+        ].join(" ")}
+      >
+        <Typography className={classes.inputTitleText} noWrap>
+          {type === "From" ? "From" : "To"}
+        </Typography>
+
         <div
-            className={[
-              classes.textField,
-              classes[`textField--${type}-${appTheme}`],
-            ].join(" ")}
+          className={[
+            classes.inputBalanceTextContainer,
+            "g-flex",
+            "g-flex--align-center",
+          ].join(" ")}
         >
-          <Typography className={classes.inputTitleText} noWrap>
-            {type === "From" ? "From" : "To"}
-          </Typography>
+          <img
+            src="/images/ui/icon-wallet.svg"
+            className={classes.walletIcon}
+          />
 
-          <div
-              className={[
-                classes.inputBalanceTextContainer,
-                "g-flex",
-                "g-flex--align-center",
-              ].join(" ")}
+          <Typography
+            className={[classes.inputBalanceText, "g-flex__item"].join(" ")}
+            noWrap
+            onClick={() => setBalance100()}
           >
-            <img
-                src="/images/ui/icon-wallet.svg"
-                className={classes.walletIcon}
-            />
-
-            <Typography
-                className={[classes.inputBalanceText, "g-flex__item"].join(" ")}
-                noWrap
-                onClick={() => setBalance100()}
-            >
             <span>
               {assetValue && assetValue.balance
-                  ? " " + formatCurrency(assetValue.balance)
-                  : ""}
+                ? " " + formatCurrency(assetValue.balance)
+                : ""}
             </span>
-            </Typography>
+          </Typography>
 
-            {assetValue?.balance &&
+          {assetValue?.balance &&
             Number(assetValue?.balance) > 0 &&
             type === "From" && (
-                <div
-                    style={{
-                      cursor: "pointer",
-                      fontWeight: 500,
-                      fontSize: 14,
-                      lineHeight: "120%",
-                      color: appTheme === "dark" ? "#4CADE6" : "#0B5E8E",
-                    }}
-                    onClick={() => setBalance100()}
-                >
-                  MAX
-                </div>
-            )}
-          </div>
-
-          <div
-              className={`${classes.massiveInputContainer} ${(amountError || assetError) && classes.error
-              }`}
-          >
-            <div className={classes.massiveInputAssetSelect}>
-              <AssetSelect
-                  type={type}
-                  value={assetValue}
-                  assetOptions={assetOptions}
-                  onSelect={onAssetSelect}
-                  disabledSelect={disabledSelect}
-              />
-            </div>
-
-            <InputBase
-                className={classes.massiveInputAmount}
-                placeholder="0.00"
-                error={amountError}
-                value={amountValue}
-                onChange={amountChanged}
-                disabled={loading || type === "To"}
-                inputMode={"decimal"}
-                inputProps={{
-                  className: [
-                    classes.largeInput,
-                    classes[`largeInput--${appTheme}`],
-                  ].join(" "),
+              <div
+                style={{
+                  cursor: "pointer",
+                  fontWeight: 500,
+                  fontSize: 14,
+                  lineHeight: "120%",
+                  color: appTheme === "dark" ? "#4CADE6" : "#0B5E8E",
                 }}
-            />
-
-            <Typography
-                className={[
-                  classes.smallerText,
-                  classes[`smallerText--${appTheme}`],
-                ].join(" ")}
-            >
-              {assetValue?.symbol}
-            </Typography>
-          </div>
+                onClick={() => setBalance100()}
+              >
+                MAX
+              </div>
+            )}
         </div>
+
+        <div
+          className={`${classes.massiveInputContainer} ${(amountError || assetError) && classes.error
+            }`}
+        >
+          <div className={classes.massiveInputAssetSelect}>
+            <AssetSelect
+              type={type}
+              value={assetValue}
+              assetOptions={assetOptions}
+              onSelect={onAssetSelect}
+              disabledSelect={disabledSelect}
+            />
+          </div>
+
+          <InputBase
+            className={classes.massiveInputAmount}
+            placeholder="0.00"
+            error={amountError}
+            value={amountValue}
+            onChange={amountChanged}
+            disabled={loading || type === "To"}
+            inputMode={"decimal"}
+            inputProps={{
+              className: [
+                classes.largeInput,
+                classes[`largeInput--${appTheme}`],
+              ].join(" "),
+            }}
+          />
+
+          <Typography
+            className={[
+              classes.smallerText,
+              classes[`smallerText--${appTheme}`],
+            ].join(" ")}
+          >
+            {assetValue?.symbol}
+          </Typography>
+        </div>
+      </div>
     );
   };
 
@@ -318,248 +315,248 @@ function Setup() {
   };
 
   return (
-      <div className={classes.swapInputs}>
-        {renderMassiveInput(
-            "From",
-            fromAmountValue,
-            fromAmountError,
-            fromAmountChanged,
-            fromAssetValue,
-            fromAssetError,
-            fromAssetOptions,
-            onAssetSelect,
-            true
-        )}
+    <div className={classes.swapInputs}>
+      {renderMassiveInput(
+        "From",
+        fromAmountValue,
+        fromAmountError,
+        fromAmountChanged,
+        fromAssetValue,
+        fromAssetError,
+        fromAssetOptions,
+        onAssetSelect,
+        true
+      )}
 
-        {fromAssetError && (
-            <div
-                style={{ marginTop: 20 }}
-                className={[
-                  classes.warningContainer,
-                  classes[`warningContainer--${appTheme}`],
-                  classes.warningContainerError,
-                ].join(" ")}
-            >
-              <div
-                  className={[
-                    classes.warningDivider,
-                    classes.warningDividerError,
-                  ].join(" ")}
-              ></div>
-              <Typography
-                  className={[
-                    classes.warningError,
-                    classes[`warningText--${appTheme}`],
-                  ].join(" ")}
-                  align="center"
-              >
-                {fromAssetError}
-              </Typography>
-            </div>
-        )}
-
+      {fromAssetError && (
         <div
-            className={[
-              classes.swapIconContainer,
-              classes[`swapIconContainer--${appTheme}`],
-            ].join(" ")}
-            onMouseOver={swapIconHover}
-            onMouseOut={swapIconDefault}
-            onMouseDown={swapIconClick}
-            onMouseUp={swapIconDefault}
-            onTouchStart={swapIconClick}
-            onTouchEnd={swapIconDefault}
-            onClick={swapAssets}
+          style={{ marginTop: 20 }}
+          className={[
+            classes.warningContainer,
+            classes[`warningContainer--${appTheme}`],
+            classes.warningContainerError,
+          ].join(" ")}
         >
-          {windowWidth > 470 && (
-              <svg
-                  width="80"
-                  height="80"
-                  viewBox="0 0 80 80"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-              >
-                <circle
-                    cx="40"
-                    cy="40"
-                    r="39.5"
-                    fill={appTheme === "dark" ? "#151718" : "#DBE6EC"}
-                    stroke={appTheme === "dark" ? "#5F7285" : "#86B9D6"}
-                />
-
-                <rect
-                    y="30"
-                    width="4"
-                    height="20"
-                    fill={appTheme === "dark" ? "#151718" : "#DBE6EC"}
-                />
-
-                <rect
-                    x="76"
-                    y="30"
-                    width="4"
-                    height="20"
-                    fill={appTheme === "dark" ? "#151718" : "#DBE6EC"}
-                />
-
-                <circle
-                    cx="40"
-                    cy="40"
-                    r="29.5"
-                    fill={
-                      swapIconBgColor || (appTheme === "dark" ? "#24292D" : "#B9DFF5")
-                    }
-                    stroke={
-                      swapIconBorderColor ||
-                      (appTheme === "dark" ? "#5F7285" : "#86B9D6")
-                    }
-                />
-
-                <path
-                    d="M41.0002 44.172L46.3642 38.808L47.7782 40.222L40.0002 48L32.2222 40.222L33.6362 38.808L39.0002 44.172V32H41.0002V44.172Z"
-                    fill={
-                      swapIconArrowColor ||
-                      (appTheme === "dark" ? "#4CADE6" : "#0B5E8E")
-                    }
-                />
-              </svg>
-          )}
-
-          {windowWidth <= 470 && (
-              <svg
-                  width="50"
-                  height="50"
-                  viewBox="0 0 50 50"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-              >
-                <circle
-                    cx="25"
-                    cy="25"
-                    r="24.5"
-                    fill={appTheme === "dark" ? "#151718" : "#DBE6EC"}
-                    stroke={appTheme === "dark" ? "#5F7285" : "#86B9D6"}
-                />
-
-                <rect
-                    y="20"
-                    width="3"
-                    height="10"
-                    fill={appTheme === "dark" ? "#151718" : "#DBE6EC"}
-                />
-
-                <rect
-                    x="48"
-                    y="20"
-                    width="2"
-                    height="10"
-                    fill={appTheme === "dark" ? "#151718" : "#DBE6EC"}
-                />
-
-                <circle
-                    cx="25"
-                    cy="25"
-                    r="18.5"
-                    fill={
-                      swapIconBgColor || (appTheme === "dark" ? "#24292D" : "#B9DFF5")
-                    }
-                    stroke={
-                      swapIconBorderColor ||
-                      (appTheme === "dark" ? "#5F7285" : "#86B9D6")
-                    }
-                />
-
-                <path
-                    d="M25.8336 28.4773L30.3036 24.0073L31.4819 25.1857L25.0002 31.6673L18.5186 25.1857L19.6969 24.0073L24.1669 28.4773V18.334H25.8336V28.4773Z"
-                    fill={
-                      swapIconArrowColor ||
-                      (appTheme === "dark" ? "#ffffff" : "#ffffff")
-                    }
-                />
-              </svg>
-          )}
+          <div
+            className={[
+              classes.warningDivider,
+              classes.warningDividerError,
+            ].join(" ")}
+          ></div>
+          <Typography
+            className={[
+              classes.warningError,
+              classes[`warningText--${appTheme}`],
+            ].join(" ")}
+            align="center"
+          >
+            {fromAssetError}
+          </Typography>
         </div>
+      )}
 
-        {renderMassiveInput(
-            "To",
-            toAmountValue,
-            toAmountError,
-            toAmountChanged,
-            toAssetValue,
-            toAssetError,
-            toAssetOptions,
-            onAssetSelect,
-            true
+      <div
+        className={[
+          classes.swapIconContainer,
+          classes[`swapIconContainer--${appTheme}`],
+        ].join(" ")}
+        onMouseOver={swapIconHover}
+        onMouseOut={swapIconDefault}
+        onMouseDown={swapIconClick}
+        onMouseUp={swapIconDefault}
+        onTouchStart={swapIconClick}
+        onTouchEnd={swapIconDefault}
+        onClick={swapAssets}
+      >
+        {windowWidth > 470 && (
+          <svg
+            width="80"
+            height="80"
+            viewBox="0 0 80 80"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <circle
+              cx="40"
+              cy="40"
+              r="39.5"
+              fill={appTheme === "dark" ? "#151718" : "#DBE6EC"}
+              stroke={appTheme === "dark" ? "#5F7285" : "#86B9D6"}
+            />
+
+            <rect
+              y="30"
+              width="4"
+              height="20"
+              fill={appTheme === "dark" ? "#151718" : "#DBE6EC"}
+            />
+
+            <rect
+              x="76"
+              y="30"
+              width="4"
+              height="20"
+              fill={appTheme === "dark" ? "#151718" : "#DBE6EC"}
+            />
+
+            <circle
+              cx="40"
+              cy="40"
+              r="29.5"
+              fill={
+                swapIconBgColor || (appTheme === "dark" ? "#24292D" : "#B9DFF5")
+              }
+              stroke={
+                swapIconBorderColor ||
+                (appTheme === "dark" ? "#5F7285" : "#86B9D6")
+              }
+            />
+
+            <path
+              d="M41.0002 44.172L46.3642 38.808L47.7782 40.222L40.0002 48L32.2222 40.222L33.6362 38.808L39.0002 44.172V32H41.0002V44.172Z"
+              fill={
+                swapIconArrowColor ||
+                (appTheme === "dark" ? "#4CADE6" : "#0B5E8E")
+              }
+            />
+          </svg>
         )}
 
-        {toAssetError && (
-            <div
-                style={{ marginTop: 20 }}
-                className={[
-                  classes.warningContainer,
-                  classes[`warningContainer--${appTheme}`],
-                  classes.warningContainerError,
-                ].join(" ")}
-            >
-              <div
-                  className={[
-                    classes.warningDivider,
-                    classes.warningDividerError,
-                  ].join(" ")}
-              ></div>
-              <Typography
-                  className={[
-                    classes.warningError,
-                    classes[`warningText--${appTheme}`],
-                  ].join(" ")}
-                  align="center"
-              >
-                {toAssetError}
-              </Typography>
-            </div>
-        )}
+        {windowWidth <= 470 && (
+          <svg
+            width="50"
+            height="50"
+            viewBox="0 0 50 50"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <circle
+              cx="25"
+              cy="25"
+              r="24.5"
+              fill={appTheme === "dark" ? "#151718" : "#DBE6EC"}
+              stroke={appTheme === "dark" ? "#5F7285" : "#86B9D6"}
+            />
 
-        {loading && (
-            <div className={classes.loader}>
-              <Loader color={appTheme === "dark" ? "#8F5AE8" : "#8F5AE8"} />
-            </div>
+            <rect
+              y="20"
+              width="3"
+              height="10"
+              fill={appTheme === "dark" ? "#151718" : "#DBE6EC"}
+            />
+
+            <rect
+              x="48"
+              y="20"
+              width="2"
+              height="10"
+              fill={appTheme === "dark" ? "#151718" : "#DBE6EC"}
+            />
+
+            <circle
+              cx="25"
+              cy="25"
+              r="18.5"
+              fill={
+                swapIconBgColor || (appTheme === "dark" ? "#24292D" : "#B9DFF5")
+              }
+              stroke={
+                swapIconBorderColor ||
+                (appTheme === "dark" ? "#5F7285" : "#86B9D6")
+              }
+            />
+
+            <path
+              d="M25.8336 28.4773L30.3036 24.0073L31.4819 25.1857L25.0002 31.6673L18.5186 25.1857L19.6969 24.0073L24.1669 28.4773V18.334H25.8336V28.4773Z"
+              fill={
+                swapIconArrowColor ||
+                (appTheme === "dark" ? "#ffffff" : "#ffffff")
+              }
+            />
+          </svg>
         )}
-        {
-          account && account.address ?
-            <BtnSwap
-              onClick={onSwap}
-              className={classes.btnSwap}
-              labelClassName={
-                !fromAmountValue ||
-                fromAmountValue > Number(fromAssetValue.balance) ||
-                Number(fromAmountValue) <= 0
-                    ? classes["actionButtonText--disabled"]
-                    : classes.actionButtonText
-              }
-              isDisabled={
-                !fromAmountValue ||
-                fromAmountValue > Number(fromAssetValue.balance) ||
-                Number(fromAmountValue) <= 0
-              }
-              label={
-                loading ? "Swapping" : !fromAmountValue || Number(fromAmountValue) <= 0 ? "Enter Amount" : "Swap"
-              }
-            ></BtnSwap>
-            :
-            <WalletConnect>
-              {({ connect }) => {
-                return (
-                  <BtnSwap
-                    onClick={connect}
-                    className={classes.btnSwap}
-                    labelClassName={classes.actionButtonText}
-                    label={'Connect wallet'}
-                  ></BtnSwap>
-                )
-              }}
-            </WalletConnect>
-        }
       </div>
+
+      {renderMassiveInput(
+        "To",
+        toAmountValue,
+        toAmountError,
+        toAmountChanged,
+        toAssetValue,
+        toAssetError,
+        toAssetOptions,
+        onAssetSelect,
+        true
+      )}
+
+      {toAssetError && (
+        <div
+          style={{ marginTop: 20 }}
+          className={[
+            classes.warningContainer,
+            classes[`warningContainer--${appTheme}`],
+            classes.warningContainerError,
+          ].join(" ")}
+        >
+          <div
+            className={[
+              classes.warningDivider,
+              classes.warningDividerError,
+            ].join(" ")}
+          ></div>
+          <Typography
+            className={[
+              classes.warningError,
+              classes[`warningText--${appTheme}`],
+            ].join(" ")}
+            align="center"
+          >
+            {toAssetError}
+          </Typography>
+        </div>
+      )}
+
+      {loading && (
+        <div className={classes.loader}>
+          <Loader color={appTheme === "dark" ? "#8F5AE8" : "#8F5AE8"} />
+        </div>
+      )}
+      {
+        account && account.address ?
+          <BtnSwap
+            onClick={onSwap}
+            className={classes.btnSwap}
+            labelClassName={
+              !fromAmountValue ||
+                fromAmountValue > Number(fromAssetValue.balance) ||
+                Number(fromAmountValue) <= 0
+                ? classes["actionButtonText--disabled"]
+                : classes.actionButtonText
+            }
+            isDisabled={
+              !fromAmountValue ||
+              fromAmountValue > Number(fromAssetValue.balance) ||
+              Number(fromAmountValue) <= 0
+            }
+            label={
+              loading ? "Swapping" : !fromAmountValue || Number(fromAmountValue) <= 0 ? "Enter Amount" : "Swap"
+            }
+          ></BtnSwap>
+          :
+          <WalletConnect>
+            {({ connect }) => {
+              return (
+                <BtnSwap
+                  onClick={connect}
+                  className={classes.btnSwap}
+                  labelClassName={classes.actionButtonText}
+                  label={'Connect wallet'}
+                ></BtnSwap>
+              )
+            }}
+          </WalletConnect>
+      }
+    </div>
   );
 }
 

@@ -189,6 +189,8 @@ function MyComponent(props) {
     if (activatingConnector && activatingConnector === connector) {
       setActivatingConnector(undefined);
     }
+
+    return () => {}
   }, [activatingConnector, connector]);
 
   React.useEffect(() => {
@@ -200,6 +202,8 @@ function MyComponent(props) {
       stores.emitter.emit(CONNECTION_CONNECTED);
       stores.emitter.emit(ACTIONS.ACCOUNT_CONFIGURED);
     }
+
+    return () => {}
   }, [account, active, closeModal, context, library]);
 
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);

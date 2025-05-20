@@ -18,23 +18,6 @@ export default function Transaction({ transaction }) {
   const [expanded, setExpanded] = useState(false);
   const { appTheme } = useAppThemeContext();
 
-  const successIcon = () => {
-    return (
-      <svg
-        width="30"
-        height="31"
-        viewBox="0 0 30 31"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          d="M15 28C8.09625 28 2.5 22.4037 2.5 15.5C2.5 8.59625 8.09625 3 15 3C21.9037 3 27.5 8.59625 27.5 15.5C27.5 22.4037 21.9037 28 15 28ZM13.7537 20.5L22.5912 11.6613L20.8237 9.89375L13.7537 16.965L10.2175 13.4288L8.45 15.1962L13.7537 20.5Z"
-          fill="#15B525"
-        />
-      </svg>
-    );
-  };
-
   const mapStatusToIcon = (status) => {
     switch (status) {
       case "WAITING":

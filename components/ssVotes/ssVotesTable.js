@@ -775,6 +775,8 @@ export default function EnhancedTable({
 
   useEffect(() => {
     setSliderValues(defaultVotes);
+
+    return () => {}
   }, [defaultVotes]);
 
   const onSliderChange = (event, value, asset) => {

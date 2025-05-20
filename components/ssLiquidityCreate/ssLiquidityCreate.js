@@ -115,8 +115,10 @@ export default function SSLiquidityCreate() {
     };
   }, []);
 
-  useEffect(async () => {
+  useEffect(() => {
     ssUpdated()
+
+    return () => {}
   }, [router.query.address])
 
   const setAmountPercent = (input, percent) => {

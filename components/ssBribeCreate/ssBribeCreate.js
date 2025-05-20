@@ -91,6 +91,10 @@ export default function ssBribeCreate() {
         setAsset(filteredStoreAssetOptions[0]);
       }
     }
+
+    return () => {
+      
+    }
   }, [gauge])
 
   useEffect(() => {

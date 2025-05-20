@@ -25,12 +25,8 @@ import Loader from "../../ui/Loader";
 import AssetSelect from "../../ui/AssetSelect";
 import { WalletConnect } from "../../components/WalletConnect";
 import { useRouter } from "next/router";
-import CustomButton from "../CustomButton";
-import { useAccount, useDisconnect } from "wagmi";
-import { getAccount, getNetwork } from "@wagmi/core";
 
 function Setup() {
-  const { isConnected } = useAccount();
   const [, updateState] = React.useState();
   const forceUpdate = React.useCallback(() => updateState({}), []);
 
@@ -107,35 +103,6 @@ function Setup() {
   const router = useRouter();
 
   useEffect(() => {
-    // if (isConnected) {
-    //   const account = getAccount();
-    //   setAccount(getAccount());
-    //   console.log("account: ", account);
-    //   const network = getNetwork();
-    //   const chain = network?.chain;
-    //   console.log("network:", network);
-    //   console.log("support chain: ", network?.chain);
-    //   setSupportChain(network?.chain);
-
-    //   stores.accountStore.setStore({
-    //     chainId: String(chain.id),
-    //     account: account,
-    //     supportChain: chain,
-    //     // web3provider: web3,
-    //     // httpWeb3provider: httpWeb3,
-    //     // web3modal,
-    //     // provider: instance,
-    //   });
-
-    //   setTimeout(() => {
-    //     stores.emitter.emit(ACTIONS.CONNECTION_CONNECTED);
-    //     stores.emitter.emit(ACTIONS.ACCOUNT_CONFIGURED);
-    //     stores.dispatcher.dispatch({
-    //       type: ACTIONS.CONFIGURE_SS,
-    //       content: { connected: true },
-    //     });
-    //   }, 100);
-    // }
     const accountConfigure = () => {
       setAccount(stores.accountStore.getStore("account"));
       const sc = stores.accountStore.getStore("supportChain");

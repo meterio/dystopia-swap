@@ -1,17 +1,6 @@
 import async from "async";
 import { ACTIONS, getSupportChainList } from "./constants";
-import Multicall from "@dopex-io/web3-multicall";
-import detectProvider from "@metamask/detect-provider";
-import { ethers, Contract, providers } from "ethers";
 import stores from "../stores";
-// import {
-//   injected,
-//   walletconnect,
-//   walletlink,
-//   network
-// } from './connectors';
-
-import Web3 from "web3";
 
 class Store {
   constructor(dispatcher, emitter) {
@@ -23,20 +12,10 @@ class Store {
       chainId: '',
       chainInvalid: false,
       supportChain: null,
-      web3provider: null,
-      httpWeb3provider: null,
-      web3modal: null,
       provider: null,
-      tokens: [],
-      // gasPrices: {
-      //   standard: 90,
-      //   fast: 100,
-      //   instant: 130,
-      // },
-      // gasSpeed: "fast",
-      currentBlock: 12906197,
-      subscribed: false,
-      isOpenWeb3modal: false,
+      web3Provider: null,
+      multiProvider: null,
+      signer: null
     };
 
     dispatcher.register(
@@ -62,91 +41,7 @@ class Store {
   }
 
   configure = async () => {
-    // const supportedChainIds = [process.env.NEXT_PUBLIC_CHAINID];
-    // const supportChainList = getSupportChainList()
-    // const supportedChainIds = supportChainList.map(c => c.id)
-    // const provider = await this.getProvider();
-
-    // if (!provider) {
-    //   return
-    // }
-
-    // // this.getGasPrices();
-
-    // let providerChain = provider
-    //   ? await provider.request({ method: "eth_chainId" })
-    //   : null;
-
-    // const parsedChainId = parseInt(providerChain + "", 16) + "";
-    // const isChainSupported = supportedChainIds.includes(parsedChainId);
-    // if (isChainSupported) {
-    //   this.setStore({
-    //     supportChain: supportChainList.find(c => c.id === parsedChainId)
-    //   })
-    // } else {
-    //   this.setStore({
-    //     supportChain: null
-    //   })
-    // }
-    // this.setStore({ chainInvalid: !isChainSupported });
     this.emitter.emit(ACTIONS.ACCOUNT_CONFIGURED);
-
-    // this.dispatcher.dispatch({
-    //   type: ACTIONS.CONFIGURE_SS,
-    //   content: { connected: false },
-    // });
-
-    // const subscribed = this.getStore('subscribed')
-
-    // if (!subscribed) {
-    //   this.subscribeProvider()
-    // }
-
-    // window.removeEventListener("ethereum#initialized", this.subscribeProvider);
-    // window.addEventListener("ethereum#initialized", this.subscribeProvider, {
-    //   once: true,
-    // });
-  };
-
-  // setProvider = async (provider) => {
-  //   this.ethersProvider = new ethers.providers.Web3Provider(provider);
-  //   const signer = this.ethersProvider.getSigner();
-  //   this.provider = provider;
-
-  //   try {
-  //     const address = await signer.getAddress();
-  //     this.setWalletAddress(address);
-  //     // await this.getNetwork()
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
-
-  subscribeProvider = async () => {
-    // const subscribed = this.getStore('subscribed')
-    // if (subscribed) {
-    //   console.log('subscribed return')
-    //   return
-    // }
-
-    const provider = await this.getProvider()
-    if (!provider) {
-      console.log('no privider for subscribe provider')
-      return
-    }
-    // this.setStore({
-    //   subscribed: true
-    // })
-    this.emitter.emit(ACTIONS.ACCOUNT_CONFIGURED);
-
-    if (provider.removeListener) {
-      provider.removeListener("accountsChanged", this.accountChanged.bind(this));
-      provider.removeListener("chainChanged", this.chainChanged.bind(this));
-    }
-
-    provider.on("accountsChanged", this.accountChanged.bind(this));
-
-    provider.on("chainChanged", this.chainChanged.bind(this));
   };
 
   chainChanged = async function (chainId) {
@@ -158,7 +53,6 @@ class Store {
     if (isChainSupported) {
       const supportChain = supportChainList.find(c => c.id === parsedChainId)
       const web3 = new Web3(new Web3.providers.HttpProvider(supportChain.privateRpc));
-      this.setStore({ httpWeb3provider: web3 })
       this.setStore({ supportChain })
     } else {
       this.setStore({
@@ -189,77 +83,27 @@ class Store {
     });
   }
 
-  // getGasPrices = async (payload) => {
-  //   const gasPrices = await this._getGasPrices();
-  //   let gasSpeed = localStorage.getItem("dystopia.finance-gas-speed");
-
-  //   if (!gasSpeed) {
-  //     gasSpeed = "fast";
-  //     localStorage.getItem("dystopia.finance-gas-speed", "fast");
-  //   }
-
-  //   this.setStore({ gasPrices: gasPrices, gasSpeed: gasSpeed });
-  //   this.emitter.emit(ACTIONS.GAS_PRICES_RETURNED);
-  // };
-
-  // _getGasPrices = async () => {
-  //   try {
-  //     const web3 = await this.getHttpWeb3Provider();
-  //     const gasPrice = await web3.eth.getGasPrice();
-  //     const gasPriceInGwei = web3.utils.fromWei(gasPrice, "gwei");
-  //     return {
-  //       standard: gasPriceInGwei,
-  //       fast: gasPriceInGwei,
-  //       instant: gasPriceInGwei,
-  //     };
-  //   } catch (e) {
-  //     console.log(e);
-  //     return {};
-  //   }
-  // };
-
-  getGasPrice = async (speed) => {
-    // let gasSpeed = speed;
-    // if (!speed) {
-    //   gasSpeed = this.getStore("gasSpeed");
-    // }
-
-    try {
-      const web3 = await this.getHttpWeb3Provider();
-      const gasPrice = await web3.eth.getGasPrice();
-      // const gasPriceInGwei = web3.utils.fromWei(gasPrice, "gwei");
-      // console.log('gasPriceInGwei', gasPriceInGwei)
-      return gasPrice;
-    } catch (e) {
-      console.log(e);
-      return null;
-    }
-  };
-
-  getHttpWeb3Provider = () => {
-    return this.getStore("httpWeb3provider");
-  }
-
   getWeb3Provider = async () => {
 
-    let web3provider = this.getStore("web3provider");
+    let web3Provider = this.getStore("web3Provider");
 
-    return web3provider;
+    return web3Provider;
   };
 
-  getProvider = async () => {
-    return this.getStore('provider')
+  getMultiProvider = async () => {
+    const multiProvider = this.getStore("multiProvider")
+    return multiProvider;
   };
 
-  getMulticall = async () => {
-    const supportChain = this.getStore('supportChain')
-    const web3 = await this.getWeb3Provider();
-    const multicall = new Multicall({
-      multicallAddress: supportChain.contracts.MULTICALL_ADDRESS,
-      provider: web3,
-    });
-    return multicall;
-  };
+  getSigner = async () => {
+    const signer = this.getStore("signer")
+    return signer
+  }
+
+  getGasPrice = async () => {
+    
+    return null
+  }
 }
 
 export default Store;
