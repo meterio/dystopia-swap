@@ -39,6 +39,7 @@ import Logo from "../../ui/Logo";
 import ThemeSwitcher from "../../ui/ThemeSwitcher";
 import { useAppThemeContext } from "../../ui/AppThemeProvider";
 import SSWarning from "../ssWarning";
+import { SUPPORT_CHAIN } from "../../stores/constants"
 
 const {
   CONNECT_WALLET,
@@ -503,6 +504,8 @@ function Header(props) {
               const supportChain = stores.accountStore.getStore("supportChain");
               if (supportChain) {
                 window.open(supportChain.infoURL, "_blank");
+              } else {
+                window.open(SUPPORT_CHAIN[0].infoURL);
               }
             }}
           >
