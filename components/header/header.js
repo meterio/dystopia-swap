@@ -318,8 +318,15 @@ function Header(props) {
   };
 
   const switchChain = async (network) => {
-    console.log("network", network);
-    switchNetwork(Number(network.chainId))
+    // console.log("network", network);
+    try {
+      await switchNetwork({
+        id: Number(network.chainId)
+      })
+      // cancleSwitch()
+    } catch(e) {
+      console.log('switch network err', e)
+    }
   };
 
   const cancleSwitch = () => {

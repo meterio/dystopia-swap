@@ -135,6 +135,7 @@ export default function ffWarning({close, title, subTitle, icon, description, bt
               btnLabelList ? btnLabelList.map(b => {
                 return (
                   <div
+                    key={b.name}
                     className={[classes.primaryButton, classes[`primaryButton--${appTheme}`]].join(' ')}
                     onClick={e => close(b)}>
                     <Typography className={classes.buttonTextPrimary}>
