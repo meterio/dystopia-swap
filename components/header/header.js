@@ -142,7 +142,7 @@ function Header(props) {
 
           const web3Provider = new BrowserProvider(walletProvider)
           const signer = await web3Provider.getSigner()
-          const multiProvider = MulticallWrapper.wrap(web3Provider)
+          const multiProvider = supportChain.id === '361' ? web3Provider : MulticallWrapper.wrap(web3Provider)
 
           stores.accountStore.setStore({
             chainId: String(chainId),
