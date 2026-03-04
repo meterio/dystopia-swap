@@ -6,6 +6,7 @@ import {
   // ROUTE_ASSETS
 } from "./constants";
 import { v4 as uuidv4 } from "uuid";
+import tokenList from "./constants/tokenList";
 
 import * as moment from "moment";
 import { formatCurrency } from "../utils";
@@ -1086,14 +1087,15 @@ class Store {
       const baseAssetsCall = await client.query(tokensQuery).toPromise();
       // console.log("QUERY TWO RESPONSE",baseAssetsCall)
       let baseAssets = baseAssetsCall.data.tokens;
-      const res =
-        await axios.get(
-          `https://raw.githubusercontent.com/meterio/token-list/master/voltswap-tokens/voltswapv2-tokens.json`
-        )
+      // const res =
+      //   await axios.get(
+      //     `https://raw.githubusercontent.com/meterio/token-list/master/voltswap-tokens/voltswapv2-tokens.json`
+      //   )
 
       const defaultTokenList = []
       const supportChain = stores.accountStore.getStore('supportChain');
-      for (let token of res.data.tokens) {
+      // for (let token of res.data.tokens) {
+      for (let token of tokenList.tokens) {
         if (token.chainId == supportChain.id) {
           defaultTokenList.push(token)
         }
@@ -2586,6 +2588,8 @@ class Store {
       }
 
       const web3 = await stores.accountStore.getWeb3Provider();
+      const signer = await stores.accountStore.getSigner();
+      console.log("signer", signer);
       if (!web3) {
         console.warn("web3 not found");
         return null;
@@ -2678,7 +2682,7 @@ class Store {
 
       // SUBMIT REQUIRED ALLOWANCE TRANSACTIONS
       if (BigNumber(allowance0).lt(amount0)) {
-        const tokenContract = new ethers.Contract(token0.address, CONTRACTS.ERC20_ABI, web3);
+        const tokenContract = new ethers.Contract(token0.address, CONTRACTS.ERC20_ABI, signer);
 
         const tokenPromise = new Promise((resolve, reject) => {
           context._callContractWait(
@@ -2707,7 +2711,7 @@ class Store {
       }
 
       if (BigNumber(allowance1).lt(amount1)) {
-        const tokenContract = new ethers.Contract(token1.address, CONTRACTS.ERC20_ABI, web3);
+        const tokenContract = new ethers.Contract(token1.address, CONTRACTS.ERC20_ABI, signer);
 
         const tokenPromise = new Promise((resolve, reject) => {
           context._callContractWait(
@@ -2755,7 +2759,7 @@ class Store {
         .times(10 ** parseInt(token1.decimals))
         .toFixed(0);
 
-      const routerContract = new ethers.Contract(CONTRACTS.ROUTER_ADDRESS, CONTRACTS.ROUTER_ABI, web3);
+      const routerContract = new ethers.Contract(CONTRACTS.ROUTER_ADDRESS, CONTRACTS.ROUTER_ABI, signer);
 
       let func = "addLiquidity";
       let params = [
@@ -3729,6 +3733,7 @@ class Store {
       }
 
       const web3 = await stores.accountStore.getWeb3Provider();
+      const signer = await stores.accountStore.getSigner();
       if (!web3) {
         console.warn("web3 not found");
         return null;
@@ -3790,7 +3795,7 @@ class Store {
         const tokenContract = new ethers.Contract(
           pair.address,
           CONTRACTS.ERC20_ABI,
-          web3
+          signer
         )
 
         const tokenPromise = new Promise((resolve, reject) => {
@@ -3838,17 +3843,17 @@ class Store {
       const routerContract = new ethers.Contract(
         CONTRACTS.ROUTER_ADDRESS,
         CONTRACTS.ROUTER_ABI,
-        web3
+        signer
       )
       const gaugeContract = new ethers.Contract(
         pair.gauge.address,
         CONTRACTS.GAUGE_ABI,
-        web3
+        signer
       );
       const pairContract = new ethers.Contract(
         pair.address,
         CONTRACTS.PAIR_ABI,
-        web3
+        signer
       );
 
       this._callContractWait(
@@ -3949,7 +3954,7 @@ class Store {
         return null;
       }
 
-      const web3 = await stores.accountStore.getWeb3Provider();
+      const web3 = await stores.accountStore.getSigner();
       if (!web3) {
         console.warn("web3 not found");
         return null;
@@ -4505,7 +4510,9 @@ class Store {
         return null;
       }
 
-      const web3 = await stores.accountStore.getSigner();
+      const web3 = await stores.accountStore.getWeb3Provider();
+      const signer = await stores.accountStore.getSigner();
+      console.log('signer', signer)
       if (!web3) {
         console.warn("web3 not found");
         return null;
@@ -4577,7 +4584,7 @@ class Store {
       // SUBMIT REQUIRED ALLOWANCE TRANSACTIONS
       if (BigNumber(allowance).lt(fromAmount)) {
 
-        const tokenContract = new ethers.Contract(fromAsset.address, CONTRACTS.ERC20_ABI, web3)
+        const tokenContract = new ethers.Contract(fromAsset.address, CONTRACTS.ERC20_ABI, signer)
 
         const tokenPromise = new Promise((resolve, reject) => {
           context._callContractWait(
@@ -4629,7 +4636,7 @@ class Store {
       const routerContract = new ethers.Contract(
         CONTRACTS.ROUTER_ADDRESS,
         CONTRACTS.ROUTER_ABI,
-        web3,
+        signer,
       )
 
       let func = "swapExactTokensForTokens";
@@ -4846,7 +4853,7 @@ class Store {
         return null;
       }
 
-      const web3 = await stores.accountStore.getWeb3Provider();
+      const web3 = await stores.accountStore.getSigner();
       if (!web3) {
         console.warn("web3 not found");
         return null;
